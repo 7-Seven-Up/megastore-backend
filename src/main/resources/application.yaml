@@ -6,7 +6,7 @@ spring:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
   datasource:
-    url: jdbc:mysql://${DATASOURCE_URL:localhost:3306/password_manager}
+    url: jdbc:mysql://${DATASOURCE_URL:localhost:3306/megastore}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
