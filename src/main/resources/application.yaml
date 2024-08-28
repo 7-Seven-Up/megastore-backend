@@ -1,6 +1,6 @@
 spring:
   application:
-    name: password-manager
+    name: megastore
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
