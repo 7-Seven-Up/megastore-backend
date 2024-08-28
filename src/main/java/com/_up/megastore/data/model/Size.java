@@ -17,6 +17,8 @@ public class Size {
     @OneToMany(mappedBy = "size")
     private List<Product> products = Collections.emptyList();
 
+    private boolean deleted = false;
+
     @Id
     private UUID sizeId = UUID.randomUUID();
 
@@ -51,4 +53,7 @@ public class Size {
         this.description = description;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

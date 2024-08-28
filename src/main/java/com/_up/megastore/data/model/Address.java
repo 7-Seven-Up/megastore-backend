@@ -16,6 +16,8 @@ public class Address {
     @ManyToOne
     private User user;
 
+    private boolean deleted = false;
+
     @Id
     private UUID addressId = UUID.randomUUID();
 
@@ -68,4 +70,7 @@ public class Address {
         this.addressId = addressId;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

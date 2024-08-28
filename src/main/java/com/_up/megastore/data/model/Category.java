@@ -20,6 +20,8 @@ public class Category {
     @OneToMany(mappedBy = "superCategory")
     private List<Category> subCategories;
 
+    private boolean deleted = false;
+
     @Id
     private UUID categoryId = UUID.randomUUID();
 
@@ -70,4 +72,7 @@ public class Category {
         this.categoryId = categoryId;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

@@ -25,6 +25,7 @@ public class Product {
     private Product variantOf = null;
 
     private String color = "#ffffff";
+    private boolean deleted = false;
 
     @OneToMany(mappedBy = "variantOf")
     List<Product> variants = Collections.emptyList();
@@ -124,5 +125,9 @@ public class Product {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

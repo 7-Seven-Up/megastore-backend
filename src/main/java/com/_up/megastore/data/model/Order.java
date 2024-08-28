@@ -26,6 +26,7 @@ public class Order {
     private List<OrderDetail> orderDetails = Collections.emptyList();
 
     private LocalDate date = LocalDate.now();
+    private boolean deleted = false;
 
     @Id
     private UUID orderId = UUID.randomUUID();
@@ -87,4 +88,7 @@ public class Order {
         this.orderId = orderId;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

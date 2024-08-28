@@ -25,6 +25,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders = Collections.emptyList();
 
+    private boolean deleted = false;
+
     @Id
     private UUID userId = UUID.randomUUID();
 
@@ -108,5 +110,9 @@ public class User {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

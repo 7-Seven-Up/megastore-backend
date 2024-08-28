@@ -16,6 +16,8 @@ public class State {
     @OneToMany(mappedBy = "state")
     private List<Order> orders;
 
+    private boolean deleted = false;
+
     @Id
     private UUID stateId = UUID.randomUUID();
 
@@ -59,4 +61,7 @@ public class State {
         this.stateId = stateId;
     }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

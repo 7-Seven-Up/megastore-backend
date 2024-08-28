@@ -17,6 +17,8 @@ public class OrderDetail {
     @ManyToOne
     private Order order;
 
+    private boolean deleted = false;
+
     @Id
     private UUID orderDetailId = UUID.randomUUID();
 
@@ -58,5 +60,9 @@ public class OrderDetail {
 
     public void setOrderDetailId(UUID orderDetailId) {
         this.orderDetailId = orderDetailId;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
