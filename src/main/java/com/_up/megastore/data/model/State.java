@@ -9,7 +9,6 @@ import java.util.UUID;
 @Entity(name = "states")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 public class State {

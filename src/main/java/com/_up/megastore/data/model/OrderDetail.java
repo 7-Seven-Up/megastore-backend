@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity(name = "orderDetails")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 public class OrderDetail {

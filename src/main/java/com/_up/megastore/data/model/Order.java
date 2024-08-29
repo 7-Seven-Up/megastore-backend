@@ -11,7 +11,6 @@ import java.util.UUID;
 @Entity(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 public class Order {

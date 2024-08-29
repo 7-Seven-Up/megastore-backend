@@ -9,7 +9,6 @@ import java.util.UUID;
 @Entity(name = "sizes")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 public class Size {

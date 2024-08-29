@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity(name = "products")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 public class Product {
