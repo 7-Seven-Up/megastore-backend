@@ -1,9 +1,6 @@
 package com._up.megastore.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -22,7 +19,7 @@ public class Order {
     @ManyToOne
     private State state;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
     private List<OrderDetail> orderDetails = Collections.emptyList();
 
     private LocalDate date = LocalDate.now();

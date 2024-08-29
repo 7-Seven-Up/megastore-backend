@@ -1,9 +1,6 @@
 package com._up.megastore.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +14,7 @@ public class Category {
     @ManyToOne
     private Category superCategory = null;
 
-    @OneToMany(mappedBy = "superCategory")
+    @OneToMany(mappedBy = "superCategory", cascade = {CascadeType.ALL})
     private List<Category> subCategories;
 
     private boolean deleted = false;

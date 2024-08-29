@@ -1,9 +1,6 @@
 package com._up.megastore.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +24,7 @@ public class Product {
     private String color = "#ffffff";
     private boolean deleted = false;
 
-    @OneToMany(mappedBy = "variantOf")
+    @OneToMany(mappedBy = "variantOf", cascade = {CascadeType.ALL})
     List<Product> variants = Collections.emptyList();
 
     @OneToMany(mappedBy = "product")
