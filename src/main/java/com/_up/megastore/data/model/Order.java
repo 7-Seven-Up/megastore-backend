@@ -1,6 +1,7 @@
 package com._up.megastore.data.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -8,15 +9,23 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "orders")
+@NoArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Builder
+@Data
 public class Order {
 
-    private int number;
-    private double total;
+    @NonNull
+    private Integer number;
 
-    @ManyToOne
+    @NonNull
+    private Double total;
+
+    @ManyToOne @NonNull
     private User user;
 
-    @ManyToOne
+    @ManyToOne @NonNull
     private State state;
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
@@ -28,64 +37,4 @@ public class Order {
     @Id
     private UUID orderId = UUID.randomUUID();
 
-    public Order(int number, Double total, User user, State state) {
-        this.number = number;
-        this.total = total;
-        this.user = user;
-        this.state = state;
-    }
-
-    public Order() {}
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
 }

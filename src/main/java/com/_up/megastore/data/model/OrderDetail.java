@@ -3,18 +3,25 @@ package com._up.megastore.data.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity(name = "orderDetails")
+@NoArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Builder
+@Data
 public class OrderDetail {
 
-    private int quantity;
+    @NonNull
+    private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne @NonNull
     private Product product;
 
-    @ManyToOne
+    @ManyToOne @NonNull
     private Order order;
 
     private boolean deleted = false;
@@ -22,47 +29,4 @@ public class OrderDetail {
     @Id
     private UUID orderDetailId = UUID.randomUUID();
 
-    public OrderDetail(int quantity, Product product, Order order) {
-        this.quantity = quantity;
-        this.product = product;
-        this.order = order;
-    }
-
-    public OrderDetail() {}
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public UUID getOrderDetailId() {
-        return orderDetailId;
-    }
-
-    public void setOrderDetailId(UUID orderDetailId) {
-        this.orderDetailId = orderDetailId;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
 }

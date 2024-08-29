@@ -2,18 +2,32 @@ package com._up.megastore.data.model;
 
 import com._up.megastore.data.enums.Role;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Data
 public class User {
 
+    @NonNull
     private String username;
+
+    @NonNull
     private String password;
+
+    @NonNull
     private String fullName;
+
+    @NonNull
     private String email;
+
+    @NonNull
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -30,89 +44,4 @@ public class User {
     @Id
     private UUID userId = UUID.randomUUID();
 
-    public User(String username, String password, String fullName, String email, String phoneNumber) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public User() {}
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
 }
