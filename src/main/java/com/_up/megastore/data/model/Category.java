@@ -2,6 +2,7 @@ package com._up.megastore.data.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class Category {
     private Category superCategory = null;
 
     @OneToMany(mappedBy = "categoryId", cascade = {CascadeType.ALL})
-    private List<Category> subCategories;
+    private List<Category> subCategories = Collections.emptyList();
 
     private boolean deleted = false;
 
@@ -72,4 +73,5 @@ public class Category {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
 }

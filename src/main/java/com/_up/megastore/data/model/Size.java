@@ -2,10 +2,7 @@ package com._up.megastore.data.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "sizes")
@@ -13,9 +10,6 @@ public class Size {
 
     private String name;
     private String description;
-
-    @OneToMany(mappedBy = "size")
-    private List<Product> products = Collections.emptyList();
 
     private boolean deleted = false;
 
@@ -56,4 +50,5 @@ public class Size {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
 }
