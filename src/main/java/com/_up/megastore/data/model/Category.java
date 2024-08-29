@@ -14,7 +14,7 @@ public class Category {
     @ManyToOne
     private Category superCategory = null;
 
-    @OneToMany(mappedBy = "superCategory", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "categoryId", cascade = {CascadeType.ALL})
     private List<Category> subCategories;
 
     private boolean deleted = false;

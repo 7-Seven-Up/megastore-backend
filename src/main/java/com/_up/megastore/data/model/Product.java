@@ -24,7 +24,7 @@ public class Product {
     private String color = "#ffffff";
     private boolean deleted = false;
 
-    @OneToMany(mappedBy = "variantOf", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "productId", cascade = {CascadeType.ALL})
     List<Product> variants = Collections.emptyList();
 
     @OneToMany(mappedBy = "product")
