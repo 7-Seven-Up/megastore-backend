@@ -4,6 +4,7 @@ import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -22,6 +23,10 @@ public interface IProductController {
             @RequestPart MultipartFile multipartFile
     );
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ProductResponse findProductById(@PathVariable UUID id);
+
     @PatchMapping(value = "/{productId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     ProductResponse updateProduct(
@@ -30,4 +35,12 @@ public interface IProductController {
             @RequestPart @Nullable MultipartFile multipartFile
     );
 
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    Page<ProductResponse> findProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "") String name
+    );
 }

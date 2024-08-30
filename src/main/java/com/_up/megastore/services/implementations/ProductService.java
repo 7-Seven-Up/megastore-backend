@@ -1,5 +1,15 @@
 package com._up.megastore.services.implementations;
 
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
@@ -12,11 +22,6 @@ import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class ProductService implements IProductService {
@@ -41,12 +46,12 @@ public class ProductService implements IProductService {
         String imageURL = saveProductImage(multipartFile);
 
         Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, variantOf, imageURL);
-        return ProductMapper.toProductResponse( productRepository.save(newProduct) );
+        return ProductMapper.toProductResponse(productRepository.save(newProduct));
     }
 
     @Override
     public Product findProductByIdOrThrowException(UUID productId) {
-        return productRepository.findById(productId)
+        return productRepository.findProductByProductIdAndDeletedIsFalse(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
@@ -59,7 +64,20 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
+    public ProductResponse getProduct(UUID productId) {
+        return ProductMapper.toProductResponse(findProductByIdOrThrowException(productId));
+    }
+
+    @Override
+    public Page<ProductResponse> getProducts(int page, int pageSize, String sortBy, String name) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
+                .map(ProductMapper::toProductResponse);
+    }
+
+    @Override
+    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile) {
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
@@ -69,20 +87,21 @@ public class ProductService implements IProductService {
         product.setPrice(updateProductRequest.price());
         product.setCategory(category);
 
-        return ProductMapper.toProductResponse( productRepository.save(product) );
+        return ProductMapper.toProductResponse(productRepository.save(product));
     }
 
-    public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
-        if(variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())){
+    public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product) {
+        if (variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())) {
             Product variantOf = this.getVariantOf(variantOfId);
             product.setVariantOf(variantOf);
         }
     }
 
-    public void ifImageURLExistsUpdateProductImageURL(MultipartFile multipartFile, Product product){
-        if(multipartFile != null){
+    public void ifImageURLExistsUpdateProductImageURL(MultipartFile multipartFile, Product product) {
+        if (multipartFile != null) {
             String imageURL = saveProductImage(multipartFile);
             product.setImageURL(imageURL);
         }
     }
+
 }
