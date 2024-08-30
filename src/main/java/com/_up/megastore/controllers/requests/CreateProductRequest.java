@@ -18,7 +18,7 @@ public record CreateProductRequest(
         @Min(value = 0, message = "Price must be 0 or positive")
         Double price,
 
-        @NotBlank(message = "Product stock must not be null")
+        @NotNull(message = "Product stock must not be null")
         @Min(value = 0, message = "Product stock must be 0 or positive")
         Integer stock,
 
