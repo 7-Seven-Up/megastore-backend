@@ -32,5 +32,8 @@ public record CreateProductRequest(
         @NotNull(message = "Size ID must not be null")
         UUID sizeId,
 
+        @NotNull(message = "Category ID must not be null")
+        UUID categoryId,
+
         UUID variantOfId
 ) {}

@@ -2,6 +2,7 @@ package com._up.megastore.services.mappers;
 
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
+import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
 
@@ -25,7 +26,7 @@ public class ProductMapper {
         );
     }
 
-    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Product variantOf, String imageURL) {
+    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Category category, Product variantOf, String imageURL) {
         return Product.builder()
                 .name(createProductRequest.name())
                 .description(createProductRequest.description())
@@ -34,6 +35,7 @@ public class ProductMapper {
                 .stock(createProductRequest.stock())
                 .color(createProductRequest.color())
                 .size(size)
+                .category(category)
                 .variantOf(variantOf)
                 .build();
     }
