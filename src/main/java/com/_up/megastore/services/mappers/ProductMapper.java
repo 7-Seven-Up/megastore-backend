@@ -42,5 +42,4 @@ public class ProductMapper {
         return variant != null ? variant.getName() : null;
     }
 
-
 }
