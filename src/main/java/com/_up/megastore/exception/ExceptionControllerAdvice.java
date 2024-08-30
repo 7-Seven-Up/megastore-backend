@@ -12,15 +12,13 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
-    private final LocalDateTime NOW = LocalDateTime.now();
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)
     public ExceptionPayload handleNoSuchElementException(NoSuchElementException ex) {
         return new ExceptionPayload(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
-                NOW,
+                LocalDateTime.now(),
                 ex.getStackTrace()
         );
     }
@@ -29,9 +27,9 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ExceptionPayload handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         return new ExceptionPayload(
-                ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
+                ex.getBindingResult().getAllErrors().getFirst().getDefaultMessage(),
                 HttpStatus.BAD_REQUEST.value(),
-                NOW,
+                LocalDateTime.now(),
                 ex.getStackTrace()
         );
     }
@@ -42,7 +40,7 @@ public class ExceptionControllerAdvice {
         return new ExceptionPayload(
                 ex.getMessage(),
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
-                NOW,
+                LocalDateTime.now(),
                 ex.getStackTrace()
         );
     }
