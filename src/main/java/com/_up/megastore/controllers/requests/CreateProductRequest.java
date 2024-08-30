@@ -14,11 +14,9 @@ public record CreateProductRequest(
         @Size(max = 80, message = "Product description must be less than 80 characters")
         String description,
 
-        @NotNull(message = "Product price must not be null")
         @Min(value = 0, message = "Price must be 0 or positive")
         double price,
 
-        @NotNull(message = "Product stock must not be null")
         @Min(value = 0, message = "Product stock must be 0 or positive")
         int stock,
 
