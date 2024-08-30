@@ -1,6 +1,8 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.cloudinary.CloudinaryService;
 import com._up.megastore.controllers.requests.CreateProductRequest;
+import com._up.megastore.controllers.responses.ImageResponse;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
@@ -9,6 +11,7 @@ import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -18,10 +21,12 @@ public class ProductService implements IProductService {
 
     private final IProductRepository productRepository;
     private final ISizeService sizeService;
+    private final CloudinaryService cloudinaryService;
 
-    public ProductService(IProductRepository productRepository, ISizeService sizeService) {
+    public ProductService(IProductRepository productRepository, ISizeService sizeService, CloudinaryService cloudinaryService) {
         this.productRepository = productRepository;
         this.sizeService = sizeService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -39,6 +44,12 @@ public class ProductService implements IProductService {
     public Product findProductByIdOrThrowException(UUID productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
+    }
+
+    @Override
+    public ImageResponse saveProductImage(MultipartFile multipartFile) {
+        String imageURL = cloudinaryService.uploadImage(multipartFile);
+        return new ImageResponse(imageURL);
     }
 
 }
