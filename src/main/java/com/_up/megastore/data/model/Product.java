@@ -35,6 +35,9 @@ public class Product {
     @ManyToOne @NonNull
     private Size size;
 
+    @ManyToOne @NonNull
+    private Category category;
+
     @ManyToOne
     private Product variantOf = null;
 
