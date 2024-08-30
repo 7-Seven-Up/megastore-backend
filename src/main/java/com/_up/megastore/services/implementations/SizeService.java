@@ -8,6 +8,9 @@ import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
 @Service
 public class SizeService implements ISizeService {
 
@@ -20,8 +23,13 @@ public class SizeService implements ISizeService {
     @Override
     public SizeResponse saveSize(CreateSizeRequest createSizeRequest) {
         Size size = SizeMapper.toSize(createSizeRequest);
-        Size newSize = sizeRepository.save(size);
-        return SizeMapper.toSizeResponse(size);
+        return SizeMapper.toSizeResponse( sizeRepository.save(size) );
+    }
+
+    @Override
+    public Size findSizeByIdOrThrowException(UUID sizeId) {
+        return sizeRepository.findById(sizeId)
+                .orElseThrow( () -> new NoSuchElementException("Size with id " + sizeId + " does not exist.") );
     }
 
 }
