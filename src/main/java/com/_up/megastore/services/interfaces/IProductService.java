@@ -6,6 +6,6 @@ import java.util.UUID;
 import com._up.megastore.data.model.Product;
 
 public interface IProductService {
-    List<Product> getAll();
-    Product get(UUID id);
+    List<Product> findAllProducts();
+    Product findProductByIdOrThrowException(UUID id);
 }

@@ -1,6 +1,7 @@
 package com._up.megastore.services.implementations;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> getAll() {
+    public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
 
     @Override
-    public Product get(UUID id) {
-        return productRepository.findById(id).get();
+    public Product findProductByIdOrThrowException(UUID productId) {
+        return productRepository.findById(productId)
+            .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
     
