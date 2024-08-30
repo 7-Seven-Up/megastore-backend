@@ -7,10 +7,7 @@ import com._up.megastore.data.model.Category;
 public class CategoryMapper {
 
     public static CategoryResponse toCategoryResponse(Category category) {
-        String superCategoryName = category.getSuperCategory() != null
-                ? category.getSuperCategory().getName()
-                : null;
-
+        String superCategoryName = getSuperCategoryName(category.getSuperCategory());
         return new CategoryResponse(category.getCategoryId(), category.getName(), category.getDescription(), superCategoryName);
     }
 
@@ -20,6 +17,10 @@ public class CategoryMapper {
                 .description(createCategoryRequest.description())
                 .superCategory(superCategory)
                 .build();
+    }
+
+    private static String getSuperCategoryName(Category superCategory) {
+        return superCategory != null ? superCategory.getName() : null;
     }
 
 }

@@ -1,6 +1,5 @@
 package com._up.megastore.services.implementations;
 
-import com._up.megastore.cloudinary.CloudinaryService;
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.data.model.Category;
@@ -8,6 +7,7 @@ import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.IProductRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
+import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
@@ -23,23 +23,20 @@ public class ProductService implements IProductService {
     private final IProductRepository productRepository;
     private final ISizeService sizeService;
     private final ICategoryService categoryService;
-    private final CloudinaryService cloudinaryService;
+    private final IFileUploadService fileUploadService;
 
-    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, CloudinaryService cloudinaryService) {
+    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, IFileUploadService fileUploadService) {
         this.productRepository = productRepository;
         this.sizeService = sizeService;
         this.categoryService = categoryService;
-        this.cloudinaryService = cloudinaryService;
+        this.fileUploadService = fileUploadService;
     }
 
     @Override
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
-        Product variantOf = createProductRequest.variantOfId() != null
-                ? findProductByIdOrThrowException(createProductRequest.variantOfId())
-                : null;
-
+        Product variantOf = getVariantOf(createProductRequest.variantOfId());
         String imageURL = saveProductImage(multipartFile);
 
         Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, variantOf, imageURL);
@@ -53,7 +50,11 @@ public class ProductService implements IProductService {
     }
 
     private String saveProductImage(MultipartFile multipartFile) {
-        return cloudinaryService.uploadImage(multipartFile);
+        return fileUploadService.uploadImage(multipartFile);
+    }
+
+    private Product getVariantOf(UUID variantOfId) {
+        return variantOfId != null ? findProductByIdOrThrowException(variantOfId) : null;
     }
 
 }

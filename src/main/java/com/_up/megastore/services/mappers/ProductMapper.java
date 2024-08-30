@@ -9,9 +9,7 @@ import com._up.megastore.data.model.Size;
 public class ProductMapper {
 
     public static ProductResponse toProductResponse(Product product) {
-        String variantName = product.getVariantOf() != null
-                ? product.getVariantOf().getName()
-                : null;
+        String variantName = getVariantName(product.getVariantOf());
 
         return new ProductResponse(
                 product.getProductId(),
@@ -38,6 +36,10 @@ public class ProductMapper {
                 .category(category)
                 .variantOf(variantOf)
                 .build();
+    }
+
+    private static String getVariantName(Product variant) {
+        return variant != null ? variant.getName() : null;
     }
 
 }

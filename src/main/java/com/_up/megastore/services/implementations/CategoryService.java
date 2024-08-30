@@ -22,11 +22,8 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public CategoryResponse saveCategory(CreateCategoryRequest createCategoryRequest) {
-        Category superCategory = createCategoryRequest.superCategoryId() != null
-                ? findCategoryByIdOrThrowException(createCategoryRequest.superCategoryId())
-                : null;
+        Category superCategory = getSuperCategory(createCategoryRequest.superCategoryId());
         Category category = CategoryMapper.toCategory(createCategoryRequest, superCategory);
-
         return CategoryMapper.toCategoryResponse( categoryRepository.save(category) );
     }
 
@@ -34,6 +31,10 @@ public class CategoryService implements ICategoryService {
     public Category findCategoryByIdOrThrowException(UUID categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NoSuchElementException("Category with id " + categoryId + " does not exist."));
+    }
+
+    private Category getSuperCategory(UUID superCategoryId) {
+        return superCategoryId != null ? findCategoryByIdOrThrowException(superCategoryId) : null;
     }
 
 }
