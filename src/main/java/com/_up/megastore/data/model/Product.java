@@ -41,12 +41,12 @@ public class Product {
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "productId", cascade = {CascadeType.ALL})
-    List<Product> variants = Collections.emptyList();
+    private List<Product> variants = Collections.emptyList();
 
     @OneToMany(mappedBy = "product")
-    List<OrderDetail> orderDetails = Collections.emptyList();
+    private List<OrderDetail> orderDetails = Collections.emptyList();
 
     @Id
-    private UUID productId = UUID.randomUUID();
+    private final UUID productId = UUID.randomUUID();
 
 }

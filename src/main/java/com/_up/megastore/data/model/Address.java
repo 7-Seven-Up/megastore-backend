@@ -29,6 +29,6 @@ public class Address {
     private boolean deleted = false;
 
     @Id
-    private UUID addressId = UUID.randomUUID();
+    private final UUID addressId = UUID.randomUUID();
 
 }

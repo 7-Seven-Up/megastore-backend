@@ -42,6 +42,6 @@ public class User {
     private boolean deleted = false;
 
     @Id
-    private UUID userId = UUID.randomUUID();
+    private final UUID userId = UUID.randomUUID();
 
 }

@@ -34,6 +34,6 @@ public class Order {
     private boolean deleted = false;
 
     @Id
-    private UUID orderId = UUID.randomUUID();
+    private final UUID orderId = UUID.randomUUID();
 
 }

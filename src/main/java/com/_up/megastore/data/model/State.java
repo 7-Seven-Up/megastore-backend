@@ -22,6 +22,6 @@ public class State {
     private boolean deleted = false;
 
     @Id
-    private UUID stateId = UUID.randomUUID();
+    private final UUID stateId = UUID.randomUUID();
 
 }

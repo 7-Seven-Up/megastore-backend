@@ -26,6 +26,6 @@ public class OrderDetail {
     private boolean deleted = false;
 
     @Id
-    private UUID orderDetailId = UUID.randomUUID();
+    private final UUID orderDetailId = UUID.randomUUID();
 
 }

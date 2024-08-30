@@ -29,6 +29,6 @@ public class Category {
     private boolean deleted = false;
 
     @Id
-    private UUID categoryId = UUID.randomUUID();
+    private final UUID categoryId = UUID.randomUUID();
 
 }

@@ -22,6 +22,6 @@ public class Size {
     private boolean deleted = false;
 
     @Id
-    private UUID sizeId = UUID.randomUUID();
+    private final UUID sizeId = UUID.randomUUID();
 
 }
