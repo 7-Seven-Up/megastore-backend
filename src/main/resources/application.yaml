@@ -7,6 +7,6 @@ spring:
       ddl-auto: ${DDL_AUTO:update}
   datasource:
     url: jdbc:mysql://${DATASOURCE_URL:localhost:3306/megastore}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:13051820}
     driver-class-name: com.mysql.cj.jdbc.Driver
