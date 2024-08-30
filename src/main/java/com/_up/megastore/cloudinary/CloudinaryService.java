@@ -1,5 +1,6 @@
 package com._up.megastore.cloudinary;
 
+import com._up.megastore.services.interfaces.IFileUploadService;
 import com.cloudinary.Cloudinary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Service
-public class CloudinaryService {
+public class CloudinaryService implements IFileUploadService {
 
     private final Cloudinary cloudinary;
 
