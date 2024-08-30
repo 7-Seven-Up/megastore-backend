@@ -10,8 +10,5 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-cloudinary:
-  cloud-name: ${CLOUDINARY_NAME:dlomx8sc1}
-  api-key: ${CLOUDINARY_API_KEY:363723365928819}
-  api-secret: ${CLOUDINARY_API_SECRET:z1aLT2IRKpN97R8vMYNZAvFYG68}
+  profiles:
+    active: ${SPRING_PROFILE:development}

@@ -1,0 +1,4 @@
+cloudinary:
+  cloud-name: ${CLOUDINARY_NAME:dlomx8sc1}
+  api-key: ${CLOUDINARY_API_KEY:363723365928819}
+  api-secret: ${CLOUDINARY_API_SECRET:z1aLT2IRKpN97R8vMYNZAvFYG68}
