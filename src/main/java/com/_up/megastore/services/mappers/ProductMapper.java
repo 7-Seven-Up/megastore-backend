@@ -25,12 +25,12 @@ public class ProductMapper {
         );
     }
 
-    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Product variantOf) {
+    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Product variantOf, String imageURL) {
         return Product.builder()
                 .name(createProductRequest.name())
                 .description(createProductRequest.description())
                 .price(createProductRequest.price())
-                .imageURL(createProductRequest.imageURL())
+                .imageURL(imageURL)
                 .stock(createProductRequest.stock())
                 .color(createProductRequest.color())
                 .size(size)

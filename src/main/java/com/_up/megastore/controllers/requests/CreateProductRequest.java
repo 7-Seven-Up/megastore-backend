@@ -21,10 +21,6 @@ public record CreateProductRequest(
         @Min(value = 0, message = "Price must be 0 or positive")
         Double price,
 
-        @NotNull(message = "Image URL must not be null")
-        @Pattern(regexp = "^(https?|ftp)://[^ /$.?#].[^ ]*$", message = "Invalid image URL")
-        String imageURL,
-
         @NotNull(message = "Product stock must not be null")
         @Min(value = 0, message = "Product stock must be 0 or positive")
         Integer stock,

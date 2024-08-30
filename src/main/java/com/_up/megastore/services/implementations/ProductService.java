@@ -2,7 +2,6 @@ package com._up.megastore.services.implementations;
 
 import com._up.megastore.cloudinary.CloudinaryService;
 import com._up.megastore.controllers.requests.CreateProductRequest;
-import com._up.megastore.controllers.responses.ImageResponse;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
@@ -30,13 +29,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse saveProduct(CreateProductRequest createProductRequest) {
+    public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Product variantOf = createProductRequest.variantOfId() != null
                 ? findProductByIdOrThrowException(createProductRequest.variantOfId())
                 : null;
+        String imageURL = saveProductImage(multipartFile);
 
-        Product newProduct = ProductMapper.toProduct(createProductRequest, size, variantOf);
+        Product newProduct = ProductMapper.toProduct(createProductRequest, size, variantOf, imageURL);
         return ProductMapper.toProductResponse( productRepository.save(newProduct) );
     }
 
@@ -46,10 +46,8 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
-    @Override
-    public ImageResponse saveProductImage(MultipartFile multipartFile) {
-        String imageURL = cloudinaryService.uploadImage(multipartFile);
-        return new ImageResponse(imageURL);
+    private String saveProductImage(MultipartFile multipartFile) {
+        return cloudinaryService.uploadImage(multipartFile);
     }
 
 }
