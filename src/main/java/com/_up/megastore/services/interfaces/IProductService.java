@@ -14,6 +14,6 @@ public interface IProductService {
 
     Product findProductByIdOrThrowException(UUID productId);
 
-    ProductResponse updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
+    ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
 
 }

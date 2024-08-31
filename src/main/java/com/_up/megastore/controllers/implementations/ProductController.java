@@ -4,13 +4,10 @@ import com._up.megastore.controllers.interfaces.IProductController;
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
-import com._up.megastore.data.model.Product;
-import com._up.megastore.services.implementations.ProductService;
 import com._up.megastore.services.interfaces.IProductService;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.UUID;
 
 @RestController
 public class ProductController implements IProductController {
@@ -26,8 +23,8 @@ public class ProductController implements IProductController {
         return productService.saveProduct(createProductRequest, multipartFile);
     }
     @Override
-    public ProductResponse updateProduct(@RequestBody Product product){
-       return productService.updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
+    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
+       return productService.updateProduct(productId, updateProductRequest, multipartFile);
 
     }
 

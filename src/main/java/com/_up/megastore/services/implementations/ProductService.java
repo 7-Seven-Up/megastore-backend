@@ -57,12 +57,20 @@ public class ProductService implements IProductService {
     private Product getVariantOf(UUID variantOfId) {
         return variantOfId != null ? findProductByIdOrThrowException(variantOfId) : null;
     }
-    public ProductResponse updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
-        Category category = categoryService.findCategoryByIdOrThrowException(UpdateProductRequest.categoryId());
-        Product variantOf = getVariantOf(updateProductRequest.variantOfId());
+    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
+        Product product = this.findProductByIdOrThrowException(productId);
+        Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
+        Product variantOf = this.getVariantOf(updateProductRequest.variantOfId());
         String imageURL = saveProductImage(multipartFile);
 
-        Product updatedProduct = ProductMapper.toProduct(updateProductRequest, category, variantOf, imageURL);
-        return ProductMapper.toProductResponse( productRepository.save(updatedProduct) );
+        product.setName(updateProductRequest.name());
+        product.setDescription(updateProductRequest.description());
+        product.setPrice(updateProductRequest.price());
+        product.setImageURL(imageURL);
+        product.setCategory(category);
+        product.setVariantOf(variantOf);
+
+
+        return ProductMapper.toProductResponse(productRepository.save(product) );
     }
 }

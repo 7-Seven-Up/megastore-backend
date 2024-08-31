@@ -23,4 +23,4 @@ public record UpdateProductRequest(
     UUID categoryId,
 
     UUID variantOfId
-)
+){}

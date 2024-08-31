@@ -42,15 +42,5 @@ public class ProductMapper {
         return variant != null ? variant.getName() : null;
     }
 
-    @Override
-    public static Product toProduct(UpdateProductRequest updateProductRequest, Category category, Product variantOf, String imageURL){
-        return Product.builder()
-                .name(updateProductRequest.name())
-                .description(updateProductRequest.description())
-                .price(updateProductRequest.price())
-                .imageURL(imageURL)
-                .category(category)
-                .variantOf(variantOf)
-                .build();
-    }
+
 }

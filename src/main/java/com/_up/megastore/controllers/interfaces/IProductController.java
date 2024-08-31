@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RequestMapping("/api/v1/products")
 public interface IProductController {
 
@@ -22,7 +24,8 @@ public interface IProductController {
     @PatchMapping(value = "/{productId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     ProductResponse updateProduct(
-            @RequestPart @Valid UpdateProductRequest updateProductRequest,
+            @PathVariable UUID productId,
+            @RequestBody @Valid UpdateProductRequest updateProductRequest,
             @RequestPart MultipartFile multipartFile
     );
 

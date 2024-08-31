@@ -52,4 +52,29 @@ public class Product {
     @Id
     private final UUID productId = UUID.randomUUID();
 
+
+
+    public void setName(@NonNull String name) {
+        this.name = name;
+    }
+
+    public void setDescription(@NonNull String description) {
+        this.description = description;
+    }
+
+    public void setPrice(@NonNull Double price) {
+        this.price = price;
+    }
+
+    public void setCategory(@NonNull Category category) {
+        this.category = category;
+    }
+
+    public void setVariantOf(@NonNull Product variantOf) {
+        this.variantOf = variantOf;
+    }
+
+    public void setImageURL(@NonNull String imageURL){
+        this.imageURL = imageURL;
+    }
 }
