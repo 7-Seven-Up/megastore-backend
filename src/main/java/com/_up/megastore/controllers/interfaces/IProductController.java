@@ -1,6 +1,7 @@
 package com._up.megastore.controllers.interfaces;
 
 import com._up.megastore.controllers.requests.CreateProductRequest;
+import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,13 @@ public interface IProductController {
     @ResponseStatus(HttpStatus.CREATED)
     ProductResponse saveProduct(
             @RequestPart @Valid CreateProductRequest createProductRequest,
+            @RequestPart MultipartFile multipartFile
+    );
+
+    @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @ResponseStatus(HttpStatus.OK)
+    ProductResponse updateProduct(
+            @RequestPart @Valid UpdateProductRequest updateProductRequest,
             @RequestPart MultipartFile multipartFile
     );
 

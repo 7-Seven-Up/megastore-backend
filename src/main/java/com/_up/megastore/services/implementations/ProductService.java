@@ -1,6 +1,7 @@
 package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.CreateProductRequest;
+import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
@@ -56,5 +57,8 @@ public class ProductService implements IProductService {
     private Product getVariantOf(UUID variantOfId) {
         return variantOfId != null ? findProductByIdOrThrowException(variantOfId) : null;
     }
+    public ProductResponse updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
+        Category category = categoryService.findCategoryByIdOrThrowException(UpdateProductRequest.categoryId());
 
+    }
 }
