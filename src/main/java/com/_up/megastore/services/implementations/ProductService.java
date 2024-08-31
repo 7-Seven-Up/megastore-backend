@@ -44,13 +44,17 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product findProductByIdOrThrowException(UUID productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
+    public ProductResponse getProduct(UUID productId) {
+        Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
+        return ProductMapper.toProductResponse(product);
     }
 
     private String saveProductImage(MultipartFile multipartFile) {
         return fileUploadService.uploadImage(multipartFile);
+    }
+
+    private Product findProductByIdOrThrowException(UUID productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
     private Product getVariantOf(UUID variantOfId) {

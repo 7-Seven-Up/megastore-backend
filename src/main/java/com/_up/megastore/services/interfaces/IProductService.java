@@ -13,6 +13,5 @@ public interface IProductService {
 
     ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile);
 
-    Product findProductByIdOrThrowException(UUID productId);
-
+    ProductResponse getProduct(UUID productId);
 }
