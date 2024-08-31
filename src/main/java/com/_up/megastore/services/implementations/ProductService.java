@@ -11,6 +11,9 @@ import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,6 +50,12 @@ public class ProductService implements IProductService {
     public ProductResponse getProduct(UUID productId) {
         Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
         return ProductMapper.toProductResponse(product);
+    }
+
+    @Override
+    public Page<ProductResponse> getProductByPages(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page,pageSize);
+        return productRepository.findAll(pageable).map(ProductMapper::toProductResponse);
     }
 
     private String saveProductImage(MultipartFile multipartFile) {

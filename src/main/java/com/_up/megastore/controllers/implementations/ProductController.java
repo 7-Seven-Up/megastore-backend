@@ -3,9 +3,8 @@ package com._up.megastore.controllers.implementations;
 import com._up.megastore.controllers.interfaces.IProductController;
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
-import com._up.megastore.data.model.Product;
 import com._up.megastore.services.interfaces.IProductService;
-import com._up.megastore.services.mappers.ProductMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,4 +30,8 @@ public class ProductController implements IProductController {
         return productService.getProduct(id);
     }
 
+    @Override
+    public Page<ProductResponse> findProductsByPages(int page, int pageSize) {
+        return productService.getProductByPages(page, pageSize);
+    }
 }

@@ -3,6 +3,7 @@ package com._up.megastore.controllers.interfaces;
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +24,11 @@ public interface IProductController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     ProductResponse findProductById(@PathVariable UUID id);
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    Page<ProductResponse> findProductsByPages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize
+    );
 }
