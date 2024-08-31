@@ -19,7 +19,7 @@ public interface IProductController {
             @RequestPart MultipartFile multipartFile
     );
 
-    @PutMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PatchMapping(value = "/{productId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     @ResponseStatus(HttpStatus.OK)
     ProductResponse updateProduct(
             @RequestPart @Valid UpdateProductRequest updateProductRequest,

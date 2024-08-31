@@ -59,6 +59,10 @@ public class ProductService implements IProductService {
     }
     public ProductResponse updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
         Category category = categoryService.findCategoryByIdOrThrowException(UpdateProductRequest.categoryId());
+        Product variantOf = getVariantOf(updateProductRequest.variantOfId());
+        String imageURL = saveProductImage(multipartFile);
 
+        Product updatedProduct = ProductMapper.toProduct(updateProductRequest, category, variantOf, imageURL);
+        return ProductMapper.toProductResponse( productRepository.save(updatedProduct) );
     }
 }

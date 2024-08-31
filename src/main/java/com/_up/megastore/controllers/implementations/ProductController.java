@@ -25,9 +25,9 @@ public class ProductController implements IProductController {
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
         return productService.saveProduct(createProductRequest, multipartFile);
     }
-    @PutMapping
+    @Override
     public ProductResponse updateProduct(@RequestBody Product product){
-       return productService.updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile) {
+       return productService.updateProduct(UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
 
     }
 
