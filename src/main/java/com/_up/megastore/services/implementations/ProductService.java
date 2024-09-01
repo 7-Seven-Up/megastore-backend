@@ -14,11 +14,11 @@ import com._up.megastore.services.mappers.ProductMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductService implements IProductService {
@@ -28,7 +28,10 @@ public class ProductService implements IProductService {
     private final ICategoryService categoryService;
     private final IFileUploadService fileUploadService;
 
-    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, IFileUploadService fileUploadService) {
+    public ProductService(IProductRepository productRepository,
+                          ISizeService sizeService,
+                          ICategoryService categoryService,
+                          IFileUploadService fileUploadService) {
         this.productRepository = productRepository;
         this.sizeService = sizeService;
         this.categoryService = categoryService;
@@ -48,14 +51,16 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse getProduct(UUID productId) {
-        Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
+        Product product = findProductByIdOrThrowException(productId);
         return ProductMapper.toProductResponse(product);
     }
 
     @Override
-    public Page<ProductResponse> getProductByPages(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
-        return productRepository.findAll(pageable).map(ProductMapper::toProductResponse);
+    public Page<ProductResponse> getProductByPages(int page, int pageSize, String sortBy) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        return productRepository.findProductsByDeletedIsFalse(pageable)
+                .map(ProductMapper::toProductResponse);
     }
 
     private String saveProductImage(MultipartFile multipartFile) {
@@ -63,7 +68,8 @@ public class ProductService implements IProductService {
     }
 
     private Product findProductByIdOrThrowException(UUID productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
+        return productRepository.findProductByProductIdAndDeletedIsFalse(productId).orElseThrow(() ->
+                new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
     private Product getVariantOf(UUID variantOfId) {

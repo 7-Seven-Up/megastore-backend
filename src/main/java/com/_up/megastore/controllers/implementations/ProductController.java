@@ -5,7 +5,6 @@ import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.services.interfaces.IProductService;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,12 +25,12 @@ public class ProductController implements IProductController {
     }
 
     @Override
-    public ProductResponse findProductById(@PathVariable UUID id) {
+    public ProductResponse findProductById(UUID id) {
         return productService.getProduct(id);
     }
 
     @Override
-    public Page<ProductResponse> findProductsByPages(int page, int pageSize) {
-        return productService.getProductByPages(page, pageSize);
+    public Page<ProductResponse> findProductsByPages(int page, int pageSize, String sortBy) {
+        return productService.getProductByPages(page, pageSize, sortBy);
     }
 }

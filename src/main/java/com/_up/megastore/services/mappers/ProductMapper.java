@@ -6,7 +6,6 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
 
-@Component
 public class ProductMapper {
 
     public static ProductResponse toProductResponse(Product product) {

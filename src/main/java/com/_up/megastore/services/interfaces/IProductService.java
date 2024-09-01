@@ -13,5 +13,5 @@ public interface IProductService {
 
     ProductResponse getProduct(UUID productId);
 
-    Page<ProductResponse> getProductByPages(int page, int pageSize);
+    Page<ProductResponse> getProductByPages(int page, int pageSize, String sortBy);
 }
