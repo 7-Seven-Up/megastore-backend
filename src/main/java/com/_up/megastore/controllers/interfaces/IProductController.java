@@ -25,7 +25,7 @@ public interface IProductController {
     @ResponseStatus(HttpStatus.OK)
     ProductResponse updateProduct(
             @PathVariable UUID productId,
-            @RequestBody @Valid UpdateProductRequest updateProductRequest,
+            @RequestPart @Valid UpdateProductRequest updateProductRequest,
             @RequestPart MultipartFile multipartFile
     );
 
