@@ -31,7 +31,10 @@ public class ProductService implements IProductService {
     private final ICategoryService categoryService;
     private final IFileUploadService fileUploadService;
 
-    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, IFileUploadService fileUploadService) {
+    public ProductService(IProductRepository productRepository,
+            ISizeService sizeService,
+            ICategoryService categoryService,
+            IFileUploadService fileUploadService) {
         this.productRepository = productRepository;
         this.sizeService = sizeService;
         this.categoryService = categoryService;
