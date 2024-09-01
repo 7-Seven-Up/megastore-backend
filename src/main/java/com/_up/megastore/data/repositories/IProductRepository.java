@@ -10,6 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
-    Page<Product> findProductsByDeletedIsFalse(Pageable pageable);
+    Page<Product> findProductsByDeletedIsFalseAndNameLikeIgnoreCase(String filter, Pageable pageable);
     Optional<Product> findProductByProductIdAndDeletedIsFalse(UUID productId);
 }

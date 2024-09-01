@@ -30,6 +30,7 @@ public interface IProductController {
     Page<ProductResponse> findProductsByPages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize,
-            @RequestParam(defaultValue = "name") String sortBy
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "") String filter
     );
 }

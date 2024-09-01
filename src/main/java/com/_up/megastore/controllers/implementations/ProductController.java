@@ -30,7 +30,7 @@ public class ProductController implements IProductController {
     }
 
     @Override
-    public Page<ProductResponse> findProductsByPages(int page, int pageSize, String sortBy) {
-        return productService.getProductByPages(page, pageSize, sortBy);
+    public Page<ProductResponse> findProductsByPages(int page, int pageSize, String sortBy, String filter) {
+        return productService.getProductByPages(page, pageSize, sortBy, filter);
     }
 }

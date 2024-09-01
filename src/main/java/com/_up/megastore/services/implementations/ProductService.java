@@ -56,10 +56,11 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductResponse> getProductByPages(int page, int pageSize, String sortBy) {
+    public Page<ProductResponse> getProductByPages(int page, int pageSize, String sortBy, String filter) {
         Sort sort = Sort.by(sortBy);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        return productRepository.findProductsByDeletedIsFalse(pageable)
+        String formattedFilter = "%" + filter + "%";
+        return productRepository.findProductsByDeletedIsFalseAndNameLikeIgnoreCase(formattedFilter, pageable)
                 .map(ProductMapper::toProductResponse);
     }
 
