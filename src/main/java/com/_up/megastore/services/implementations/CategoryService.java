@@ -43,14 +43,14 @@ public class CategoryService implements ICategoryService {
         Category category = findCategoryByIdOrThrowException(categoryId);
         category.setName(updateCategoryRequest.name());
         category.setDescription(updateCategoryRequest.description());
-        ifSuperCategoryExistUpdateCategorySuperCategory(updateCategoryRequest,category);
-
+        UUID superCategoryId = updateCategoryRequest.superCategoryId();
+        ifSuperCategoryExistUpdateCategorySuperCategory(superCategoryId,category);
         return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
     }
 
-    public void ifSuperCategoryExistUpdateCategorySuperCategory(UpdateCategoryRequest updateCategoryRequest, Category category){
-        if(updateCategoryRequest.superCategoryId() != null){
-            Category superCategory = findCategoryByIdOrThrowException(updateCategoryRequest.superCategoryId());
+    public void ifSuperCategoryExistUpdateCategorySuperCategory(UUID superCategoryId, Category category){
+        if( superCategoryId != null && !superCategoryId.equals(category.getSuperCategory().getCategoryId() )){
+            Category superCategory = findCategoryByIdOrThrowException(superCategoryId);
             category.setSuperCategory(superCategory);
         }
     }
