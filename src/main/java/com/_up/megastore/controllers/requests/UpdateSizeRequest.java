@@ -1,10 +1,11 @@
 package com._up.megastore.controllers.requests;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdateSizeRequest (
-        @NotNull(message = "Size name must not be null")
+        @NotBlank(message = "Size name must not be null and blank")
         @Size(max = 20, message = "Size name must be less than 20 characters")
         String name,
 
