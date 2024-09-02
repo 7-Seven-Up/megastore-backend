@@ -1,6 +1,7 @@
 package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.CreateCategoryRequest;
+import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
 import com._up.megastore.data.model.Category;
 import com._up.megastore.data.repositories.ICategoryRepository;
@@ -37,4 +38,12 @@ public class CategoryService implements ICategoryService {
         return superCategoryId != null ? findCategoryByIdOrThrowException(superCategoryId) : null;
     }
 
+    @Override
+    public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
+        Category category = findCategoryByIdOrThrowException(categoryId);
+        category.setName(updateCategoryRequest.name());
+        category.setDescription(updateCategoryRequest.description());
+
+        return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
+    }
 }

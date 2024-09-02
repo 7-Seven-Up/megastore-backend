@@ -1,6 +1,7 @@
 package com._up.megastore.services.interfaces;
 
 import com._up.megastore.controllers.requests.CreateCategoryRequest;
+import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
 import com._up.megastore.data.model.Category;
 
@@ -12,4 +13,5 @@ public interface ICategoryService {
 
     Category findCategoryByIdOrThrowException(UUID categoryId);
 
+    CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest);
 }
