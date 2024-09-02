@@ -21,6 +21,10 @@ public class PhoneNumberValidator implements
       ConstraintValidatorContext constraintValidatorContext) {
     PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
+    if (phoneNumber == null) {
+      return true;
+    }
+
     try {
       PhoneNumber arNumberProto = phoneUtil.parse(phoneNumber, isoCode);
       return phoneUtil.isValidNumberForRegion(arNumberProto, isoCode);
