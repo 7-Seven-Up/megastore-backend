@@ -12,3 +12,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: ${SPRING_PROFILE:development}
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:7up.megastore@gmail.com}
+    password: ${MAIL_PASSWORD:kemb pmbj helh ikvn}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
