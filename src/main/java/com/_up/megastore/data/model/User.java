@@ -1,6 +1,10 @@
 package com._up.megastore.data.model;
 
 import com._up.megastore.data.enums.Role;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,4 +48,14 @@ public class User {
     @Id
     private final UUID userId = UUID.randomUUID();
 
+    public static String convertPhoneNumber(String phoneNumber) {
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+        try {
+            PhoneNumber numberProto = phoneUtil.parse(phoneNumber, "AR");
+            return phoneUtil.format(numberProto, PhoneNumberFormat.E164);
+        } catch (NumberParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
