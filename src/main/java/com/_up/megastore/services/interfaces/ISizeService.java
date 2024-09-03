@@ -1,6 +1,7 @@
 package com._up.megastore.services.interfaces;
 
 import com._up.megastore.controllers.requests.CreateSizeRequest;
+import com._up.megastore.controllers.requests.UpdateSizeRequest;
 import com._up.megastore.controllers.responses.SizeResponse;
 import com._up.megastore.data.model.Size;
 
@@ -12,4 +13,5 @@ public interface ISizeService {
 
     Size findSizeByIdOrThrowException(UUID sizeId);
 
+    SizeResponse updateSize(UUID sizeId, UpdateSizeRequest updateSizeRequest);
 }
