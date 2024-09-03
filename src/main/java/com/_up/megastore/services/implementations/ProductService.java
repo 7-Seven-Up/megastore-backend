@@ -52,14 +52,13 @@ public class ProductService implements IProductService {
         return ProductMapper.toProductResponse(productRepository.save(newProduct));
     }
 
-    @Override
-    public Product findProductByIdOrThrowException(UUID productId) {
-        return productRepository.findProductByProductIdAndDeletedIsFalse(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
-    }
-
     private String saveProductImage(MultipartFile multipartFile) {
         return fileUploadService.uploadImage(multipartFile);
+    }
+
+    private Product findProductByIdOrThrowException(UUID productId) {
+        return productRepository.findProductByProductIdAndDeletedIsFalse(productId).orElseThrow(()
+                -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
     private Product getVariantOf(UUID variantOfId) {

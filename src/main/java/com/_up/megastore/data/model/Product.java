@@ -51,5 +51,4 @@ public class Product {
 
     @Id
     private final UUID productId = UUID.randomUUID();
-
 }
