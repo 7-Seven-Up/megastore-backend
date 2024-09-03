@@ -12,4 +12,5 @@ public interface ICategoryService {
 
     Category findCategoryByIdOrThrowException(UUID categoryId);
 
+
 }
