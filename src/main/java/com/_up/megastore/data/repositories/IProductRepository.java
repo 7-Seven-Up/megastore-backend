@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.*;
 
 public interface IProductRepository extends JpaRepository<Product, UUID> {
-    Page<Product> findProductsByDeletedIsFalseAndNameLikeIgnoreCase(String filter, Pageable pageable);
+    Page<Product> findProductsByDeletedIsFalseAndNameContainingIgnoreCase(String filter, Pageable pageable);
     Optional<Product> findProductByProductIdAndDeletedIsFalse(UUID productId);
 }

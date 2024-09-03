@@ -51,16 +51,14 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse getProduct(UUID productId) {
-        Product product = findProductByIdOrThrowException(productId);
-        return ProductMapper.toProductResponse(product);
+        return ProductMapper.toProductResponse(findProductByIdOrThrowException(productId));
     }
 
     @Override
-    public Page<ProductResponse> getProductByPages(int page, int pageSize, String sortBy, String filter) {
+    public Page<ProductResponse> getProducts(int page, int pageSize, String sortBy, String name) {
         Sort sort = Sort.by(sortBy);
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        String formattedFilter = "%" + filter + "%";
-        return productRepository.findProductsByDeletedIsFalseAndNameLikeIgnoreCase(formattedFilter, pageable)
+        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
                 .map(ProductMapper::toProductResponse);
     }
 

@@ -27,10 +27,10 @@ public interface IProductController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    Page<ProductResponse> findProductsByPages(
+    Page<ProductResponse> findProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize,
             @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "") String filter
+            @RequestParam(defaultValue = "") String name
     );
 }
