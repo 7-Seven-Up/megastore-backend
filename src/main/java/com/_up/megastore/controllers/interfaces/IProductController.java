@@ -6,6 +6,7 @@ import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,7 @@ public interface IProductController {
     ProductResponse updateProduct(
             @PathVariable UUID productId,
             @RequestPart @Valid UpdateProductRequest updateProductRequest,
-            @RequestPart MultipartFile multipartFile
+            @RequestPart @Nullable MultipartFile multipartFile
     );
 
 }

@@ -62,7 +62,7 @@ public class ProductService implements IProductService {
     public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
-        ifVariantOfExistsUpdateProductVariantOf(updateProductRequest, product);
+        ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
         ifImageURLExistsUpdateProductImageURL(multipartFile, product);
         product.setName(updateProductRequest.name());
         product.setDescription(updateProductRequest.description());
@@ -72,15 +72,15 @@ public class ProductService implements IProductService {
         return ProductMapper.toProductResponse( productRepository.save(product) );
     }
 
-    public void ifVariantOfExistsUpdateProductVariantOf(UpdateProductRequest updateProductRequest, Product product){
-        if(updateProductRequest.variantOfId() != null){
-            Product variantOf = this.getVariantOf(updateProductRequest.variantOfId());
+    public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
+        if(variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())){
+            Product variantOf = this.getVariantOf(variantOfId);
             product.setVariantOf(variantOf);
         }
     }
 
     public void ifImageURLExistsUpdateProductImageURL(MultipartFile multipartFile, Product product){
-        if(saveProductImage(multipartFile) != null){
+        if(multipartFile != null){
             String imageURL = saveProductImage(multipartFile);
             product.setImageURL(imageURL);
         }
