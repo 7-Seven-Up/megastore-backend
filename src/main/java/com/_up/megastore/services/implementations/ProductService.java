@@ -49,6 +49,13 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
+    @Override
+    public void deleteProductById(UUID productId){
+        Product product = findProductByIdOrThrowException(productId);
+        product.setDeleted(true);
+        productRepository.save(product);
+    }
+
     private String saveProductImage(MultipartFile multipartFile) {
         return fileUploadService.uploadImage(multipartFile);
     }
@@ -56,5 +63,6 @@ public class ProductService implements IProductService {
     private Product getVariantOf(UUID variantOfId) {
         return variantOfId != null ? findProductByIdOrThrowException(variantOfId) : null;
     }
+
 
 }

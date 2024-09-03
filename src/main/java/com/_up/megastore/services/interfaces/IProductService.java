@@ -13,4 +13,5 @@ public interface IProductService {
 
     Product findProductByIdOrThrowException(UUID productId);
 
+    void deleteProductById(UUID productId);
 }

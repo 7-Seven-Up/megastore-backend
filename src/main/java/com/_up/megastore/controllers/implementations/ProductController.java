@@ -7,6 +7,8 @@ import com._up.megastore.services.interfaces.IProductService;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RestController
 public class ProductController implements IProductController {
 
@@ -19,6 +21,11 @@ public class ProductController implements IProductController {
     @Override
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
         return productService.saveProduct(createProductRequest, multipartFile);
+    }
+
+    @Override
+    public void deleteProduct(UUID productId) {
+        productService.deleteProductById(productId);
     }
 
 }

@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RequestMapping("/api/v1/products")
 public interface IProductController {
 
@@ -18,4 +20,7 @@ public interface IProductController {
             @RequestPart MultipartFile multipartFile
     );
 
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteProduct(@PathVariable UUID productId);
 }
