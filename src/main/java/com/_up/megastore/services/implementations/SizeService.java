@@ -1,6 +1,7 @@
 package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.CreateSizeRequest;
+import com._up.megastore.controllers.requests.UpdateSizeRequest;
 import com._up.megastore.controllers.responses.SizeResponse;
 import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.ISizeRepository;
@@ -32,4 +33,12 @@ public class SizeService implements ISizeService {
                 .orElseThrow( () -> new NoSuchElementException("Size with id " + sizeId + " does not exist.") );
     }
 
+    @Override
+    public SizeResponse updateSize(UUID sizeId,UpdateSizeRequest updateSizeRequest){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        size.setName(updateSizeRequest.name());
+        size.setDescription(updateSizeRequest.description());
+
+        return SizeMapper.toSizeResponse(sizeRepository.save(size));
+    }
 }
