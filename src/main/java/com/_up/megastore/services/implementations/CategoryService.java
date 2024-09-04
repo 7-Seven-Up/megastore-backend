@@ -37,4 +37,10 @@ public class CategoryService implements ICategoryService {
         return superCategoryId != null ? findCategoryByIdOrThrowException(superCategoryId) : null;
     }
 
+    @Override
+    public CategoryResponse restoreCategory(UUID categoryId){
+        Category category = findCategoryByIdOrThrowException(categoryId);
+        category.setDeleted(false);
+        return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
+    }
 }
