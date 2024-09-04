@@ -44,9 +44,21 @@ public class SizeService implements ISizeService {
 
     @Override
     public SizeResponse deleteSize(UUID sizeId){
-        Size size = findSizeByIdOrThrowException(sizeId);
+        ifSizeExistThrowException(sizeId);
+        Size size = ifSizeIsNotDeletedThrowException(sizeId);
         size.setDeleted(true);
 
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
+    }
+
+    public void ifSizeExistThrowException(UUID sizeId){
+        if(!sizeRepository.existsById(sizeId)){
+            throw new NoSuchElementException("Size with id " + sizeId + " does not exist.");
+        }
+    }
+
+    public Size ifSizeIsNotDeletedThrowException(UUID sizeId){
+        return sizeRepository.findByIdAndDeletedIsFalse(sizeId)
+                .orElseThrow(() -> new NoSuchElementException("Size with id " + sizeId + " is deleted."));
     }
 }
