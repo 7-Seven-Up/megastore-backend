@@ -41,4 +41,10 @@ public class SizeService implements ISizeService {
 
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
     }
+
+    @Override
+    public SizeResponse readSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        return SizeMapper.toSizeResponse(size);
+    }
 }

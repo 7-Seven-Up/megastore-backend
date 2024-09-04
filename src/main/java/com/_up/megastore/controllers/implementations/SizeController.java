@@ -27,4 +27,9 @@ public class SizeController implements ISizeController {
     public SizeResponse updateSize(UUID sizeId , UpdateSizeRequest updateSizeRequest) {
         return sizeService.updateSize(sizeId, updateSizeRequest);
     }
+
+    @Override
+    public SizeResponse readSize(UUID sizeId){
+        return  sizeService.readSize(sizeId);
+    }
 }
