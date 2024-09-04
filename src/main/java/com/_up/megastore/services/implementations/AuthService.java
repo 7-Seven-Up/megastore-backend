@@ -2,7 +2,6 @@ package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.User;
-import com._up.megastore.data.utilities.PhoneNumberConversion;
 import com._up.megastore.services.interfaces.IAuthService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
@@ -33,8 +32,7 @@ public class AuthService implements IAuthService {
   }
 
   private User createUser(SignUpRequest createUserRequest) {
-    User user = UserMapper.toUser(createUserRequest,
-        PhoneNumberConversion.convertPhoneNumber(createUserRequest.phoneNumber()));
+    User user = UserMapper.toUser(createUserRequest);
     String passwordEncoded = passwordEncoder.encode(createUserRequest.password());
     user.setPassword(passwordEncoded);
     return user;

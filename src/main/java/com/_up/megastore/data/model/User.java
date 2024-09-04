@@ -1,7 +1,9 @@
 package com._up.megastore.data.model;
 
 import com._up.megastore.data.enums.Role;
+import com._up.megastore.data.pipes.PhoneNumberConverter;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,6 +38,7 @@ public class User {
   private String email;
 
   @NonNull
+  @Convert(converter = PhoneNumberConverter.class)
   private String phoneNumber;
 
   @Enumerated(EnumType.STRING)

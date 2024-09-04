@@ -5,12 +5,12 @@ import com._up.megastore.data.model.User;
 
 public class UserMapper {
 
-  public static User toUser(SignUpRequest createUserRequest, String convertedPhoneNumber) {
+  public static User toUser(SignUpRequest createUserRequest) {
     return User.builder()
         .email(createUserRequest.email())
         .fullName(createUserRequest.fullName())
         .password(createUserRequest.password())
-        .phoneNumber(convertedPhoneNumber)
+        .phoneNumber(createUserRequest.phoneNumber())
         .username(createUserRequest.username())
         .build();
   }
