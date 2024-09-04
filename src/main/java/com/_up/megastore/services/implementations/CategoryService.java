@@ -6,6 +6,7 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
+import com._up.megastore.services.mappers.SizeMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -35,6 +36,12 @@ public class CategoryService implements ICategoryService {
 
     private Category getSuperCategory(UUID superCategoryId) {
         return superCategoryId != null ? findCategoryByIdOrThrowException(superCategoryId) : null;
+    }
+
+    @Override
+    public CategoryResponse readCategory(UUID categoryId){
+        Category category = findCategoryByIdOrThrowException(categoryId);
+        return CategoryMapper.toCategoryResponse(category);
     }
 
 }
