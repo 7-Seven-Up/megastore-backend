@@ -1,10 +1,12 @@
 package com._up.megastore.services.interfaces;
 
-import com._up.megastore.controllers.requests.CreateUserRequest;
-import com._up.megastore.controllers.responses.UserResponse;
+import com._up.megastore.data.model.User;
 
 public interface IUserService {
 
-  UserResponse saveUser(CreateUserRequest createUserRequest);
+  void saveUser(User newUser);
 
+  void ifEmailAlreadyExistsThrowException(String email);
+
+  void ifUsernameAlreadyExistsThrowException(String username);
 }
