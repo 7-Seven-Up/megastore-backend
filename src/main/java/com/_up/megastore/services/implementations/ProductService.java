@@ -50,10 +50,19 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void deleteProductById(UUID productId){
+    public void deleteProduct(UUID productId){
+        ifProductIsNotDeletedThrowException(productId);
         Product product = findProductByIdOrThrowException(productId);
         product.setDeleted(true);
         productRepository.save(product);
+    }
+
+    @Override
+    public void ifProductIsNotDeletedThrowException(UUID productId){
+        Product product = findProductByIdOrThrowException(productId);
+        if (product.isDeleted()){
+            throw new IllegalStateException("Product with id " + productId + " is already deleted.");
+        }
     }
 
     private String saveProductImage(MultipartFile multipartFile) {
