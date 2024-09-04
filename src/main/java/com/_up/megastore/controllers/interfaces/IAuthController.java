@@ -1,7 +1,6 @@
 package com._up.megastore.controllers.interfaces;
 
-import com._up.megastore.controllers.requests.CreateUserRequest;
-import com._up.megastore.controllers.responses.UserResponse;
+import com._up.megastore.controllers.requests.SignUpRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@RequestMapping("/api/v1/users")
-public interface IUserController {
+@RequestMapping("/auth")
+public interface IAuthController {
 
-  @PostMapping
+  @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
-  UserResponse saveUser(@RequestBody @Valid CreateUserRequest createUserRequest);
-
+  void signUp(@RequestBody @Valid SignUpRequest signUpRequest);
 }
