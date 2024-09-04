@@ -1,5 +1,6 @@
 package com._up.megastore.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,17 @@ public class ExceptionControllerAdvice {
         return new ExceptionPayload(
                 ex.getMessage(),
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
+                LocalDateTime.now(),
+                ex.getStackTrace()
+        );
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ExceptionPayload handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return new ExceptionPayload(
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value(),
                 LocalDateTime.now(),
                 ex.getStackTrace()
         );
