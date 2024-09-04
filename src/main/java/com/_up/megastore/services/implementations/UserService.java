@@ -29,7 +29,7 @@ public class UserService implements IUserService {
 
   private void validateRequest(CreateUserRequest createUserRequest) {
     ifEmailAlreadyExistsThrowException(createUserRequest.email());
-    ifUsernameExistsThrowException(createUserRequest.username());
+    ifUsernameAlreadyExistsThrowException(createUserRequest.username());
   }
 
   private User createUser(CreateUserRequest createUserRequest) {
@@ -45,7 +45,7 @@ public class UserService implements IUserService {
     }
   }
 
-  private void ifUsernameExistsThrowException(String username) {
+  private void ifUsernameAlreadyExistsThrowException(String username) {
     if (userRepository.existsByUsername(username)) {
       throw new IllegalArgumentException("Username already exists");
     }
