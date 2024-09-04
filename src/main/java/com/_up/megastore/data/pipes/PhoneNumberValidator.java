@@ -21,7 +21,7 @@ public class PhoneNumberValidator implements
       ConstraintValidatorContext constraintValidatorContext) {
     PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
-    if (phoneNumber == null) {
+    if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
       return true;
     }
 
