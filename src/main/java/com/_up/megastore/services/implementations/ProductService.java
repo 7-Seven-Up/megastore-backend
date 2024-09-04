@@ -12,8 +12,10 @@ import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -72,6 +74,14 @@ public class ProductService implements IProductService {
         return ProductMapper.toProductResponse( productRepository.save(product) );
     }
 
+    @Override
+    public ProductResponse restoreProduct(UUID productId) {
+        validateProductForRestoration(productId);
+        Product product = findProductByIdOrThrowException(productId);
+        product.setDeleted(false);
+        return ProductMapper.toProductResponse( productRepository.save(product) );
+    }
+
     public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
         if(variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())){
             Product variantOf = this.getVariantOf(variantOfId);
@@ -85,4 +95,22 @@ public class ProductService implements IProductService {
             product.setImageURL(imageURL);
         }
     }
+
+    private void validateProductForRestoration(UUID productId) {
+        ifProductDoesNotExistThrowException(productId);
+        ifProductIsNotDeletedThrowException(productId);
+    }
+
+    private void ifProductDoesNotExistThrowException(UUID productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " does not exist.");
+        }
+    }
+
+    private void ifProductIsNotDeletedThrowException(UUID productId) {
+        if (!productRepository.existsByProductIdAndDeletedTrue(productId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " is not deleted.");
+        }
+    }
+
 }
