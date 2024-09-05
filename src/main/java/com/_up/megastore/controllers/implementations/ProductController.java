@@ -30,10 +30,9 @@ public class ProductController implements IProductController {
 
     }
 
-
     @Override
-    public void deleteProduct(UUID productId) {
-        productService.deleteProductById(productId);
+    public ProductResponse deleteProduct(UUID productId) {
+        return productService.deleteProduct(productId);
     }
 
 }

@@ -51,14 +51,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void deleteProduct(UUID productId){
+    public ProductResponse deleteProduct(UUID productId){
         ifProductIsNotDeletedThrowException(productId);
         Product product = findProductByIdOrThrowException(productId);
         product.setDeleted(true);
-        productRepository.save(product);
+        return ProductMapper.toProductResponse(productRepository.save(product));
     }
 
-    @Override
     public void ifProductIsNotDeletedThrowException(UUID productId){
         Product product = findProductByIdOrThrowException(productId);
         if (product.isDeleted()){
