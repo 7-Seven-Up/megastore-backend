@@ -58,8 +58,7 @@ public class CategoryService implements ICategoryService {
     }
 
     public Category ifCategoryIsNotDeletedThrowException(UUID categoryId){
-
-        return categoryRepository.findByIdAndDeletedIsFalse(categoryId)
+        return categoryRepository.findByCategoryIdAndDeletedIsFalse(categoryId)
                 .orElseThrow(() -> new NoSuchElementException("Category with id " + categoryId + " is deleted."));
     }
 }

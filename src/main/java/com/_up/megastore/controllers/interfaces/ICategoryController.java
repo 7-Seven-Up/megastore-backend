@@ -14,6 +14,6 @@ public interface ICategoryController {
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     CategoryResponse saveCategory(@RequestBody @Valid CreateCategoryRequest createCategoryRequest);
 
-    @PatchMapping(value = "/{categoryId}") @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping(value = "/{categoryId}") @ResponseStatus(HttpStatus.OK)
     CategoryResponse deleteCategory(@PathVariable UUID categoryId);
 }
