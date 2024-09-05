@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -55,5 +56,16 @@ public class ExceptionControllerAdvice {
         ex.getStackTrace()
     );
   }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResponseStatusException.class)
+    public ExceptionPayload handleResponseStatusException(ResponseStatusException ex) {
+        return new ExceptionPayload(
+                ex.getReason(),
+                ex.getStatusCode().value(),
+                LocalDateTime.now(),
+                ex.getStackTrace()
+        );
+    }
 
 }

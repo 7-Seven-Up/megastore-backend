@@ -28,5 +28,9 @@ public class ProductController implements IProductController {
 
     }
 
+    @Override
+    public ProductResponse restoreProduct(UUID productId) {
+        return productService.restoreProduct(productId);
+    }
 
 }
