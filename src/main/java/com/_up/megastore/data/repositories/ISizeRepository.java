@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ISizeRepository extends JpaRepository<Size, UUID> {
-    Optional<Size> findByIdAndDeletedIsFalse(UUID sizeId);
+    Optional<Size> findBySizeIdAndDeletedIsFalse(UUID sizeId);
 }

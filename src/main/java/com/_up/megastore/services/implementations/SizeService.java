@@ -58,7 +58,7 @@ public class SizeService implements ISizeService {
     }
 
     public Size ifSizeIsNotDeletedThrowException(UUID sizeId){
-        return sizeRepository.findByIdAndDeletedIsFalse(sizeId)
+        return sizeRepository.findBySizeIdAndDeletedIsFalse(sizeId)
                 .orElseThrow(() -> new NoSuchElementException("Size with id " + sizeId + " is deleted."));
     }
 }
