@@ -97,18 +97,8 @@ public class ProductService implements IProductService {
     }
 
     private void validateProductForRestoration(UUID productId) {
-        ifProductDoesNotExistThrowException(productId);
-        ifProductIsNotDeletedThrowException(productId);
-    }
-
-    private void ifProductDoesNotExistThrowException(UUID productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " does not exist.");
-        }
-    }
-
-    private void ifProductIsNotDeletedThrowException(UUID productId) {
-        if (!productRepository.existsByProductIdAndDeletedTrue(productId)) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " does not exist."));
+        if (!product.isDeleted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " is not deleted.");
         }
     }
