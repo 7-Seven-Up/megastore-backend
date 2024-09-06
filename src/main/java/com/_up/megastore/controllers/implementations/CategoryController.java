@@ -26,9 +26,10 @@ public class CategoryController implements ICategoryController {
     }
 
     @Override
-    public CategoryResponse restoreCategory(UUID categoryId){
+    public CategoryResponse restoreCategory(UUID categoryId) {
         return categoryService.restoreCategory(categoryId);
-     @Override
+    }
+    @Override
     public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
         return categoryService.updateCategory(categoryId,updateCategoryRequest);
 
