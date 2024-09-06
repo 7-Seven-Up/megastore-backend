@@ -30,4 +30,8 @@ public interface IProductController {
             @RequestPart @Nullable MultipartFile multipartFile
     );
 
+    @PostMapping("/{productId}/restore")
+    @ResponseStatus(HttpStatus.OK)
+    ProductResponse restoreProduct(@PathVariable UUID productId);
+
 }

@@ -16,4 +16,6 @@ public interface IProductService {
 
     ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
 
+    ProductResponse restoreProduct(UUID productId);
+
 }
