@@ -30,7 +30,7 @@ public interface IProductController {
             @RequestPart @Nullable MultipartFile multipartFile
     );
 
-    @PatchMapping(value = "/{productId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
     ProductResponse deleteProduct(
             @PathVariable UUID productId

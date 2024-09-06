@@ -58,7 +58,7 @@ public class ProductService implements IProductService {
         return ProductMapper.toProductResponse(productRepository.save(product));
     }
 
-    public void ifProductIsNotDeletedThrowException(UUID productId){
+    private void ifProductIsNotDeletedThrowException(UUID productId){
         Product product = findProductByIdOrThrowException(productId);
         if (product.isDeleted()){
             throw new IllegalStateException("Product with id " + productId + " is already deleted.");
