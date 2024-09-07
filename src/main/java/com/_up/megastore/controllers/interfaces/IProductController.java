@@ -4,6 +4,7 @@ import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -35,4 +36,17 @@ public interface IProductController {
             @PathVariable UUID productId
     );
 
+    @PostMapping("/{productId}/restore")
+    @ResponseStatus(HttpStatus.OK)
+    ProductResponse restoreProduct(@PathVariable UUID productId);
+
+    @GetMapping("/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    ProductResponse getProduct(@PathVariable UUID productId);
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    Page<ProductResponse> getProducts(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "15") int pageSize,
+                                      @RequestParam(defaultValue = "") String name);
 }
