@@ -7,7 +7,9 @@ import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -44,8 +46,16 @@ public class SizeService implements ISizeService {
 
     @Override
     public SizeResponse restoreSize(UUID sizeId){
+        validateSizeForRestoration(sizeId);
         Size size = findSizeByIdOrThrowException(sizeId);
         size.setDeleted(false);
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
+    }
+
+    public void validateSizeForRestoration(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        if(!size.isDeleted()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " is not deleted." );
+        }
     }
 }
