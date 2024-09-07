@@ -12,6 +12,9 @@ import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,6 +83,18 @@ public class ProductService implements IProductService {
         Product product = findProductByIdOrThrowException(productId);
         product.setDeleted(false);
         return ProductMapper.toProductResponse( productRepository.save(product) );
+    }
+
+    @Override
+    public ProductResponse getProduct(UUID productId) {
+        return ProductMapper.toProductResponse(findProductByIdOrThrowException(productId));
+    }
+
+    @Override
+    public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
+                .map(ProductMapper::toProductResponse);
     }
 
     public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
