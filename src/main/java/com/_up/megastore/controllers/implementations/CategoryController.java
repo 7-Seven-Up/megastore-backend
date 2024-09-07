@@ -9,6 +9,8 @@ import org.hibernate.sql.Update;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
+
+
 @RestController
 public class CategoryController implements ICategoryController {
 
@@ -24,7 +26,12 @@ public class CategoryController implements ICategoryController {
     }
 
     @Override
+    public CategoryResponse restoreCategory(UUID categoryId) {
+        return categoryService.restoreCategory(categoryId);
+    }
+    @Override
     public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
         return categoryService.updateCategory(categoryId,updateCategoryRequest);
+
     }
 }
