@@ -14,7 +14,7 @@ public interface IProductService {
 
     Product findProductByIdOrThrowException(UUID productId);
 
-    ProductResponse deleteProduct(UUID productId);
+    void deleteProduct(UUID productId);
 
     ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
 

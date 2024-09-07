@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
-import java.util.UUID;
-
 @RestController
 public class ProductController implements IProductController {
 
@@ -24,6 +22,7 @@ public class ProductController implements IProductController {
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
         return productService.saveProduct(createProductRequest, multipartFile);
     }
+
     @Override
     public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
        return productService.updateProduct(productId, updateProductRequest, multipartFile);
@@ -31,8 +30,8 @@ public class ProductController implements IProductController {
     }
 
     @Override
-    public ProductResponse deleteProduct(UUID productId) {
-        return productService.deleteProduct(productId);
+    public void deleteProduct(UUID productId) {
+        productService.deleteProduct(productId);
     }
 
 }
