@@ -17,3 +17,7 @@ app:
   url: http://localhost:8080
   cors:
     allowed-origins: http://localhost:5173
+
+jwt:
+  key: vz2r/cjd7FasOcPksdih5ia70LNT65PY2b/J15e5+5Y=
+  access-token-expiration: 1800000
