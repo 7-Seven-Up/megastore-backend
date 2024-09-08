@@ -27,8 +27,8 @@ public class EmailService implements IEmailService {
       helper.setSubject(subject);
       helper.setText(content, true);
       javaMailSender.send(mimeMessage);
-    } catch (MessagingException ignored) {
-      throw new EmailSendingException("Failed to send e-mail");
+    } catch (MessagingException exception) {
+      throw new EmailSendingException("Failed to send e-mail: " + exception.getMessage());
     }
   }
 }
