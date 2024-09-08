@@ -52,7 +52,7 @@ public class User {
   private List<Order> orders = Collections.emptyList();
 
   private boolean deleted = false;
-  private boolean enabled = true;
+  private boolean activated = false;
   private final UUID activationToken = UUID.randomUUID();
 
   @Id
