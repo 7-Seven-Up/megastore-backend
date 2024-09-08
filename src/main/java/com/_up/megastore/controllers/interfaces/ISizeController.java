@@ -18,6 +18,6 @@ public interface ISizeController {
     @PutMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
     SizeResponse updateSize(@PathVariable UUID sizeId, @RequestBody @Valid UpdateSizeRequest updateSizeRequest);
 
-    @PostMapping (value = "{/sizeId}/restore") @ResponseStatus(HttpStatus.OK)
+    @PostMapping (value = "/{sizeId}/restore") @ResponseStatus(HttpStatus.OK)
     SizeResponse restoreSize(@PathVariable UUID sizeId);
 }

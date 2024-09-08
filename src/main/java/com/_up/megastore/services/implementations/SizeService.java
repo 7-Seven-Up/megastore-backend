@@ -46,14 +46,13 @@ public class SizeService implements ISizeService {
 
     @Override
     public SizeResponse restoreSize(UUID sizeId){
-        validateSizeForRestoration(sizeId);
         Size size = findSizeByIdOrThrowException(sizeId);
+        validateSizeForRestoration(size, sizeId);
         size.setDeleted(false);
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
     }
 
-    public void validateSizeForRestoration(UUID sizeId){
-        Size size = findSizeByIdOrThrowException(sizeId);
+    public void validateSizeForRestoration(Size size, UUID sizeId){
         if(!size.isDeleted()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " is not deleted." );
         }
