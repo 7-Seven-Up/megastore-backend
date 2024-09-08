@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.exception.custom_exceptions.EmailSendingException;
 import com._up.megastore.services.interfaces.IEmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -25,7 +26,9 @@ public class EmailService implements IEmailService {
       helper.setTo(to);
       helper.setSubject(subject);
       helper.setText(content, true);
+      javaMailSender.send(mimeMessage);
     } catch (MessagingException ignored) {
+      throw new EmailSendingException("Failed to send e-mail");
     }
   }
 }
