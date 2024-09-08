@@ -55,6 +55,20 @@ public class ProductService implements IProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
     }
 
+    @Override
+    public void deleteProduct(UUID productId){
+        Product product = findProductByIdOrThrowException(productId);
+        ifProductIsNotDeletedThrowException(product);
+        product.setDeleted(true);
+        productRepository.save(product);
+    }
+
+    private void ifProductIsNotDeletedThrowException(Product product){
+        if (product.isDeleted()){
+            throw new IllegalStateException("Product with id " + product.getProductId() + " is already deleted.");
+        }
+    }
+
     private String saveProductImage(MultipartFile multipartFile) {
         return fileUploadService.uploadImage(multipartFile);
     }
