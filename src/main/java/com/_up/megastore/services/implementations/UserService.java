@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class UserService implements IUserService {
 
@@ -35,6 +37,12 @@ public class UserService implements IUserService {
     User newUser = createUser(createUserRequest);
     sendActivationEmail(newUser);
     userRepository.save(newUser);
+  }
+
+  @Override
+  public User findUserByUsernameOrThrowException(String username) {
+    return userRepository.findByUsername(username)
+            .orElseThrow(() -> new NoSuchElementException("User with username "+username+" does not exist."));
   }
 
   @Override

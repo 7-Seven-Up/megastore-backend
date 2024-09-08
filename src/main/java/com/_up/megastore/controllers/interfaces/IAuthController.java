@@ -1,6 +1,8 @@
 package com._up.megastore.controllers.interfaces;
 
+import com._up.megastore.controllers.requests.AuthRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
+import com._up.megastore.controllers.responses.AuthResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,4 +16,8 @@ public interface IAuthController {
   @PostMapping("/signup")
   @ResponseStatus(HttpStatus.CREATED)
   void signUp(@RequestBody @Valid SignUpRequest signUpRequest);
+
+  @PostMapping("/login")
+  @ResponseStatus(HttpStatus.CREATED)
+  AuthResponse login(@RequestBody @Valid AuthRequest authRequest);
 }
