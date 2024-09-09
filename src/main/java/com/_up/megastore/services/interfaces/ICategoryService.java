@@ -12,7 +12,7 @@ public interface ICategoryService {
 
     Category findCategoryByIdOrThrowException(UUID categoryId);
 
-    CategoryResponse deleteCategory(UUID categoryId);
+    void deleteCategory(UUID categoryId);
 
     CategoryResponse restoreCategory (UUID categoryId);
   

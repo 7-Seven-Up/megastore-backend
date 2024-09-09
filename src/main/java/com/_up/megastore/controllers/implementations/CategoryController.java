@@ -24,8 +24,8 @@ public class CategoryController implements ICategoryController {
     }
 
     @Override
-    public CategoryResponse deleteCategory(UUID categoryId){
-        return categoryService.deleteCategory(categoryId);
+    public void deleteCategory(UUID categoryId){
+        categoryService.deleteCategory(categoryId);
     }
   
     @Override

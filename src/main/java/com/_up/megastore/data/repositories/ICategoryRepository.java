@@ -7,5 +7,4 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ICategoryRepository extends JpaRepository<Category, UUID> {
-    Optional<Category> findByCategoryIdAndDeletedIsFalse(UUID categoryId);
 }

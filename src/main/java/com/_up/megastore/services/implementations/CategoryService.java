@@ -41,12 +41,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse deleteCategory(UUID categoryId){
-        ifCategoryExistThrowException(categoryId);
+    public void deleteCategory(UUID categoryId){
+        Category category = findCategoryByIdOrThrowException(categoryId);
         ifCategorySubcategoriesExistThrowException(categoryId);
-        Category category = ifCategoryIsNotDeletedThrowException(categoryId);
+        getCategoryByIdAndDeletedFalseOrThrowException(category);
         category.setDeleted(true);
-        return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
+        categoryRepository.save(category);
     }
 
     public void ifCategorySubcategoriesExistThrowException(UUID categoryId){
@@ -54,15 +54,12 @@ public class CategoryService implements ICategoryService {
             throw new DataIntegrityViolationException("Category with id "+ categoryId + " has subcategories and cannot be deleted.");
         }
     }
-    public void ifCategoryExistThrowException (UUID categoryId){
-        if (!categoryRepository.existsById(categoryId)) {
-            throw new NoSuchElementException("Category with id " + categoryId + " does not exist.");
-        }
-    }
 
-    public Category ifCategoryIsNotDeletedThrowException(UUID categoryId){
-        return categoryRepository.findByCategoryIdAndDeletedIsFalse(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category with id " + categoryId + " is deleted."));
+    public void getCategoryByIdAndDeletedFalseOrThrowException(Category category){
+        if(category.isDeleted()){
+           throw new IllegalStateException("Category with id " + category.getCategoryId() + " is already deleted.");
+        }
+
     }
   
     @Override
