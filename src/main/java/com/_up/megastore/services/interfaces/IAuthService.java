@@ -8,6 +8,6 @@ public interface IAuthService {
 
   void signUp(SignUpRequest signUpRequest);
 
-  AuthResponse login(AuthRequest authRequest);
+  AuthResponse signIn(AuthRequest authRequest);
 
 }

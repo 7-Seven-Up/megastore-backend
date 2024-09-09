@@ -22,7 +22,7 @@ public class AuthController implements IAuthController {
   }
 
   @Override
-  public AuthResponse login(AuthRequest authRequest) {
-    return this.authService.login(authRequest);
+  public AuthResponse signIn(AuthRequest authRequest) {
+    return this.authService.signIn(authRequest);
   }
 }

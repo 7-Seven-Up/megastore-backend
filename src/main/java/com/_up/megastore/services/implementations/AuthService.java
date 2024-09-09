@@ -10,7 +10,6 @@ import com._up.megastore.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -37,21 +36,18 @@ public class AuthService implements IAuthService {
   }
 
   @Override
-  public AuthResponse login(AuthRequest authRequest) {
+  public AuthResponse signIn(AuthRequest authRequest) {
     authenticateUser(authRequest.username(), authRequest.password());
 
     User user = userService.findUserByUsernameOrThrowException(authRequest.username());
 //    ifUserIsNotEnabledThrowException(user);
     String accessToken = generateAccessToken(user);
 
-    return new AuthResponse(user.getUserId(), accessToken);
+    return new AuthResponse(user.getUserId(), accessToken, user.getRole());
   }
 
   private void authenticateUser(String username, String password) {
-    UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(username, password);
-    authenticationManager.authenticate(authToken);
-    SecurityContextHolder.getContext().setAuthentication(authToken);
+    authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(username, password) );
   }
 
   private String generateAccessToken(User user) {
