@@ -28,7 +28,7 @@ public class SizeController implements ISizeController {
     }
 
     @Override
-    public SizeResponse deleteSize(UUID sizeId){
-        return sizeService.deleteSize(sizeId);
+    public void deleteSize(UUID sizeId){
+        sizeService.deleteSize(sizeId);
     }
 }

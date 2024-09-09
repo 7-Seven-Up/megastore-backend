@@ -43,22 +43,17 @@ public class SizeService implements ISizeService {
     }
 
     @Override
-    public SizeResponse deleteSize(UUID sizeId){
-        ifSizeExistThrowException(sizeId);
-        Size size = ifSizeIsNotDeletedThrowException(sizeId);
+    public void deleteSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        ifSizeIsNotDeletedThrowException(size);
         size.setDeleted(true);
 
-        return SizeMapper.toSizeResponse(sizeRepository.save(size));
+        sizeRepository.save(size);
     }
 
-    public void ifSizeExistThrowException(UUID sizeId){
-        if(!sizeRepository.existsById(sizeId)){
-            throw new NoSuchElementException("Size with id " + sizeId + " does not exist.");
+    public void ifSizeIsNotDeletedThrowException(Size size){
+        if(size.isDeleted()){
+            throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
         }
-    }
-
-    public Size ifSizeIsNotDeletedThrowException(UUID sizeId){
-        return sizeRepository.findBySizeIdAndDeletedIsFalse(sizeId)
-                .orElseThrow(() -> new NoSuchElementException("Size with id " + sizeId + " is deleted."));
     }
 }

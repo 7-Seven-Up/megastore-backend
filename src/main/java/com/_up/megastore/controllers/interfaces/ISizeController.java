@@ -19,5 +19,5 @@ public interface ISizeController {
     SizeResponse updateSize(@PathVariable UUID sizeId, @RequestBody @Valid UpdateSizeRequest updateSizeRequest);
 
     @DeleteMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
-    SizeResponse deleteSize(@PathVariable UUID sizeId);
+    void deleteSize(@PathVariable UUID sizeId);
 }
