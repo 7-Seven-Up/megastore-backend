@@ -41,4 +41,19 @@ public class SizeService implements ISizeService {
 
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
     }
+
+    @Override
+    public void deleteSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        ifSizeIsDeletedThrowException(size);
+        size.setDeleted(true);
+
+        sizeRepository.save(size);
+    }
+
+    public void ifSizeIsDeletedThrowException(Size size){
+        if(size.isDeleted()){
+            throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
+        }
+    }
 }
