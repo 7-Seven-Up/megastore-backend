@@ -44,7 +44,7 @@ public class CategoryService implements ICategoryService {
     public void deleteCategory(UUID categoryId){
         Category category = findCategoryByIdOrThrowException(categoryId);
         ifCategorySubcategoriesExistThrowException(categoryId);
-        getCategoryByIdAndDeletedFalseOrThrowException(category);
+        ifCategoryIsNotDeletedThrowException(category);
         category.setDeleted(true);
         categoryRepository.save(category);
     }
@@ -55,11 +55,10 @@ public class CategoryService implements ICategoryService {
         }
     }
 
-    public void getCategoryByIdAndDeletedFalseOrThrowException(Category category){
+    public void ifCategoryIsNotDeletedThrowException(Category category){
         if(category.isDeleted()){
            throw new IllegalStateException("Category with id " + category.getCategoryId() + " is already deleted.");
         }
-
     }
   
     @Override
