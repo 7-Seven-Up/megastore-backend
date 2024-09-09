@@ -52,6 +52,8 @@ public class User {
   private List<Order> orders = Collections.emptyList();
 
   private boolean deleted = false;
+  private boolean activated = false;
+  private final UUID activationToken = UUID.randomUUID();
 
   @Id
   private final UUID userId = UUID.randomUUID();
