@@ -5,7 +5,6 @@ import com._up.megastore.controllers.requests.CreateCategoryRequest;
 import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
 import com._up.megastore.services.interfaces.ICategoryService;
-import org.hibernate.sql.Update;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
