@@ -42,6 +42,7 @@ public class UserService implements IUserService {
     User user = findUserToActivateOrThrowException(userId, activationToken);
     user.setActivated(true);
     userRepository.save(user);
+    sendWelcomeEmail(user);
   }
 
   User createUser(SignUpRequest createUserRequest) {
@@ -72,6 +73,19 @@ public class UserService implements IUserService {
         + "</table>";
 
     emailService.sendEmail(user.getEmail(), "Account activation", emailBody);
+  }
+
+  private void sendWelcomeEmail(User user) {
+    String emailBody = "<table style='width:100%; height:100%;'>"
+        + "<tr><td style='width:100%; height:100%; text-align:center; vertical-align:middle;'>"
+        + "<div style='display:inline-block;'>"
+        + "<h1>Welcome to Megastore</h1>"
+        + "<h3>Hey " + user.getFullName() + "!</h3>"
+        + "<h4>Your account has been activated.</h4>"
+        + "<p>Enjoy shopping with us!</p>"
+        + "</div></td></tr></table>";
+
+    emailService.sendEmail(user.getEmail(), "Welcome to Megastore", emailBody);
   }
 
   private void ifEmailAlreadyExistsThrowException(String email) {
