@@ -8,9 +8,11 @@ import com._up.megastore.security.services.JWTService;
 import com._up.megastore.services.interfaces.IAuthService;
 import com._up.megastore.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -40,7 +42,7 @@ public class AuthService implements IAuthService {
     authenticateUser(authRequest.username(), authRequest.password());
 
     User user = userService.findUserByUsernameOrThrowException(authRequest.username());
-//    ifUserIsNotEnabledThrowException(user);
+    ifUserIsNotEnabledThrowException(user);
     String accessToken = generateAccessToken(user);
 
     return new AuthResponse(user.getUserId(), accessToken, user.getRole());
@@ -55,10 +57,10 @@ public class AuthService implements IAuthService {
     return jwtService.generateToken(user, expirationDate);
   }
 
-//  private void ifUserIsNotEnabledThrowException(User user) {
-//    if (!user.isEnabled()) {
-//      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with username "+user.getUsername()+" is not enabled");
-//    }
-//  }
+  private void ifUserIsNotEnabledThrowException(User user) {
+    if (!user.isActivated()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with username "+user.getUsername()+" is not enabled");
+    }
+  }
 
 }
