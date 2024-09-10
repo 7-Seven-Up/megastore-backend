@@ -28,6 +28,10 @@ public class SizeController implements ISizeController {
     }
 
     @Override
+    public SizeResponse restoreSize(UUID sizeId){
+        return sizeService.restoreSize(sizeId);
+    }
+  
     public void deleteSize(UUID sizeId){
         sizeService.deleteSize(sizeId);
     }
