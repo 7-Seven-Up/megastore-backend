@@ -5,7 +5,7 @@ public class WhiteListedURLs {
     public static String[] WHITE_LISTED_URLS = {
             "/auth/**",
             "/error",
-            "/api/v1/users/*/restore"
+            "/api/v1/users/*/activate"
     };
 
 }
