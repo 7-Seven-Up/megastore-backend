@@ -42,7 +42,7 @@ public class AuthService implements IAuthService {
     authenticateUser(authRequest.username(), authRequest.password());
 
     User user = userService.findUserByUsernameOrThrowException(authRequest.username());
-    ifUserIsNotEnabledThrowException(user);
+    ifUserIsNotActivatedThrowException(user);
     String accessToken = generateAccessToken(user);
 
     return new AuthResponse(user.getUserId(), accessToken, user.getRole());
@@ -57,9 +57,9 @@ public class AuthService implements IAuthService {
     return jwtService.generateToken(user, expirationDate);
   }
 
-  private void ifUserIsNotEnabledThrowException(User user) {
+  private void ifUserIsNotActivatedThrowException(User user) {
     if (!user.isActivated()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with username "+user.getUsername()+" is not enabled");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with username "+user.getUsername()+" is not activated");
     }
   }
 
