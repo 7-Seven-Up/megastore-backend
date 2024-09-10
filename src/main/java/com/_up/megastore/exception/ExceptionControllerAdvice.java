@@ -1,5 +1,6 @@
 package com._up.megastore.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,17 @@ public class ExceptionControllerAdvice {
         return new ExceptionPayload(
                 ex.getReason(),
                 ex.getStatusCode().value(),
+                LocalDateTime.now(),
+                ex.getStackTrace()
+        );
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ExceptionPayload handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return new ExceptionPayload(
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value(),
                 LocalDateTime.now(),
                 ex.getStackTrace()
         );
