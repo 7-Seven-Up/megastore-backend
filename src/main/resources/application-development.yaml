@@ -2,3 +2,18 @@ cloudinary:
   cloud-name: dlomx8sc1
   api-key: 363723365928819
   api-secret: z1aLT2IRKpN97R8vMYNZAvFYG68
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: 7up.megastore@gmail.com
+    password: kemb pmbj helh ikvn
+
+frontend:
+  url: http://localhost:5173
+
+app:
+  url: http://localhost:8080
+  cors:
+    allowed-origins: http://localhost:5173

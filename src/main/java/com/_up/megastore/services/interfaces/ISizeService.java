@@ -15,5 +15,8 @@ public interface ISizeService {
 
     SizeResponse updateSize(UUID sizeId, UpdateSizeRequest updateSizeRequest);
 
+
     SizeResponse restoreSize (UUID sizeId);
+
+    void deleteSize(UUID sizeId);
 }
