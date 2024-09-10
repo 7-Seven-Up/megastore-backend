@@ -7,7 +7,9 @@ import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -40,5 +42,34 @@ public class SizeService implements ISizeService {
         size.setDescription(updateSizeRequest.description());
 
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
+    }
+
+    @Override
+    public SizeResponse restoreSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        ifSizeIsNotDeletedThrowException(size);
+        size.setDeleted(false);
+        return SizeMapper.toSizeResponse(sizeRepository.save(size));
+    }
+
+    public void ifSizeIsNotDeletedThrowException(Size size) {
+        if(!size.isDeleted()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted." );
+    } 
+    
+    @Override
+    public void deleteSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        ifSizeIsDeletedThrowException(size);
+        size.setDeleted(true);
+
+        sizeRepository.save(size);
+    }
+
+    public void ifSizeIsDeletedThrowException(Size size){
+        if(size.isDeleted()){
+            throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
+
+        }
     }
 }

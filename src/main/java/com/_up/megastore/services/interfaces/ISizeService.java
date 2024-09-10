@@ -14,4 +14,9 @@ public interface ISizeService {
     Size findSizeByIdOrThrowException(UUID sizeId);
 
     SizeResponse updateSize(UUID sizeId, UpdateSizeRequest updateSizeRequest);
+
+
+    SizeResponse restoreSize (UUID sizeId);
+
+    void deleteSize(UUID sizeId);
 }

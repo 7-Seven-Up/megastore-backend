@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "frontend.url",
+      "type": "java.lang.String",
+      "description": "Description for frontend.url."
+    },
+    {
+      "name": "app.url",
+      "type": "java.lang.String",
+      "description": "Description for app.url."
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Description for app.cors.allowed-origins."
+    }
+  ]
+}

@@ -6,7 +6,6 @@ import com._up.megastore.controllers.requests.UpdateSizeRequest;
 import com._up.megastore.controllers.responses.SizeResponse;
 import com._up.megastore.services.interfaces.ISizeService;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.UUID;
 
 @RestController
@@ -26,5 +25,14 @@ public class SizeController implements ISizeController {
     @Override
     public SizeResponse updateSize(UUID sizeId , UpdateSizeRequest updateSizeRequest) {
         return sizeService.updateSize(sizeId, updateSizeRequest);
+    }
+
+    @Override
+    public SizeResponse restoreSize(UUID sizeId){
+        return sizeService.restoreSize(sizeId);
+    }
+  
+    public void deleteSize(UUID sizeId){
+        sizeService.deleteSize(sizeId);
     }
 }
