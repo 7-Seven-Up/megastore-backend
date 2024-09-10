@@ -1,7 +1,7 @@
 package com._up.megastore.security.filter;
 
 import com._up.megastore.security.services.JWTService;
-import com._up.megastore.security.utils.WhiteListedURLs;
+import com._up.megastore.security.utils.ApplicationEndpoints;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -70,7 +70,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        return Arrays.stream(WhiteListedURLs.WHITE_LISTED_URLS)
+        return Arrays.stream(ApplicationEndpoints.WHITE_LISTED_URLS)
                 .anyMatch(url -> pathMatcher.match( url, request.getRequestURI() ));
     }
 

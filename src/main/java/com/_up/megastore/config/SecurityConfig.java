@@ -2,7 +2,7 @@ package com._up.megastore.config;
 
 import com._up.megastore.data.enums.Role;
 import com._up.megastore.security.filter.JWTAuthenticationFilter;
-import com._up.megastore.security.utils.WhiteListedURLs;
+import com._up.megastore.security.utils.ApplicationEndpoints;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,9 +31,9 @@ public class SecurityConfig {
     httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authRequest -> authRequest
-            .requestMatchers(WhiteListedURLs.WHITE_LISTED_URLS).permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
-            .requestMatchers("/api/v1/**").hasRole(Role.ADMIN.name()))
+            .requestMatchers(ApplicationEndpoints.WHITE_LISTED_URLS).permitAll()
+            .requestMatchers(HttpMethod.GET, ApplicationEndpoints.ALLOWED_TO_GET_BY_USERS_URLS).hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+            .requestMatchers(ApplicationEndpoints.ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
