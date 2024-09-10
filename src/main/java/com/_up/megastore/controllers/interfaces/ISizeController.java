@@ -14,10 +14,17 @@ public interface ISizeController {
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     SizeResponse saveSize(@RequestBody @Valid CreateSizeRequest createSizeRequest);
 
-
     @PutMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
     SizeResponse updateSize(@PathVariable UUID sizeId, @RequestBody @Valid UpdateSizeRequest updateSizeRequest);
 
+
     @GetMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
     SizeResponse readSize(@PathVariable UUID sizeId);
+
+    @PostMapping (value = "/{sizeId}/restore") @ResponseStatus(HttpStatus.OK)
+    SizeResponse restoreSize(@PathVariable UUID sizeId);
+
+    @DeleteMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteSize(@PathVariable UUID sizeId);
+
 }
