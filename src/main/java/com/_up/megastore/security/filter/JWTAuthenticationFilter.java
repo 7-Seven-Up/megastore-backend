@@ -70,8 +70,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        return Arrays.stream(ApplicationEndpoints.WHITE_LISTED_URLS)
-                .anyMatch(url -> pathMatcher.match( url, request.getRequestURI() ));
+
+        boolean isWhiteListed = Arrays.stream(ApplicationEndpoints.WHITE_LISTED_URLS)
+                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+
+        boolean isAllowedForGet = Arrays.stream(ApplicationEndpoints.ALLOWED_TO_GET_BY_USERS_URLS)
+                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()) && "GET".equals(request.getMethod()));
+
+        return isWhiteListed || isAllowedForGet;
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {

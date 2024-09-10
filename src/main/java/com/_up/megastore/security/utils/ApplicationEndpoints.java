@@ -9,9 +9,9 @@ public class ApplicationEndpoints {
     };
 
     public static String[] ALLOWED_TO_GET_BY_USERS_URLS = {
-            "/api/v1/products",
-            "/api/v1/categories",
-            "/api/v1/sizes"
+            "/api/v1/products/**",
+            "/api/v1/categories/**",
+            "/api/v1/sizes/**"
     };
 
     public static String[] ALLOWED_TO_ADMINISTRATORS_URLS = {

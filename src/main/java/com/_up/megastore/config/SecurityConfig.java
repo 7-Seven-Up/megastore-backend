@@ -32,7 +32,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authRequest -> authRequest
             .requestMatchers(ApplicationEndpoints.WHITE_LISTED_URLS).permitAll()
-            .requestMatchers(HttpMethod.GET, ApplicationEndpoints.ALLOWED_TO_GET_BY_USERS_URLS).hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+            .requestMatchers(HttpMethod.GET, ApplicationEndpoints.ALLOWED_TO_GET_BY_USERS_URLS).permitAll()
             .requestMatchers(ApplicationEndpoints.ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
