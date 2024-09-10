@@ -3,6 +3,9 @@ package com._up.megastore.security.filter;
 import com._up.megastore.security.services.JWTService;
 import com._up.megastore.security.utils.WhiteListedURLs;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +42,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String username;
+        final String username;
         final String token = extractTokenFromRequest(request);
 
         if (token == null) {
@@ -47,10 +50,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        try { username = jwtService.extractUsernameFromToken(token); }
-        catch (ExpiredJwtException e) {
-            SecurityContextHolder.clearContext();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT is expired");
+        try {
+            username = jwtService.extractUsernameFromToken(token);
+        } catch (JwtException e) {
+            handleJWTException(response, e);
             return;
         }
 
@@ -71,17 +74,25 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 .anyMatch(url -> pathMatcher.match( url, request.getRequestURI() ));
     }
 
-    private void updateContext(HttpServletRequest request, UserDetails userDetails) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-    }
-
     private String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")
                 ? authorizationHeader.substring(7)
                 : null;
+    }
+
+    private void handleJWTException(HttpServletResponse response, JwtException e) throws IOException {
+        if (e instanceof ExpiredJwtException || e instanceof SignatureException || e instanceof MalformedJwtException) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
+        }
+    }
+
+    private void updateContext(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
 }
