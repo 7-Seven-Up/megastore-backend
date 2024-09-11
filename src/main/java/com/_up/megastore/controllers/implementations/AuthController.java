@@ -1,7 +1,6 @@
 package com._up.megastore.controllers.implementations;
 
 import com._up.megastore.controllers.interfaces.IAuthController;
-import com._up.megastore.controllers.requests.AuthRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.controllers.responses.AuthResponse;
 import com._up.megastore.services.interfaces.IAuthService;
@@ -22,7 +21,7 @@ public class AuthController implements IAuthController {
   }
 
   @Override
-  public AuthResponse signIn(AuthRequest authRequest) {
-    return this.authService.signIn(authRequest);
+  public AuthResponse signIn(String credentials) {
+    return this.authService.signIn(credentials);
   }
 }

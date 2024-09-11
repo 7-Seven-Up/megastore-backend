@@ -1,7 +1,7 @@
 package com._up.megastore.security.filter;
 
 import com._up.megastore.security.services.JWTService;
-import com._up.megastore.security.utils.ApplicationEndpoints;
+import com._up.megastore.security.utils.Endpoints;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -70,10 +70,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        boolean isWhiteListed = Arrays.stream(ApplicationEndpoints.WHITE_LISTED_URLS)
+        boolean isWhiteListed = Arrays.stream(Endpoints.WHITE_LISTED_URLS)
                 .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
 
-        boolean isAllowedForGet = Arrays.stream(ApplicationEndpoints.ALLOWED_TO_GET_BY_USERS_URLS)
+        boolean isAllowedForGet = Arrays.stream(Endpoints.ALLOWED_TO_GET_BY_USERS_URLS)
                 .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()) && "GET".equals(request.getMethod()));
 
         return isWhiteListed || isAllowedForGet;
