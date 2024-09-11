@@ -3,6 +3,8 @@ package com._up.megastore.controllers.implementations;
 import com._up.megastore.controllers.interfaces.IUserController;
 import com._up.megastore.controllers.requests.ActivateUserRequest;
 import com._up.megastore.services.implementations.UserService;
+
+import java.util.Date;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +21,16 @@ public class UserController implements IUserController {
   public void activateUser(UUID userId, ActivateUserRequest activateUserRequest) {
     userService.activateUser(userId, activateUserRequest.activationToken());
   }
+
+  @Override
+  public void sendEmailToRecoverPassword(UUID userId, String email) {
+    userService.sendEmailToRecoverPassword(userId, email);
+  }
+
+  @Override
+  public void recoverPassword(UUID userId, String newPassword) {
+    userService.recoverPassword(userId, newPassword);
+  }
+
 
 }
