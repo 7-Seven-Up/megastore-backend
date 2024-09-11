@@ -2,10 +2,7 @@ package com._up.megastore.security.filter;
 
 import com._up.megastore.security.services.JWTService;
 import com._up.megastore.security.utils.ApplicationEndpoints;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +20,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import static com._up.megastore.security.utils.Constants.BEARER;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -53,7 +52,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsernameFromToken(token);
         } catch (JwtException e) {
-            handleJWTException(response, e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
         }
 
@@ -82,17 +81,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")
-                ? authorizationHeader.substring(7)
+            return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER)
+                ? authorizationHeader.substring(BEARER.length())
                 : null;
-    }
-
-    private void handleJWTException(HttpServletResponse response, JwtException e) throws IOException {
-        if (e instanceof ExpiredJwtException || e instanceof SignatureException || e instanceof MalformedJwtException) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
-        }
     }
 
     private void updateContext(HttpServletRequest request, UserDetails userDetails) {
