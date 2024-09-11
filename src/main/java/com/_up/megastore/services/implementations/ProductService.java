@@ -88,7 +88,7 @@ public class ProductService implements IProductService {
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
-        ifImageURLExistsUpdateProductImageURL(multipartFiles, product);
+        ifImagesExistsUpdateProductImagesURLs(multipartFiles, product);
         product.setName(updateProductRequest.name());
         product.setDescription(updateProductRequest.description());
         product.setPrice(updateProductRequest.price());
@@ -124,7 +124,7 @@ public class ProductService implements IProductService {
         }
     }
 
-    public void ifImageURLExistsUpdateProductImageURL(MultipartFile[] multipartFiles, Product product){
+    public void ifImagesExistsUpdateProductImagesURLs(MultipartFile[] multipartFiles, Product product) {
         if (multipartFiles != null) {
             List<String> imagesURLS = saveProductImages(multipartFiles);
             product.setImagesURLS(
