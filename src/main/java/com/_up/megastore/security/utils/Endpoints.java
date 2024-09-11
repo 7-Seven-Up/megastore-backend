@@ -1,6 +1,6 @@
 package com._up.megastore.security.utils;
 
-public class ApplicationEndpoints {
+public class Endpoints {
 
     public static String[] WHITE_LISTED_URLS = {
             "/auth/**",
