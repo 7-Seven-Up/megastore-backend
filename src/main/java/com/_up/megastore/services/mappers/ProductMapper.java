@@ -6,6 +6,8 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.Size;
 
+import java.util.List;
+
 public class ProductMapper {
 
     public static ProductResponse toProductResponse(Product product) {
@@ -16,7 +18,7 @@ public class ProductMapper {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getImageURL(),
+                product.getImagesURLS(),
                 product.getStock(),
                 product.getColor(),
                 product.getSize().getName(),
@@ -24,12 +26,12 @@ public class ProductMapper {
         );
     }
 
-    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Category category, Product variantOf, String imageURL) {
+    public static Product toProduct(CreateProductRequest createProductRequest, Size size, Category category, Product variantOf, List<String> imagesURLS) {
         return Product.builder()
                 .name(createProductRequest.name())
                 .description(createProductRequest.description())
                 .price(createProductRequest.price())
-                .imageURL(imageURL)
+                .imagesURLS(imagesURLS)
                 .stock(createProductRequest.stock())
                 .color(createProductRequest.color())
                 .size(size)

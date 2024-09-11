@@ -1,5 +1,6 @@
 package com._up.megastore.controllers.responses;
 
+import java.util.List;
 import java.util.UUID;
 
 public record ProductResponse(
@@ -7,7 +8,7 @@ public record ProductResponse(
         String name,
         String description,
         double price,
-        String imageURL,
+        List<String> imagesURLS,
         int stock,
         String color,
         String sizeName,

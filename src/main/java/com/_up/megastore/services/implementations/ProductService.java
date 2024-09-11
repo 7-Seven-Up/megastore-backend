@@ -20,8 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProductService implements IProductService {
@@ -39,13 +43,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
+    public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
         Product variantOf = getVariantOf(createProductRequest.variantOfId());
-        String imageURL = saveProductImage(multipartFile);
+        List<String> imagesURLS = saveProductImages(multipartFiles);
 
-        Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, variantOf, imageURL);
+        Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, variantOf, imagesURLS);
         return ProductMapper.toProductResponse( productRepository.save(newProduct) );
     }
 
@@ -69,8 +73,10 @@ public class ProductService implements IProductService {
         }
     }
 
-    private String saveProductImage(MultipartFile multipartFile) {
-        return fileUploadService.uploadImage(multipartFile);
+    private List<String> saveProductImages(MultipartFile[] multipartFiles) {
+        return Arrays.stream(multipartFiles)
+                .map(fileUploadService::uploadImage)
+                .collect(Collectors.toList());
     }
 
     private Product getVariantOf(UUID variantOfId) {
@@ -78,11 +84,11 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
+    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles) {
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
-        ifImageURLExistsUpdateProductImageURL(multipartFile, product);
+        ifImageURLExistsUpdateProductImageURL(multipartFiles, product);
         product.setName(updateProductRequest.name());
         product.setDescription(updateProductRequest.description());
         product.setPrice(updateProductRequest.price());
@@ -118,10 +124,13 @@ public class ProductService implements IProductService {
         }
     }
 
-    public void ifImageURLExistsUpdateProductImageURL(MultipartFile multipartFile, Product product){
-        if(multipartFile != null){
-            String imageURL = saveProductImage(multipartFile);
-            product.setImageURL(imageURL);
+    public void ifImageURLExistsUpdateProductImageURL(MultipartFile[] multipartFiles, Product product){
+        if (multipartFiles != null) {
+            List<String> imagesURLS = saveProductImages(multipartFiles);
+            product.setImagesURLS(
+                    Stream.concat(product.getImagesURLS().stream(), imagesURLS.stream())
+                    .collect(Collectors.toList())
+            );
         }
     }
 

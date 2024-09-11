@@ -24,7 +24,7 @@ public class Product {
     private Double price;
 
     @NonNull
-    private String imageURL;
+    private List<String> imagesURLS;
 
     @NonNull
     private Integer stock;
