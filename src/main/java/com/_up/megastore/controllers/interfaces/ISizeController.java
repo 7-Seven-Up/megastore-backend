@@ -5,6 +5,8 @@ import com._up.megastore.controllers.requests.UpdateSizeRequest;
 import com._up.megastore.controllers.responses.SizeResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,13 @@ public interface ISizeController {
     @PutMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
     SizeResponse updateSize(@PathVariable UUID sizeId, @RequestBody @Valid UpdateSizeRequest updateSizeRequest);
 
-
     @GetMapping (value = "/{sizeId}") @ResponseStatus(HttpStatus.OK)
     SizeResponse readSize(@PathVariable UUID sizeId);
+
+    @GetMapping @ResponseStatus(HttpStatus.OK)
+    Page<SizeResponse> readAllSizes(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "15") int pageSize,
+                                    @RequestParam(defaultValue = "") String name);
 
     @PostMapping (value = "/{sizeId}/restore") @ResponseStatus(HttpStatus.OK)
     SizeResponse restoreSize(@PathVariable UUID sizeId);
