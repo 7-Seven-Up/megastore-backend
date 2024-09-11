@@ -54,6 +54,8 @@ public class User {
   private boolean deleted = false;
   private boolean activated = false;
   private final UUID activationToken = UUID.randomUUID();
+  
+  private final UUID recoverPasswordToken = UUID.randomUUID();
 
   @Id
   private final UUID userId = UUID.randomUUID();

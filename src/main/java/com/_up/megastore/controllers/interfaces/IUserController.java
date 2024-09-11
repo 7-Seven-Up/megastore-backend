@@ -4,7 +4,6 @@ import com._up.megastore.controllers.requests.ActivateUserRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/users")
@@ -18,6 +17,6 @@ public interface IUserController {
   void sendEmailToRecoverPassword(@PathVariable UUID userId, @RequestParam String email);
 
   @PostMapping("/{userId}/recover-password")
-  void recoverPassword(@PathVariable UUID userId, @RequestParam String newPassword);
+  void recoverPassword(@PathVariable UUID userId, @RequestParam String newPassword, @RequestParam UUID recoverPasswordToken);
 
 }
