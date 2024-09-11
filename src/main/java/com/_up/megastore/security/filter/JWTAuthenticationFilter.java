@@ -45,6 +45,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         final String token = extractTokenFromRequest(request);
 
         if (token == null) {
+            SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
             return;
         }

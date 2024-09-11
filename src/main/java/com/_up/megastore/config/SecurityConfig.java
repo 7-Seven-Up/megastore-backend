@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_ADMINISTRATORS_URLS;
 import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_GET_BY_USERS_URLS;
@@ -41,7 +41,7 @@ public class SecurityConfig {
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .httpBasic(Customizer.withDefaults())
         .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        .addFilterAfter(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
 
     return httpSecurity.build();
   }
