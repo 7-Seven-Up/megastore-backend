@@ -7,8 +7,10 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
-import com._up.megastore.services.mappers.SizeMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,6 +47,12 @@ public class CategoryService implements ICategoryService {
     public CategoryResponse readCategory(UUID categoryId){
         Category category = findCategoryByIdOrThrowException(categoryId);
         return CategoryMapper.toCategoryResponse(category);
+    }
+
+    @Override
+    public Page<CategoryResponse> readAllCategories(int page, int pageSize, String name){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return categoryRepository.findCategoryByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable).map(CategoryMapper::toCategoryResponse);
     }
 
     @Override

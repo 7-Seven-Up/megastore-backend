@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://${DATASOURCE_URL:localhost:3306/megastore}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    password: ${DB_PASSWORD:martin1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: ${SPRING_PROFILE:development}
