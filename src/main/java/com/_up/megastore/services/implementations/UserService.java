@@ -169,7 +169,7 @@ public class UserService implements IUserService {
             + "            <p>Best regards,<br>The Support Team</p>\n"
             + "        </div>\n"
             + "        <div class=\"footer\">\n"
-            + "            <p>Example Company, 1234 Street Name, City, Country</p>\n"
+            + "            <p>Megastore, Villa Maria, Cordoba, Argentina</p>\n"
             + "        </div>\n"
             + "    </div>\n"
             + "</body>\n"
