@@ -57,6 +57,7 @@ public class SizeService implements ISizeService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted.");
         }
     } 
+
     
     @Override
     public void deleteSize(UUID sizeId){
