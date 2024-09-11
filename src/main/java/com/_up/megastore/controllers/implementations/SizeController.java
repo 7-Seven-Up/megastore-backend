@@ -44,5 +44,7 @@ public class SizeController implements ISizeController {
     }
 
     @Override
-    public Page<SizeResponse> readAllSizes(int page, int pageSize, String name){ return sizeService.readAllSizes(page, pageSize, name); }
+    public Page<SizeResponse> readAllSizes(int page, int pageSize, String name){
+        return sizeService.readAllSizes(page, pageSize, name);
+    }
 }

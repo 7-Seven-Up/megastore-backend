@@ -55,7 +55,8 @@ public class SizeService implements ISizeService {
     @Override
     public Page<SizeResponse> readAllSizes(int page, int pageSize, String name){
         Pageable pageable = PageRequest.of(page, pageSize);
-        return sizeRepository.findSizeByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable).map(SizeMapper::toSizeResponse);
+        return sizeRepository.findSizeByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable)
+                .map(SizeMapper::toSizeResponse);
     }
 
     @Override
