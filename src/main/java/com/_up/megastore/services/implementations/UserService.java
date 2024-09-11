@@ -7,6 +7,7 @@ import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -114,6 +115,77 @@ public class UserService implements IUserService {
             activationToken)
         .orElseThrow(
             () -> new IllegalArgumentException("Token is invalid or user is already activated"));
+  }
+
+  private User findUserOrThrowException(UUID userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+  }
+
+  @Override
+  public void sendEmailToRecoverPassword(UUID userId, String email) {
+    if (!userRepository.existsById(userId))
+      throw new RuntimeException("User not found");
+
+    User user = findUserOrThrowException(userId);
+
+    if (!userRepository.existsByEmail(email))
+      throw new RuntimeException("User with email " + email + " not found");
+
+    // TODO : validate expiration date email with [ table | jwt ]
+    String recoverPasswordURL = frontendURL + "/auth/recoverPassword?userId=" + userId;
+
+    String emailContent = "<!DOCTYPE html>"
+            + "<html>"
+            + "<head>"
+            + "<meta charset='UTF-8'>"
+            + "<title>Password Recovery</title>"
+            + "<style>"
+            + "body { font-family: Arial, sans-serif; }"
+            + ".container { width: 80%; margin: 0 auto; }"
+            + ".header { background-color: #f4f4f4; padding: 20px; text-align: center; }"
+            + ".content { padding: 20px; }"
+            + ".footer { background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; }"
+            + ".button {"
+            + "display: inline-block;"
+            + "padding: 10px 20px;"
+            + "font-size: 16px;"
+            + "color: #fff;"
+            + "background-color: #1a73e8;"
+            + "text-decoration: none;"
+            + "border-radius: 5px;"
+            + "text-align: center;"
+            + "}"
+            + ".button:hover {"
+            + "background-color: #1558d6;"
+            + "}"
+            + "</style>"
+            + "</head>"
+            + "<body>"
+            + "<div class='container'>"
+            + "<div class='header'>"
+            + "<h1>Password Recovery</h1>"
+            + "</div>"
+            + "<div class='content'>"
+            + "<p>Hello " + user.getUsername() + ",</p>"
+            + "<p>We received a request to reset your password. Click the button below to create a new password:</p>"
+            + "<p><a href='" + recoverPasswordURL + "' class='button'>Reset Password</a></p>"
+            + "<p>If you did not request this change, please ignore this email.</p>"
+            + "<p>Best regards,<br>The Support Team</p>"
+            + "</div>"
+            + "<div class='footer'>"
+            + "<p>Megastore, Villa Maria, Cordoba, Argentina</p>"
+            + "</div>"
+            + "</div>"
+            + "</body>"
+            + "</html>";
+    emailService.sendEmail(email, "Recover Password", emailContent);
+  }
+
+  @Override
+  public void recoverPassword(UUID userId, String newPassword) {
+    User user = findUserOrThrowException(userId);
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
   }
 
 }

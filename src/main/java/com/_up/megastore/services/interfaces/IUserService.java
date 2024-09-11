@@ -11,4 +11,7 @@ public interface IUserService {
   User findUserByUsernameOrThrowException(String username);
 
   void activateUser(UUID userId, UUID activationToken);
+
+  void sendEmailToRecoverPassword(UUID userId, String email);
+  void recoverPassword(UUID userId, String newPassword);
 }
