@@ -18,6 +18,6 @@ public interface IAuthController {
   void signUp(@RequestBody @Valid SignUpRequest signUpRequest);
 
   @PostMapping("/signin")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   AuthResponse signIn(@RequestBody @Valid AuthRequest authRequest);
 }
