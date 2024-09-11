@@ -20,14 +20,12 @@ public class JWTService {
     @Value("${jwt.key}")
     private String secretKey;
 
-    public String generateToken(User user, Date expirationDate) {
-        return Jwts.builder()
-                .claim("role", user.getRole())
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expirationDate)
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+    @Value("${jwt.access-token-expiration}")
+    private Long accessTokenExpiration;
+
+    public String generateAccessToken(User user) {
+        Date expirationDate = new Date(System.currentTimeMillis() + accessTokenExpiration);
+        return generateToken(user, expirationDate);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -39,7 +37,17 @@ public class JWTService {
         return getClaim(token, Claims::getSubject);
     }
 
-    public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+    private String generateToken(User user, Date expirationDate) {
+        return Jwts.builder()
+                .claim("role", user.getRole())
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expirationDate)
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = getAllClaims(token);
         return claimsResolver.apply(claims);
     }

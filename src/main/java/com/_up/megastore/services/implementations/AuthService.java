@@ -7,14 +7,11 @@ import com._up.megastore.data.model.User;
 import com._up.megastore.security.services.JWTService;
 import com._up.megastore.services.interfaces.IAuthService;
 import com._up.megastore.services.interfaces.IUserService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Date;
 
 @Service
 public class AuthService implements IAuthService {
@@ -29,9 +26,6 @@ public class AuthService implements IAuthService {
       this.jwtService = jwtService;
   }
 
-  @Value("${jwt.access-token-expiration}")
-  private Long accessTokenExpiration;
-
   @Override
   public void signUp(SignUpRequest signUpRequest) {
     userService.saveUser(signUpRequest);
@@ -43,18 +37,13 @@ public class AuthService implements IAuthService {
 
     User user = userService.findUserByUsernameOrThrowException(authRequest.username());
     ifUserIsNotActivatedThrowException(user);
-    String accessToken = generateAccessToken(user);
+    String accessToken = jwtService.generateAccessToken(user);
 
     return new AuthResponse(user.getUserId(), accessToken, user.getRole());
   }
 
   private void authenticateUser(String username, String password) {
     authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(username, password) );
-  }
-
-  private String generateAccessToken(User user) {
-    Date expirationDate = new Date(System.currentTimeMillis() + accessTokenExpiration);
-    return jwtService.generateToken(user, expirationDate);
   }
 
   private void ifUserIsNotActivatedThrowException(User user) {
