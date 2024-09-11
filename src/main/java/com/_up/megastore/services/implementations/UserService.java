@@ -109,10 +109,6 @@ public class UserService implements IUserService {
             () -> new IllegalArgumentException("Token is invalid or user is already activated"));
   }
 
-  private User findUserOrThrowException(UUID userId) {
-    return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-  }
-
   @Override
   public void sendEmailToRecoverPassword(UUID userId, String email) {
     if (!userRepository.existsById(userId))
@@ -123,61 +119,70 @@ public class UserService implements IUserService {
     if (!userRepository.existsByEmail(email))
       throw new RuntimeException("User with email " + email + " not found");
 
-    // TODO : validate expiration date email with [ table | jwt ]
-    String recoverPasswordURL = frontendURL + "/auth/recoverPassword?userId=" + userId;
+    String recoverPasswordURL = frontendURL + "/auth/recoverPassword?userId=" + userId +
+              "&token=" + user.getRecoverPasswordToken();
 
-    String emailContent = "<!DOCTYPE html>"
-            + "<html>"
-            + "<head>"
-            + "<meta charset='UTF-8'>"
-            + "<title>Password Recovery</title>"
-            + "<style>"
-            + "body { font-family: Arial, sans-serif; }"
-            + ".container { width: 80%; margin: 0 auto; }"
-            + ".header { background-color: #f4f4f4; padding: 20px; text-align: center; }"
-            + ".content { padding: 20px; }"
-            + ".footer { background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; }"
-            + ".button {"
-            + "display: inline-block;"
-            + "padding: 10px 20px;"
-            + "font-size: 16px;"
-            + "color: #fff;"
-            + "background-color: #1a73e8;"
-            + "text-decoration: none;"
-            + "border-radius: 5px;"
-            + "text-align: center;"
-            + "}"
-            + ".button:hover {"
-            + "background-color: #1558d6;"
-            + "}"
-            + "</style>"
-            + "</head>"
-            + "<body>"
-            + "<div class='container'>"
-            + "<div class='header'>"
-            + "<h1>Password Recovery</h1>"
-            + "</div>"
-            + "<div class='content'>"
-            + "<p>Hello " + user.getUsername() + ",</p>"
-            + "<p>We received a request to reset your password. Click the button below to create a new password:</p>"
-            + "<p><a href='" + recoverPasswordURL + "' class='button'>Reset Password</a></p>"
-            + "<p>If you did not request this change, please ignore this email.</p>"
-            + "<p>Best regards,<br>The Support Team</p>"
-            + "</div>"
-            + "<div class='footer'>"
-            + "<p>Megastore, Villa Maria, Cordoba, Argentina</p>"
-            + "</div>"
-            + "</div>"
-            + "</body>"
+    String emailContent = "<!DOCTYPE html>\n"
+            + "<html>\n"
+            + "<head>\n"
+            + "    <meta charset=\"UTF-8\">\n"
+            + "    <title>Password Recovery</title>\n"
+            + "    <style>\n"
+            + "        body { font-family: Arial, sans-serif; }\n"
+            + "        .container { width: 80%; margin: 0 auto; }\n"
+            + "        .header { background-color: #f4f4f4; padding: 20px; text-align: center; }\n"
+            + "        .content { padding: 20px; }\n"
+            + "        .footer { background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; }\n"
+            + "        .button {\n"
+            + "            display: inline-block;\n"
+            + "            padding: 10px 20px;\n"
+            + "            font-size: 16px;\n"
+            + "            color: #fff;\n"
+            + "            background-color: #1ae866;\n"
+            + "            text-decoration: none;\n"
+            + "            border-radius: 5px;\n"
+            + "            text-align: center;\n"
+            + "        }\n"
+            + "        .button:hover {\n"
+            + "            background-color: #15d67c;\n"
+            + "        }\n"
+            + "    </style>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "    <div class=\"container\">\n"
+            + "        <div class=\"header\">\n"
+            + "            <h1>Password Recovery</h1>\n"
+            + "        </div>\n"
+            + "        <div class=\"content\">\n"
+            + "            <p>Hello " + user.getUsername() + ",</p>\n"
+            + "            <p>We received a request to reset your password. Click the button below to create a new password:</p>\n"
+            + "            <p style=\"display: flex; flex: content; justify-content: center;\"><a href=\" " + recoverPasswordURL + "\" class=\"button\">Reset Password</a></p>\n"
+            + "            <p>If you did not request this change, please ignore this email.</p>\n"
+            + "            <p>Best regards,<br>The Support Team</p>\n"
+            + "        </div>\n"
+            + "        <div class=\"footer\">\n"
+            + "            <p>Example Company, 1234 Street Name, City, Country</p>\n"
+            + "        </div>\n"
+            + "    </div>\n"
+            + "</body>\n"
             + "</html>";
     emailService.sendEmail(email, "Recover Password", emailContent);
   }
 
+  private User findUserOrThrowException(UUID userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+  }
+
   @Override
-  public void recoverPassword(UUID userId, String newPassword) {
-    User user = findUserOrThrowException(userId);
+  public void recoverPassword(UUID userId, String newPassword, UUID recoverPasswordToken) {
+    User user = findUserToRecoverPasswordOrThrowException(userId, recoverPasswordToken);
     user.setPassword(passwordEncoder.encode(newPassword));
     userRepository.save(user);
+  }
+
+  private User findUserToRecoverPasswordOrThrowException(UUID userId, UUID recoverPasswordToken) {
+    return userRepository.findByUserIdAndRecoverPasswordTokenIs(userId, recoverPasswordToken)
+            .orElseThrow(() -> new RuntimeException("Token is invalid or user not exists."));
   }
 
 }
