@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import java.util.UUID;
 
 @Entity(name = "productImages")
 @NoArgsConstructor
@@ -17,10 +14,7 @@ import java.util.UUID;
 @Data
 public class ProductImage {
 
-    @NonNull
-    private String imageURL;
-
     @Id
-    private final UUID productImageId = UUID.randomUUID();
+    private String imageURL;
 
 }
