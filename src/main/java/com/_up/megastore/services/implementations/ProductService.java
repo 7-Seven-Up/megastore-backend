@@ -21,12 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ProductService implements IProductService {
@@ -47,7 +44,7 @@ public class ProductService implements IProductService {
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
-        List<ProductImage> images = saveProductImages(multipartFiles);
+        List<ProductImage> images = productImageService.saveProductImages(multipartFiles);
         Product variantOf = getVariantOf(createProductRequest.variantOfId());
 
         Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, images, variantOf);
@@ -73,12 +70,6 @@ public class ProductService implements IProductService {
         if (product.isDeleted()){
             throw new IllegalStateException("Product with id " + product.getProductId() + " is already deleted.");
         }
-    }
-
-    private List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
-        return Arrays.stream(multipartFiles)
-                .map(productImageService::saveProductImage)
-                .collect(Collectors.toList());
     }
 
     private Product getVariantOf(UUID variantOfId) {
@@ -128,11 +119,8 @@ public class ProductService implements IProductService {
 
     public void ifImagesExistsUpdateProductImagesURLs(MultipartFile[] multipartFiles, Product product) {
         if (multipartFiles != null) {
-            List<ProductImage> images = saveProductImages(multipartFiles);
-            product.setImages(
-                    Stream.concat(product.getImages().stream(), images.stream())
-                    .collect(Collectors.toList())
-            );
+            List<ProductImage> images = productImageService.saveProductImages(multipartFiles);
+            product.setImages(images);
         }
     }
 

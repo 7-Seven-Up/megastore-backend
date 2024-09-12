@@ -7,6 +7,10 @@ import com._up.megastore.services.interfaces.IProductImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductImageService implements IProductImageService {
 
@@ -19,7 +23,13 @@ public class ProductImageService implements IProductImageService {
     }
 
     @Override
-    public ProductImage saveProductImage(MultipartFile multipartFile) {
+    public List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
+        return Arrays.stream(multipartFiles)
+                .map(this::saveProductImage)
+                .collect(Collectors.toList());
+    }
+
+    private ProductImage saveProductImage(MultipartFile multipartFile) {
         String imageURL = fileUploadService.uploadImage(multipartFile);
         return productImageRepository.save( new ProductImage(imageURL) );
     }
