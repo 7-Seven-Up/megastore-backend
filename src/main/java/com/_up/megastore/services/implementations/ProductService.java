@@ -5,10 +5,11 @@ import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
+import com._up.megastore.data.model.ProductImage;
 import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.IProductRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
-import com._up.megastore.services.interfaces.IFileUploadService;
+import com._up.megastore.services.interfaces.IProductImageService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
@@ -33,23 +34,24 @@ public class ProductService implements IProductService {
     private final IProductRepository productRepository;
     private final ISizeService sizeService;
     private final ICategoryService categoryService;
-    private final IFileUploadService fileUploadService;
+    private final IProductImageService productImageService;
 
-    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, IFileUploadService fileUploadService) {
+    public ProductService(IProductRepository productRepository, ISizeService sizeService, ICategoryService categoryService, IProductImageService productImageService) {
         this.productRepository = productRepository;
         this.sizeService = sizeService;
         this.categoryService = categoryService;
-        this.fileUploadService = fileUploadService;
+        this.productImageService = productImageService;
     }
 
     @Override
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
+        List<ProductImage> images = saveProductImages(multipartFiles);
         Product variantOf = getVariantOf(createProductRequest.variantOfId());
-        List<String> imagesURLS = saveProductImages(multipartFiles);
 
-        Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, variantOf, imagesURLS);
+        Product newProduct = ProductMapper.toProduct(createProductRequest, size, category, images, variantOf);
+
         return ProductMapper.toProductResponse( productRepository.save(newProduct) );
     }
 
@@ -73,9 +75,9 @@ public class ProductService implements IProductService {
         }
     }
 
-    private List<String> saveProductImages(MultipartFile[] multipartFiles) {
+    private List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
         return Arrays.stream(multipartFiles)
-                .map(fileUploadService::uploadImage)
+                .map(productImageService::saveProductImage)
                 .collect(Collectors.toList());
     }
 
@@ -126,9 +128,9 @@ public class ProductService implements IProductService {
 
     public void ifImagesExistsUpdateProductImagesURLs(MultipartFile[] multipartFiles, Product product) {
         if (multipartFiles != null) {
-            List<String> imagesURLS = saveProductImages(multipartFiles);
-            product.setImagesURLS(
-                    Stream.concat(product.getImagesURLS().stream(), imagesURLS.stream())
+            List<ProductImage> images = saveProductImages(multipartFiles);
+            product.setImages(
+                    Stream.concat(product.getImages().stream(), images.stream())
                     .collect(Collectors.toList())
             );
         }
