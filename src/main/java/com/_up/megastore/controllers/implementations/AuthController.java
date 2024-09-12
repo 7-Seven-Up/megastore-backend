@@ -2,6 +2,7 @@ package com._up.megastore.controllers.implementations;
 
 import com._up.megastore.controllers.interfaces.IAuthController;
 import com._up.megastore.controllers.requests.SignUpRequest;
+import com._up.megastore.controllers.responses.AuthResponse;
 import com._up.megastore.services.interfaces.IAuthService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,4 +20,8 @@ public class AuthController implements IAuthController {
     this.authService.signUp(signUpRequest);
   }
 
+  @Override
+  public AuthResponse signIn(String credentials) {
+    return this.authService.signIn(credentials);
+  }
 }
