@@ -5,6 +5,7 @@ import com._up.megastore.controllers.requests.CreateCategoryRequest;
 import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
 import com._up.megastore.services.interfaces.ICategoryService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
@@ -20,6 +21,16 @@ public class CategoryController implements ICategoryController {
     @Override
     public CategoryResponse saveCategory(CreateCategoryRequest createCategoryRequest) {
         return categoryService.saveCategory(createCategoryRequest);
+    }
+
+    @Override
+    public CategoryResponse readCategory(UUID categoryId){
+        return categoryService.readCategory(categoryId);
+    }
+
+    @Override
+    public Page<CategoryResponse> readAllCategories(int page, int pageSize, String name){
+        return categoryService.readAllCategories(page, pageSize, name);
     }
 
     @Override
