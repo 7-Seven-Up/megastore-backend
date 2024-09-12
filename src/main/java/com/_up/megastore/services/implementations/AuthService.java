@@ -55,9 +55,6 @@ public class AuthService implements IAuthService {
   }
 
   private String removeBasicPrefix(String credentials) {
-    if (credentials == null || !credentials.startsWith(BASIC)) {
-      throw new IllegalArgumentException("Invalid credentials format");
-    }
     return credentials.substring(BASIC.length());
   }
 
