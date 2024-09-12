@@ -7,10 +7,12 @@ import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -45,6 +47,19 @@ public class SizeService implements ISizeService {
     }
 
     @Override
+    public SizeResponse readSize(UUID sizeId){
+        Size size = findSizeByIdOrThrowException(sizeId);
+        return SizeMapper.toSizeResponse(size);
+    }
+
+    @Override
+    public Page<SizeResponse> readAllSizes(int page, int pageSize, String name){
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return sizeRepository.findSizeByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable)
+                .map(SizeMapper::toSizeResponse);
+    }
+
+    @Override
     public SizeResponse restoreSize(UUID sizeId){
         Size size = findSizeByIdOrThrowException(sizeId);
         ifSizeIsNotDeletedThrowException(size);
@@ -56,9 +71,8 @@ public class SizeService implements ISizeService {
         if(!size.isDeleted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted.");
         }
-    } 
+    }
 
-    
     @Override
     public void deleteSize(UUID sizeId){
         Size size = findSizeByIdOrThrowException(sizeId);
