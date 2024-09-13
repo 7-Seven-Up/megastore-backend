@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +35,16 @@ public class ProductImageService implements IProductImageService {
     }
 
     private ProductImage saveProductImage(MultipartFile multipartFile) {
-        String name = multipartFile.getOriginalFilename();
+        String name = getImageFilename(multipartFile);
         ifImageNameAlreadyExistsThrowException(name);
         String imageURL = fileUploadService.uploadImage(multipartFile);
         return productImageRepository.save( new ProductImage(name, imageURL) );
+    }
+
+    private String getImageFilename(MultipartFile multipartFile) {
+        return Optional.ofNullable(multipartFile.getOriginalFilename())
+                .filter(name -> !name.isEmpty())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file must have a name."));
     }
 
     private void ifImageNameAlreadyExistsThrowException(String name) {
