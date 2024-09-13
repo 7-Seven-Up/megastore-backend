@@ -49,7 +49,7 @@ public class ProductMapper {
 
     private static List<String> getImagesURLs(Product product) {
         return product.getImages().stream()
-                .map(ProductImage::getImageURL)
+                .map(ProductImage::getUrl)
                 .collect(Collectors.toList());
     }
 
