@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity(name = "productImages")
 @NoArgsConstructor
@@ -14,7 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class ProductImage {
 
+    @NonNull
+    private String name;
+
     @Id
-    private String imageURL;
+    private String url;
 
 }
