@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public interface IProductService {
 
-    ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile);
+    ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles);
 
     Product findProductByIdOrThrowException(UUID productId);
 
     void deleteProduct(UUID productId);
 
-    ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile);
+    ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles);
 
     ProductResponse restoreProduct(UUID productId);
 

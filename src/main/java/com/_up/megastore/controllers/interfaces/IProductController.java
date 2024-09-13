@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.UUID;
 
 @RequestMapping("/api/v1/products")
@@ -19,7 +20,7 @@ public interface IProductController {
     @ResponseStatus(HttpStatus.CREATED)
     ProductResponse saveProduct(
             @RequestPart @Valid CreateProductRequest createProductRequest,
-            @RequestPart MultipartFile multipartFile
+            @RequestPart MultipartFile[] multipartFiles
     );
 
     @PatchMapping(value = "/{productId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
@@ -27,7 +28,7 @@ public interface IProductController {
     ProductResponse updateProduct(
             @PathVariable UUID productId,
             @RequestPart @Valid UpdateProductRequest updateProductRequest,
-            @RequestPart @Nullable MultipartFile multipartFile
+            @RequestPart @Nullable MultipartFile[] multipartFiles
     );
 
     @DeleteMapping(value = "/{productId}")

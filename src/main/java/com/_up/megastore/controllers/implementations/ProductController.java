@@ -8,6 +8,7 @@ import com._up.megastore.services.interfaces.IProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.UUID;
 
 @RestController
@@ -20,13 +21,13 @@ public class ProductController implements IProductController {
     }
 
     @Override
-    public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile multipartFile) {
-        return productService.saveProduct(createProductRequest, multipartFile);
+    public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
+        return productService.saveProduct(createProductRequest, multipartFiles);
     }
 
     @Override
-    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile multipartFile){
-       return productService.updateProduct(productId, updateProductRequest, multipartFile);
+    public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles) {
+       return productService.updateProduct(productId, updateProductRequest, multipartFiles);
 
     }
 

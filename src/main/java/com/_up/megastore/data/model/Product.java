@@ -24,9 +24,6 @@ public class Product {
     private Double price;
 
     @NonNull
-    private String imageURL;
-
-    @NonNull
     private Integer stock;
 
     @NonNull
@@ -37,6 +34,9 @@ public class Product {
 
     @ManyToOne @NonNull
     private Category category;
+
+    @OneToMany @NonNull
+    private List<ProductImage> images;
 
     @ManyToOne
     private Product variantOf = null;
