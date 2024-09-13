@@ -29,6 +29,7 @@ public class ProductImageService implements IProductImageService {
     @Override
     @Transactional
     public List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
+        validateDuplicateImageNames(multipartFiles);
         return Arrays.stream(multipartFiles)
                 .map(this::saveProductImage)
                 .collect(Collectors.toList());
@@ -36,7 +37,6 @@ public class ProductImageService implements IProductImageService {
 
     private ProductImage saveProductImage(MultipartFile multipartFile) {
         String name = getImageFilename(multipartFile);
-        ifImageNameAlreadyExistsThrowException(name);
         String imageURL = fileUploadService.uploadImage(multipartFile);
         return productImageRepository.save( new ProductImage(name, imageURL) );
     }
@@ -45,6 +45,11 @@ public class ProductImageService implements IProductImageService {
         return Optional.ofNullable(multipartFile.getOriginalFilename())
                 .filter(name -> !name.isEmpty())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file must have a name."));
+    }
+
+    private void validateDuplicateImageNames(MultipartFile[] multipartFiles) {
+        Arrays.stream(multipartFiles)
+                .forEach(image -> ifImageNameAlreadyExistsThrowException( getImageFilename(image) ));
     }
 
     private void ifImageNameAlreadyExistsThrowException(String name) {
