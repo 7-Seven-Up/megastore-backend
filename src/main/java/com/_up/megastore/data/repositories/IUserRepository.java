@@ -1,7 +1,6 @@
 package com._up.megastore.data.repositories;
 
 import com._up.megastore.data.model.User;
-
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
