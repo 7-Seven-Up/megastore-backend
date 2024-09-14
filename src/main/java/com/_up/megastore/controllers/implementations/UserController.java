@@ -22,8 +22,8 @@ public class UserController implements IUserController {
   }
 
   @Override
-  public void sendEmailToRecoverPassword(UUID userId, String email) {
-    userService.sendEmailToRecoverPassword(userId, email);
+  public void sendEmailToRecoverPassword(String email) {
+    userService.sendEmailToRecoverPassword(email);
   }
 
   @Override

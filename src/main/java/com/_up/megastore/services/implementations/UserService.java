@@ -110,16 +110,13 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void sendEmailToRecoverPassword(UUID userId, String email) {
-    if (!userRepository.existsById(userId))
+  public void sendEmailToRecoverPassword(String email) {
+    if (!userRepository.existsByEmail(email))
       throw new RuntimeException("User not found");
 
-    User user = findUserOrThrowException(userId);
+    User user = findUserByEmailOrThrowException(email);
 
-    if (!userRepository.existsByEmail(email))
-      throw new RuntimeException("User with email " + email + " not found");
-
-    String recoverPasswordURL = frontendURL + "/auth/recoverPassword?userId=" + userId +
+    String recoverPasswordURL = frontendURL + "/auth/recover-password?userId=" + user.getUserId() +
               "&token=" + user.getRecoverPasswordToken();
 
     String emailContent = "<!DOCTYPE html>\n"
@@ -169,8 +166,8 @@ public class UserService implements IUserService {
     emailService.sendEmail(email, "Recover Password", emailContent);
   }
 
-  private User findUserOrThrowException(UUID userId) {
-    return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+  private User findUserByEmailOrThrowException(String email) {
+    return userRepository.findByEmailAndDeletedIsFalse(email).orElseThrow(() -> new RuntimeException("User not found"));
   }
 
   @Override

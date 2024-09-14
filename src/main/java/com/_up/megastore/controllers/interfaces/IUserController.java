@@ -13,8 +13,8 @@ public interface IUserController {
   void activateUser(@PathVariable UUID userId,
       @RequestBody @Valid ActivateUserRequest activateUserRequest);
 
-  @PostMapping("/{userId}/recover-password/send-email")
-  void sendEmailToRecoverPassword(@PathVariable UUID userId, @RequestParam String email);
+  @PostMapping("/recover-password/send-email")
+  void sendEmailToRecoverPassword(@RequestParam String email);
 
   @PostMapping("/{userId}/recover-password")
   void recoverPassword(@PathVariable UUID userId, @RequestParam String newPassword, @RequestParam UUID recoverPasswordToken);
