@@ -127,8 +127,7 @@ public class UserService implements IUserService {
 
     userRepository.save(user);
 
-    String recoverPasswordURL = frontendURL + "/auth/recover-password?userId=" + user.getUserId() +
-              "&token=" + user.getRecoverPasswordToken();
+    String recoverPasswordURL = frontendURL + "/auth/recover-password?token=" + user.getRecoverPasswordToken();
 
     String emailContent = "<!DOCTYPE html>\n"
             + "<html>\n"
