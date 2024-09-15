@@ -9,8 +9,10 @@ import com._up.megastore.services.mappers.UserMapper;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 
@@ -119,9 +121,6 @@ public class UserService implements IUserService {
 
   @Override
   public void sendEmailToRecoverPassword(String email) {
-    if (!userRepository.existsByEmail(email))
-      throw new RuntimeException("User not found");
-
     User user = findUserByEmailOrThrowException(email);
 
     String recoverPasswordURL = frontendURL + "/auth/recover-password?userId=" + user.getUserId() +
@@ -179,15 +178,30 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void recoverPassword(UUID userId, String newPassword, UUID recoverPasswordToken) {
-    User user = findUserToRecoverPasswordOrThrowException(userId, recoverPasswordToken);
-    user.setPassword(passwordEncoder.encode(newPassword));
+  public void recoverPassword(UUID userId, String password, String confirmPassword, UUID recoverPasswordToken) {
+    User user = findUserByIdOrThrowException(userId);
+
+    ifPasswordIsNotStrongerThrowException(password);
+
+    ifPasswordsAreNotEqualsThrowException(password, confirmPassword);
+
+    user.setPassword(passwordEncoder.encode(password));
     userRepository.save(user);
   }
 
-  private User findUserToRecoverPasswordOrThrowException(UUID userId, UUID recoverPasswordToken) {
-    return userRepository.findByUserIdAndRecoverPasswordTokenIs(userId, recoverPasswordToken)
-            .orElseThrow(() -> new RuntimeException("Token is invalid or user not exists."));
+  private void ifPasswordIsNotStrongerThrowException(String password) {
+    String regexStrongPassword = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!¡¿?$%&#@_-])[A-Za-z0-9!¡¿?$%&#@_-]+$";
+    if (!password.matches(regexStrongPassword))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is not stronger");
+  }
+
+  private void ifPasswordsAreNotEqualsThrowException(String password, String confirmPassword) {
+    if (!password.equals(confirmPassword))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+  }
+
+  private User findUserByIdOrThrowException(UUID userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User with id " + userId + "does not exist"));
   }
 
 }

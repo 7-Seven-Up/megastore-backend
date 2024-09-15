@@ -2,6 +2,7 @@ package com._up.megastore.controllers.implementations;
 
 import com._up.megastore.controllers.interfaces.IUserController;
 import com._up.megastore.controllers.requests.ActivateUserRequest;
+import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.services.implementations.UserService;
 
 import java.util.UUID;
@@ -27,7 +28,10 @@ public class UserController implements IUserController {
   }
 
   @Override
-  public void recoverPassword(UUID userId, String newPassword, UUID recoverPasswordToken) {
-    userService.recoverPassword(userId, newPassword, recoverPasswordToken);
+  public void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest) {
+    userService.recoverPassword(userId,
+            recoverPasswordRequest.password(),
+            recoverPasswordRequest.confirmPassword(),
+            recoverPasswordRequest.recoverPasswordToken());
   }
 }
