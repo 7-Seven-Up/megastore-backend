@@ -5,7 +5,8 @@ public class Endpoints {
     public static String[] WHITE_LISTED_URLS = {
             "/auth/**",
             "/error",
-            "/api/v1/users/*/activate"
+            "/api/v1/users/*/activate",
+            "/api/v1/users/recover-password/*"
     };
 
     public static String[] ALLOWED_TO_GET_BY_USERS_URLS = {

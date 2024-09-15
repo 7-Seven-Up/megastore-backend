@@ -18,6 +18,6 @@ public interface IUserController {
   @PostMapping("/recover-password/send-email") @ResponseStatus(HttpStatus.NO_CONTENT)
   void sendEmailToRecoverPassword(@RequestParam String email);
 
-  @PostMapping("/{userId}/recover-password") @ResponseStatus(HttpStatus.NO_CONTENT)
+  @PostMapping("/recover-password/{userId}") @ResponseStatus(HttpStatus.NO_CONTENT)
   void recoverPassword(@PathVariable UUID userId, @RequestBody RecoverPasswordRequest recoverPasswordRequest);
 }
