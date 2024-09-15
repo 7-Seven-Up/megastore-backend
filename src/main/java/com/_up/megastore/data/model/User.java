@@ -9,9 +9,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,8 +56,8 @@ public class User {
   private boolean deleted = false;
   private boolean activated = false;
   private final UUID activationToken = UUID.randomUUID();
-  
-  private final UUID recoverPasswordToken = UUID.randomUUID();
+
+  private UUID recoverPasswordToken = null;
 
   @Id
   private final UUID userId = UUID.randomUUID();

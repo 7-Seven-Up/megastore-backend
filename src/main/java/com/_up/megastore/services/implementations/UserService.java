@@ -123,6 +123,10 @@ public class UserService implements IUserService {
   public void sendEmailToRecoverPassword(String email) {
     User user = findUserByEmailOrThrowException(email);
 
+    user.setRecoverPasswordToken(UUID.randomUUID());
+
+    userRepository.save(user);
+
     String recoverPasswordURL = frontendURL + "/auth/recover-password?userId=" + user.getUserId() +
               "&token=" + user.getRecoverPasswordToken();
 
@@ -174,19 +178,22 @@ public class UserService implements IUserService {
   }
 
   private User findUserByEmailOrThrowException(String email) {
-    return userRepository.findByEmailAndDeletedIsFalse(email).orElseThrow(() -> new RuntimeException("User not found"));
+    return userRepository.findByEmailAndDeletedIsFalse(email).orElseThrow(() -> new RuntimeException("User with email " + email +" does not exists."));
   }
 
   @Override
   public void recoverPassword(UUID userId, String password, String confirmPassword, UUID recoverPasswordToken) {
     User user = findUserByIdOrThrowException(userId);
-
+    ifTokenIsNotTheSameThrowException(recoverPasswordToken, user);
     ifPasswordIsNotStrongerThrowException(password);
-
     ifPasswordsAreNotEqualsThrowException(password, confirmPassword);
-
     user.setPassword(passwordEncoder.encode(password));
     userRepository.save(user);
+  }
+
+  private void ifTokenIsNotTheSameThrowException(UUID recoverPasswordToken, User user) {
+    if (!user.getRecoverPasswordToken().equals(recoverPasswordToken))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The token is not the same");
   }
 
   private void ifPasswordIsNotStrongerThrowException(String password) {
