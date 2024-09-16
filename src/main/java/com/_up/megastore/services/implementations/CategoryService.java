@@ -94,10 +94,12 @@ public class CategoryService implements ICategoryService {
         return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
     }
 
-    public void ifSuperCategoryExistUpdateCategorySuperCategory(UUID superCategoryId, Category category){
-        if( superCategoryId != null && !superCategoryId.equals(category.getSuperCategory().getCategoryId() )){
+    public void ifSuperCategoryExistUpdateCategorySuperCategory(UUID superCategoryId, Category category) {
+        if (superCategoryId != null) {
             Category superCategory = findCategoryByIdOrThrowException(superCategoryId);
             category.setSuperCategory(superCategory);
+        } else {
+            category.setSuperCategory(null);
         }
     }
 
