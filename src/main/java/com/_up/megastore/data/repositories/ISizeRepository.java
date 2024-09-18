@@ -9,5 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ISizeRepository extends JpaRepository<Size, UUID> {
+    boolean existsByName(String name);
     Page<Size> findSizeByDeletedIsFalseAndNameContainingIgnoreCase(String name, Pageable pageable);
 }

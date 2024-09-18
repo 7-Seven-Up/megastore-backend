@@ -27,6 +27,7 @@ public class SizeService implements ISizeService {
 
     @Override
     public SizeResponse saveSize(CreateSizeRequest createSizeRequest) {
+        throwExceptionIfSizeNameAlreadyExists(createSizeRequest.name());
         Size size = SizeMapper.toSize(createSizeRequest);
         return SizeMapper.toSizeResponse( sizeRepository.save(size) );
     }
@@ -39,6 +40,7 @@ public class SizeService implements ISizeService {
 
     @Override
     public SizeResponse updateSize(UUID sizeId,UpdateSizeRequest updateSizeRequest){
+        throwExceptionIfSizeNameAlreadyExists(updateSizeRequest.name());
         Size size = findSizeByIdOrThrowException(sizeId);
         size.setName(updateSizeRequest.name());
         size.setDescription(updateSizeRequest.description());
@@ -86,6 +88,12 @@ public class SizeService implements ISizeService {
         if(size.isDeleted()){
             throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
 
+        }
+    }
+
+    private void throwExceptionIfSizeNameAlreadyExists(String name){
+        if (sizeRepository.existsByName(name)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with name "+ name +" already exists.");
         }
     }
 }
