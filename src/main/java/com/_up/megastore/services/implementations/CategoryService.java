@@ -28,6 +28,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public CategoryResponse saveCategory(CreateCategoryRequest createCategoryRequest) {
+        throwExceptionIfCategoryNameAlreadyExists(createCategoryRequest.name());
         Category superCategory = getSuperCategory(createCategoryRequest.superCategoryId());
         Category category = CategoryMapper.toCategory(createCategoryRequest, superCategory);
         return CategoryMapper.toCategoryResponse( categoryRepository.save(category) );
@@ -83,9 +84,10 @@ public class CategoryService implements ICategoryService {
         category.setDeleted(false);
         return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
     }
-  
+
     @Override
     public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
+        throwExceptionIfCategoryNameAlreadyExists(updateCategoryRequest.name());
         Category category = findCategoryByIdOrThrowException(categoryId);
         category.setName(updateCategoryRequest.name());
         category.setDescription(updateCategoryRequest.description());
@@ -109,5 +111,10 @@ public class CategoryService implements ICategoryService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " is not deleted.");
         }
 
+    }
+    private void throwExceptionIfCategoryNameAlreadyExists(String name) {
+        if (categoryRepository.existsByName(name)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with name "+ name +" already exists.");
+        }
     }
 }

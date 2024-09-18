@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface ICategoryRepository extends JpaRepository<Category, UUID> {
+    boolean existsByName(String name);
     Page<Category> findCategoryByDeletedIsFalseAndNameContainingIgnoreCase(String name, Pageable pageable);
 }
