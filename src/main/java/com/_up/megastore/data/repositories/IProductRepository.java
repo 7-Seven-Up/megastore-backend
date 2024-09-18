@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface IProductRepository extends JpaRepository<Product, UUID> {
     boolean existsByProductIdAndDeletedTrue(UUID productId);
     Page<Product> findProductsByDeletedIsFalseAndNameContainingIgnoreCase(String name, Pageable pageable);
+    boolean existsByName(String name);
 }

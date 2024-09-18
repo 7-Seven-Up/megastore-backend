@@ -42,6 +42,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
+        throwExceptionIfProductNameAlreadyExists(createProductRequest.name());
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
         List<ProductImage> images = productImageService.saveProductImages(multipartFiles);
@@ -78,6 +79,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles) {
+        throwExceptionIfProductNameAlreadyExists(updateProductRequest.name());
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
@@ -108,6 +110,12 @@ public class ProductService implements IProductService {
         Pageable pageable = PageRequest.of(page, pageSize);
         return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
                 .map(ProductMapper::toProductResponse);
+    }
+
+    private void throwExceptionIfProductNameAlreadyExists(String name) {
+        if (productRepository.existsByName(name)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name "+name+" already exists.");
+        }
     }
 
     public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
