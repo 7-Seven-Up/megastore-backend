@@ -209,10 +209,10 @@ public class UserService implements IUserService {
 
   private void generateRecoverPasswordToken(User user){
     user.setRecoverPasswordToken(UUID.randomUUID());
-    user.setRecoverTokenExpirationDate(LocalDateTime.now().plusHours(24));
+    user.setRecoverPasswordTokenExpirationDate(LocalDateTime.now().plusHours(24));
   }
 
   private boolean isRecoverPasswordTokenExpired(User user){
-    return user.getRecoverTokenExpirationDate().isBefore(LocalDateTime.now());
+    return user.getRecoverPasswordTokenExpirationDate().isBefore(LocalDateTime.now());
   }
 }

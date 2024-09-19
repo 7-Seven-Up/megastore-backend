@@ -62,7 +62,7 @@ public class User {
 
   private UUID recoverPasswordToken = null;
 
-  private LocalDateTime recoverTokenExpirationDate;
+  private LocalDateTime recoverPasswordTokenExpirationDate;
 
   @Id
   private final UUID userId = UUID.randomUUID();
