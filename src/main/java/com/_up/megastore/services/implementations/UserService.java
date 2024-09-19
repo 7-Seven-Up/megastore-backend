@@ -6,6 +6,8 @@ import com._up.megastore.data.repositories.IUserRepository;
 import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +37,7 @@ public class UserService implements IUserService {
     ifEmailAlreadyExistsThrowException(createUserRequest.email());
     ifUsernameAlreadyExistsThrowException(createUserRequest.username());
     User newUser = createUser(createUserRequest);
+    generateActivationToken(newUser);
     sendActivationEmail(newUser);
     userRepository.save(newUser);
   }
@@ -48,12 +51,15 @@ public class UserService implements IUserService {
   @Override
   public void activateUser(UUID userId, UUID activationToken) {
     User user = findUserToActivateOrThrowException(userId, activationToken);
+    if(isTokenExpired(user)){
+      throw new IllegalArgumentException("Token has expired");
+    }
     user.setActivated(true);
     userRepository.save(user);
     sendWelcomeEmail(user);
   }
 
-  User createUser(SignUpRequest createUserRequest) {
+  private User createUser(SignUpRequest createUserRequest) {
     User user = UserMapper.toUser(createUserRequest);
     String passwordEncoded = passwordEncoder.encode(createUserRequest.password());
     user.setPassword(passwordEncoded);
@@ -116,4 +122,12 @@ public class UserService implements IUserService {
             () -> new IllegalArgumentException("Token is invalid or user is already activated"));
   }
 
+  private void generateActivationToken(User user){
+    user.setActivationToken(UUID.randomUUID());
+    user.setTokenExpirationDate(LocalDateTime.now().plusHours(24));
+  }
+
+  private Boolean isTokenExpired(User user){
+    return user.getTokenExpirationDate().isBefore(LocalDateTime.now());
+  }
 }
