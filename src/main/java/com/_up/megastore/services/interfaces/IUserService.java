@@ -8,4 +8,8 @@ public interface IUserService {
   void saveUser(SignUpRequest newUser);
 
   void activateUser(UUID userId, UUID activationToken);
+
+  void sendEmailToRecoverPassword(String email);
+
+  void recoverPassword(UUID userId, String password, String confirmPassword, UUID recoverPasswordToken);
 }

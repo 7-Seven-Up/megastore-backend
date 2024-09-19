@@ -9,6 +9,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -52,8 +55,14 @@ public class User {
   private List<Order> orders = Collections.emptyList();
 
   private boolean deleted = false;
+
   private boolean activated = false;
+
   private final UUID activationToken = UUID.randomUUID();
+
+  private UUID recoverPasswordToken = null;
+
+  private LocalDateTime recoverTokenExpirationDate;
 
   @Id
   private final UUID userId = UUID.randomUUID();
