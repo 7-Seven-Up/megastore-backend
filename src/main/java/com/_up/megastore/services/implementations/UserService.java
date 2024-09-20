@@ -177,31 +177,32 @@ public class UserService implements IUserService {
   }
 
   private User findUserByEmailOrThrowException(String email) {
-    return userRepository.findByEmailAndDeletedIsFalse(email).orElseThrow(() -> new RuntimeException("User with email " + email +" does not exists."));
+    return userRepository.findByEmailAndDeletedIsFalse(email)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with email " + email +" does not exists."));
   }
 
   @Override
   public void recoverPassword(UUID userId, String password, String confirmPassword, UUID recoverPasswordToken) {
     User user = findUserByIdOrThrowException(userId);
-    ifTokenIsNotTheSameThrowException(recoverPasswordToken, user);
-    ifPasswordIsNotStrongerThrowException(password);
-    ifPasswordsAreNotEqualsThrowException(password, confirmPassword);
+    throwExceptionIfTokenIsNotValid(recoverPasswordToken, user);
+    throwExceptionIfPasswordIsNotStronger(password);
+    throwExceptionIfPasswordsAreNotEquals(password, confirmPassword);
     user.setPassword(passwordEncoder.encode(password));
     userRepository.save(user);
   }
 
-  private void ifTokenIsNotTheSameThrowException(UUID recoverPasswordToken, User user) {
+  private void throwExceptionIfTokenIsNotValid(UUID recoverPasswordToken, User user) {
     if (!user.getRecoverPasswordToken().equals(recoverPasswordToken))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The token is not the same");
   }
 
-  private void ifPasswordIsNotStrongerThrowException(String password) {
+  private void throwExceptionIfPasswordIsNotStronger(String password) {
     String regexStrongPassword = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!¡¿?$%&#@_-])[A-Za-z0-9!¡¿?$%&#@_-]+$";
     if (!password.matches(regexStrongPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is not stronger");
   }
 
-  private void ifPasswordsAreNotEqualsThrowException(String password, String confirmPassword) {
+  private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
     if (!password.equals(confirmPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
   }
