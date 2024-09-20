@@ -186,7 +186,6 @@ public class UserService implements IUserService {
   public void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest) {
     User user = findUserByIdOrThrowException(userId);
     throwExceptionIfTokenIsNotValid(recoverPasswordRequest.recoverPasswordToken(), user);
-    throwExceptionIfPasswordIsNotStronger(recoverPasswordRequest.password());
     throwExceptionIfPasswordsAreNotEquals(recoverPasswordRequest.password(), recoverPasswordRequest.confirmPassword());
     user.setPassword(passwordEncoder.encode(recoverPasswordRequest.password()));
     userRepository.save(user);
@@ -195,12 +194,6 @@ public class UserService implements IUserService {
   private void throwExceptionIfTokenIsNotValid(UUID recoverPasswordToken, User user) {
     if (!user.getRecoverPasswordToken().equals(recoverPasswordToken))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The token is not the same");
-  }
-
-  private void throwExceptionIfPasswordIsNotStronger(String password) {
-    String regexStrongPassword = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!¡¿?$%&#@_-])[A-Za-z0-9!¡¿?$%&#@_-]+$";
-    if (!password.matches(regexStrongPassword))
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is not stronger");
   }
 
   private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
