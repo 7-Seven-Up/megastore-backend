@@ -139,7 +139,7 @@ public class ProductService implements IProductService {
     }
 
     private void throwExceptionIfProductWithNameAlreadyExists(Product product) {
-        if (productRepository.existsByNameAndDeletedIsFalse(product.getName())) {
+        if (productRepository.existsByNameIgnoreCaseAndDeletedIsFalse(product.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName()+ " already exists and is not deleted.");
         }
     }

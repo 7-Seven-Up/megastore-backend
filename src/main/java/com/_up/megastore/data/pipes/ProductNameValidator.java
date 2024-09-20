@@ -14,7 +14,7 @@ public class ProductNameValidator implements ConstraintValidator<ProductName, St
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         if (s == null || s.isEmpty()) return true;
-        return !productRepository.existsByNameAndDeletedIsFalse(s);
+        return !productRepository.existsByNameIgnoreCaseAndDeletedIsFalse(s);
     }
 
 }
