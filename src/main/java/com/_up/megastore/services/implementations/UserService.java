@@ -208,7 +208,8 @@ public class UserService implements IUserService {
   }
 
   private User findUserByIdOrThrowException(UUID userId) {
-    return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User with id " + userId + "does not exist"));
+    return userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with id " + userId + "does not exist"));
   }
 
 }
