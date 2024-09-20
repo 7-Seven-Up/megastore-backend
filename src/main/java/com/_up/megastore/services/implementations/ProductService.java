@@ -13,6 +13,7 @@ import com._up.megastore.services.interfaces.IProductImageService;
 import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,8 +42,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse saveProduct(CreateProductRequest createProductRequest, MultipartFile[] multipartFiles) {
-        throwExceptionIfProductNameAlreadyExists(createProductRequest.name());
         Size size = sizeService.findSizeByIdOrThrowException(createProductRequest.sizeId());
         Category category = categoryService.findCategoryByIdOrThrowException(createProductRequest.categoryId());
         List<ProductImage> images = productImageService.saveProductImages(multipartFiles);
@@ -78,8 +79,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles) {
-        throwExceptionIfProductNameAlreadyExists(updateProductRequest.name());
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
@@ -94,8 +95,8 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductResponse restoreProduct(UUID productId) {
-        validateProductForRestoration(productId);
         Product product = findProductByIdOrThrowException(productId);
+        validateProductForRestoration(product);
         product.setDeleted(false);
         return ProductMapper.toProductResponse( productRepository.save(product) );
     }
@@ -112,12 +113,6 @@ public class ProductService implements IProductService {
                 .map(ProductMapper::toProductResponse);
     }
 
-    private void throwExceptionIfProductNameAlreadyExists(String name) {
-        if (productRepository.existsByName(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name "+name+" already exists.");
-        }
-    }
-
     public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
         if(variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())){
             Product variantOf = this.getVariantOf(variantOfId);
@@ -132,10 +127,20 @@ public class ProductService implements IProductService {
         }
     }
 
-    private void validateProductForRestoration(UUID productId) {
-        Product product = findProductByIdOrThrowException(productId);
+    private void validateProductForRestoration(Product product) {
+        throwExceptionIfProductIsNotDeleted(product);
+        throwExceptionIfProductWithNameAlreadyExists(product);
+    }
+
+    private void throwExceptionIfProductIsNotDeleted(Product product) {
         if (!product.isDeleted()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " is not deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + product.getProductId() + " is not deleted.");
+        }
+    }
+
+    private void throwExceptionIfProductWithNameAlreadyExists(Product product) {
+        if (productRepository.existsByNameAndDeletedIsFalse(product.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName()+ " already exists and is not deleted.");
         }
     }
 
