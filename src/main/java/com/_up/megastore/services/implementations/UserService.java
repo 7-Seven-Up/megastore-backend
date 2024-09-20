@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IUserRepository;
@@ -182,12 +183,12 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void recoverPassword(UUID userId, String password, String confirmPassword, UUID recoverPasswordToken) {
+  public void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest) {
     User user = findUserByIdOrThrowException(userId);
-    throwExceptionIfTokenIsNotValid(recoverPasswordToken, user);
-    throwExceptionIfPasswordIsNotStronger(password);
-    throwExceptionIfPasswordsAreNotEquals(password, confirmPassword);
-    user.setPassword(passwordEncoder.encode(password));
+    throwExceptionIfTokenIsNotValid(recoverPasswordRequest.recoverPasswordToken(), user);
+    throwExceptionIfPasswordIsNotStronger(recoverPasswordRequest.password());
+    throwExceptionIfPasswordsAreNotEquals(recoverPasswordRequest.password(), recoverPasswordRequest.confirmPassword());
+    user.setPassword(passwordEncoder.encode(recoverPasswordRequest.password()));
     userRepository.save(user);
   }
 
