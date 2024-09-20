@@ -4,7 +4,6 @@ import com._up.megastore.data.model.ProductImage;
 import com._up.megastore.data.repositories.IProductImageRepository;
 import com._up.megastore.services.interfaces.IFileUploadService;
 import com._up.megastore.services.interfaces.IProductImageService;
-import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +26,6 @@ public class ProductImageService implements IProductImageService {
     }
 
     @Override
-    @Transactional
     public List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
         validateDuplicateImageNames(multipartFiles);
         return Arrays.stream(multipartFiles)
