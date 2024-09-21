@@ -1,5 +1,6 @@
 package com._up.megastore.controllers.requests;
 
+import com._up.megastore.data.pipes.ProductName;
 import jakarta.validation.constraints.*;
 
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 public record UpdateProductRequest(
     @NotBlank(message = "Product name must not be blank")
     @Size(max = 30, message = "Product name must be less than 30 characters")
+    @ProductName
     String name,
 
     @NotBlank(message = "Product description must not be blank")
