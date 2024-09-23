@@ -10,8 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -58,9 +57,9 @@ public class User {
 
   private boolean activated = false;
 
-  private UUID activationToken;
+  @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
+  private List<Token> activationTokens = Collections.emptyList();
 
-  private LocalDateTime tokenExpirationDate;
   @Id
   private final UUID userId = UUID.randomUUID();
 
