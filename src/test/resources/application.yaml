@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: "megastore"
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  mail:
+    host: MOCKED_EMAIL_HOST
+    port: 587
+    username: MOCKED_EMAIL_USERNAME
+    password: MOCKED_EMAIL_PASSWORD
+cloudinary:
+  cloud-name: MOCKED_NAME
+  api-key: MOCKED_API_KEY
+  api-secret: MOCKED_API_SECRET
+app:
+  url: http://localhost:8080
+  cors:
+    allowed-origins: http://localhost:5173
+frontend:
+  url: MOCKED_FRONT_URL
+jwt:
+  key: MOCKED_JWT_KEY
+  access-token-expiration: 1800000
