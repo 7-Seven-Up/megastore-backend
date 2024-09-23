@@ -18,10 +18,11 @@ import java.util.UUID;
 @Data
 public class Token {
     @Id
-    private UUID activationToken;
+    private final UUID tokenId = UUID.randomUUID();
 
     private LocalDateTime tokenExpirationDate = LocalDateTime.now().plusHours(24);
 
     @ManyToOne
     private User user;
+
 }
