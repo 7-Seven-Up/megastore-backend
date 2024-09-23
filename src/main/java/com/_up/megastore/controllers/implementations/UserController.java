@@ -28,7 +28,7 @@ public class UserController implements IUserController {
   }
 
   @Override
-  public void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest) {
-    userService.recoverPassword(userId, recoverPasswordRequest);
+  public void recoverPassword(RecoverPasswordRequest recoverPasswordRequest) {
+    userService.recoverPassword( recoverPasswordRequest);
   }
 }

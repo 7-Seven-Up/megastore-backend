@@ -16,8 +16,8 @@ public interface IUserController {
       @RequestBody @Valid ActivateUserRequest activateUserRequest);
 
   @PostMapping("/recover-password/send-email") @ResponseStatus(HttpStatus.NO_CONTENT)
-  void sendEmailToRecoverPassword(@RequestParam String email);
+  void sendEmailToRecoverPassword(@RequestBody String email);
 
-  @PostMapping("/recover-password/{userId}") @ResponseStatus(HttpStatus.NO_CONTENT)
-  void recoverPassword(@PathVariable UUID userId, @RequestBody RecoverPasswordRequest recoverPasswordRequest);
+  @PostMapping("/recover-password") @ResponseStatus(HttpStatus.NO_CONTENT)
+  void recoverPassword(@RequestBody RecoverPasswordRequest recoverPasswordRequest);
 }

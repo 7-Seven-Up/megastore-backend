@@ -14,5 +14,5 @@ public interface IUserService {
   void activateUser(UUID userId, UUID activationToken);
 
   void sendEmailToRecoverPassword(String email);
-  void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest);
+  void recoverPassword(RecoverPasswordRequest recoverPasswordRequest);
 }

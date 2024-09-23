@@ -183,27 +183,22 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void recoverPassword(UUID userId, RecoverPasswordRequest recoverPasswordRequest) {
-    User user = findUserByIdOrThrowException(userId);
-    throwExceptionIfTokenIsNotValid(recoverPasswordRequest.recoverPasswordToken(), user);
-    throwExceptionIfPasswordsAreNotEquals(recoverPasswordRequest.password(), recoverPasswordRequest.confirmPassword());
-    user.setPassword(passwordEncoder.encode(recoverPasswordRequest.password()));
+  public void recoverPassword(RecoverPasswordRequest request) {
+    User user = findUserByTokenOrThrowException(request.recoverPasswordToken());
+    throwExceptionIfPasswordsAreNotEquals(request.password(), request.confirmPassword());
+    user.setPassword(passwordEncoder.encode(request.password()));
     userRepository.save(user);
   }
 
-  private void throwExceptionIfTokenIsNotValid(UUID recoverPasswordToken, User user) {
-    if (!user.getRecoverPasswordToken().equals(recoverPasswordToken))
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The token is not the same");
+  private User findUserByTokenOrThrowException(UUID token) {
+    return userRepository.findByRecoverPasswordTokenIs(token)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "The token" + token + " does not assigned to any user."));
   }
 
   private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
     if (!password.equals(confirmPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
-  }
-
-  private User findUserByIdOrThrowException(UUID userId) {
-    return userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with id " + userId + "does not exist"));
   }
 
 }

@@ -14,5 +14,4 @@ public record RecoverPasswordRequest(
         String confirmPassword,
         @NotBlank(message = "RecoverPasswordToken must not be null")
         UUID recoverPasswordToken
-)
-{}
+) {}
