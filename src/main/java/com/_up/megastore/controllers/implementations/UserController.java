@@ -3,6 +3,7 @@ package com._up.megastore.controllers.implementations;
 import com._up.megastore.controllers.interfaces.IUserController;
 import com._up.megastore.controllers.requests.ActivateUserRequest;
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
+import com._up.megastore.controllers.requests.SendRecoverPasswordEmailRequest;
 import com._up.megastore.services.implementations.UserService;
 
 import java.util.UUID;
@@ -23,8 +24,8 @@ public class UserController implements IUserController {
   }
 
   @Override
-  public void sendEmailToRecoverPassword(String email) {
-    userService.sendEmailToRecoverPassword(email);
+  public void sendEmailToRecoverPassword(SendRecoverPasswordEmailRequest request) {
+    userService.sendEmailToRecoverPassword(request.email());
   }
 
   @Override

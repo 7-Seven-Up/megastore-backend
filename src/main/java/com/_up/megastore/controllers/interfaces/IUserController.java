@@ -2,6 +2,7 @@ package com._up.megastore.controllers.interfaces;
 
 import com._up.megastore.controllers.requests.ActivateUserRequest;
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
+import com._up.megastore.controllers.requests.SendRecoverPasswordEmailRequest;
 import jakarta.validation.Valid;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public interface IUserController {
       @RequestBody @Valid ActivateUserRequest activateUserRequest);
 
   @PostMapping("/recover-password/send-email") @ResponseStatus(HttpStatus.NO_CONTENT)
-  void sendEmailToRecoverPassword(@RequestBody String email);
+  void sendEmailToRecoverPassword(@RequestBody SendRecoverPasswordEmailRequest sendRecoverPasswordEmailRequest);
 
   @PostMapping("/recover-password") @ResponseStatus(HttpStatus.NO_CONTENT)
   void recoverPassword(@RequestBody RecoverPasswordRequest recoverPasswordRequest);
