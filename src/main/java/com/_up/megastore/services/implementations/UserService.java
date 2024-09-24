@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IUserRepository;
@@ -7,9 +8,12 @@ import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 
@@ -114,6 +118,87 @@ public class UserService implements IUserService {
             activationToken)
         .orElseThrow(
             () -> new IllegalArgumentException("Token is invalid or user is already activated"));
+  }
+
+  @Override
+  public void sendEmailToRecoverPassword(String email) {
+    User user = findUserByEmailOrThrowException(email);
+
+    user.setRecoverPasswordToken(UUID.randomUUID());
+
+    userRepository.save(user);
+
+    String recoverPasswordURL = frontendURL + "/auth/recover-password?token=" + user.getRecoverPasswordToken();
+
+    String emailContent = "<!DOCTYPE html>\n"
+            + "<html>\n"
+            + "<head>\n"
+            + "    <meta charset=\"UTF-8\">\n"
+            + "    <title>Password Recovery</title>\n"
+            + "    <style>\n"
+            + "        body { font-family: Arial, sans-serif; }\n"
+            + "        .container { width: 80%; margin: 0 auto; }\n"
+            + "        .header { background-color: #f4f4f4; padding: 20px; text-align: center; }\n"
+            + "        .content { padding: 20px; }\n"
+            + "        .footer { background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; }\n"
+            + "        .button {\n"
+            + "            display: inline-block;\n"
+            + "            padding: 10px 20px;\n"
+            + "            font-size: 16px;\n"
+            + "            color: #fff;\n"
+            + "            background-color: #1ae866;\n"
+            + "            text-decoration: none;\n"
+            + "            border-radius: 5px;\n"
+            + "            text-align: center;\n"
+            + "        }\n"
+            + "        .button:hover {\n"
+            + "            background-color: #15d67c;\n"
+            + "        }\n"
+            + "    </style>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "    <div class=\"container\">\n"
+            + "        <div class=\"header\">\n"
+            + "            <h1>Password Recovery</h1>\n"
+            + "        </div>\n"
+            + "        <div class=\"content\">\n"
+            + "            <p>Hello " + user.getUsername() + ",</p>\n"
+            + "            <p>We received a request to reset your password. Click the button below to create a new password:</p>\n"
+            + "            <p style=\"display: flex; flex: content; justify-content: center;\"><a href=\" " + recoverPasswordURL + "\" class=\"button\">Reset Password</a></p>\n"
+            + "            <p>If you did not request this change, please ignore this email.</p>\n"
+            + "            <p>Best regards,<br>The Support Team</p>\n"
+            + "        </div>\n"
+            + "        <div class=\"footer\">\n"
+            + "            <p>Megastore, Villa Maria, Cordoba, Argentina</p>\n"
+            + "        </div>\n"
+            + "    </div>\n"
+            + "</body>\n"
+            + "</html>";
+    emailService.sendEmail(email, "Recover Password", emailContent);
+  }
+
+  private User findUserByEmailOrThrowException(String email) {
+    return userRepository.findByEmailAndDeletedIsFalse(email)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with email " + email +" does not exists."));
+  }
+
+  @Override
+  public void recoverPassword(RecoverPasswordRequest request) {
+    User user = findUserByTokenOrThrowException(request.recoverPasswordToken());
+    throwExceptionIfPasswordsAreNotEquals(request.password(), request.confirmPassword());
+    user.setPassword(passwordEncoder.encode(request.password()));
+    userRepository.save(user);
+  }
+
+  private User findUserByTokenOrThrowException(UUID token) {
+    return userRepository.findByRecoverPasswordTokenIs(token)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "The token" + token + " does not assigned to any user."));
+  }
+
+  private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
+    if (!password.equals(confirmPassword))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
   }
 
 }
