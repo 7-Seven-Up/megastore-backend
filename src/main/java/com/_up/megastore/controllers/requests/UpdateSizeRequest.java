@@ -10,6 +10,6 @@ public record UpdateSizeRequest (
         String name,
 
         @NotNull(message = "Size description must not be null")
-        @Size(max = 50, message = "Size description must be less than 50 characters")
+        @Size(min = 5, max = 50, message = "Size description must be between 5 and 50 characters")
         String description
 ){}
