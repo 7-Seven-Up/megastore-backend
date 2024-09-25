@@ -7,6 +7,7 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,8 +28,8 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryResponse saveCategory(CreateCategoryRequest createCategoryRequest) {
-        throwExceptionIfCategoryNameAlreadyExists(createCategoryRequest.name());
         Category superCategory = getSuperCategory(createCategoryRequest.superCategoryId());
         Category category = CategoryMapper.toCategory(createCategoryRequest, superCategory);
         return CategoryMapper.toCategoryResponse( categoryRepository.save(category) );
@@ -79,15 +80,15 @@ public class CategoryService implements ICategoryService {
   
     @Override
     public CategoryResponse restoreCategory(UUID categoryId){
-        validateCategoryForRestoration(categoryId);
         Category category = findCategoryByIdOrThrowException(categoryId);
+        validateCategoryForRestoration(category);
         category.setDeleted(false);
         return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
     }
 
     @Override
+    @Transactional
     public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
-        throwExceptionIfCategoryNameAlreadyExists(updateCategoryRequest.name());
         Category category = findCategoryByIdOrThrowException(categoryId);
         category.setName(updateCategoryRequest.name());
         category.setDescription(updateCategoryRequest.description());
@@ -105,16 +106,21 @@ public class CategoryService implements ICategoryService {
         }
     }
 
-    public void validateCategoryForRestoration(UUID categoryId){
-        Category category = findCategoryByIdOrThrowException(categoryId);
-        if(!category.isDeleted()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " is not deleted.");
-        }
+    private void validateCategoryForRestoration(Category category) {
+        throwExceptionIfCategoryIsNotDeleted(category);
+        throwExceptionIfCategoryWithNameAlreadyExists(category);
+    }
 
-    }
-    private void throwExceptionIfCategoryNameAlreadyExists(String name) {
-        if (categoryRepository.existsByName(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with name "+ name +" already exists.");
+    private void throwExceptionIfCategoryIsNotDeleted(Category category){
+        if(!category.isDeleted()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + category.getCategoryId() + " is not deleted.");
         }
     }
+
+    private void throwExceptionIfCategoryWithNameAlreadyExists(Category category) {
+        if (categoryRepository.existsByNameAndDeletedIsFalse(category.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with name "+ category.getName() +" already exists and is not deleted.");
+        }
+    }
+
 }
