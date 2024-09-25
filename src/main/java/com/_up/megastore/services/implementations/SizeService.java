@@ -7,6 +7,7 @@ import com._up.megastore.data.model.Size;
 import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +27,8 @@ public class SizeService implements ISizeService {
     }
 
     @Override
+    @Transactional
     public SizeResponse saveSize(CreateSizeRequest createSizeRequest) {
-        throwExceptionIfSizeNameAlreadyExists(createSizeRequest.name());
         Size size = SizeMapper.toSize(createSizeRequest);
         return SizeMapper.toSizeResponse( sizeRepository.save(size) );
     }
@@ -39,8 +40,8 @@ public class SizeService implements ISizeService {
     }
 
     @Override
+    @Transactional
     public SizeResponse updateSize(UUID sizeId,UpdateSizeRequest updateSizeRequest){
-        throwExceptionIfSizeNameAlreadyExists(updateSizeRequest.name());
         Size size = findSizeByIdOrThrowException(sizeId);
         size.setName(updateSizeRequest.name());
         size.setDescription(updateSizeRequest.description());
@@ -64,36 +65,41 @@ public class SizeService implements ISizeService {
     @Override
     public SizeResponse restoreSize(UUID sizeId){
         Size size = findSizeByIdOrThrowException(sizeId);
-        ifSizeIsNotDeletedThrowException(size);
+        validateSizeForRestoration(size);
         size.setDeleted(false);
         return SizeMapper.toSizeResponse(sizeRepository.save(size));
-    }
-
-    public void ifSizeIsNotDeletedThrowException(Size size) {
-        if(!size.isDeleted()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted.");
-        }
     }
 
     @Override
     public void deleteSize(UUID sizeId){
         Size size = findSizeByIdOrThrowException(sizeId);
-        ifSizeIsDeletedThrowException(size);
+        throwExceptionIfSizeIsDeleted(size);
         size.setDeleted(true);
 
         sizeRepository.save(size);
     }
 
-    public void ifSizeIsDeletedThrowException(Size size){
+    private void validateSizeForRestoration(Size size){
+        throwExceptionIfSizeIsNotDeleted(size);
+        throwExceptionIfSizeNameAlreadyExists(size);
+    }
+
+    public void throwExceptionIfSizeIsNotDeleted(Size size) {
+        if(!size.isDeleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted.");
+        }
+    }
+
+    public void throwExceptionIfSizeIsDeleted(Size size){
         if(size.isDeleted()){
             throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
 
         }
     }
 
-    private void throwExceptionIfSizeNameAlreadyExists(String name){
-        if (sizeRepository.existsByName(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with name "+ name +" already exists.");
+    private void throwExceptionIfSizeNameAlreadyExists(Size size){
+        if (sizeRepository.existsByNameAndDeletedIsFalse(size.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with name "+ size.getName() +" already exists and is not deleted.");
         }
     }
 }
