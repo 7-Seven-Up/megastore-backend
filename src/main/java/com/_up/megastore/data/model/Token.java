@@ -20,9 +20,9 @@ public class Token {
     @Id
     private final UUID tokenId = UUID.randomUUID();
 
+    @Builder.Default
     private LocalDateTime tokenExpirationDate = LocalDateTime.now().plusHours(24);
 
     @ManyToOne
     private User user;
-
 }
