@@ -14,8 +14,6 @@ public interface IUserRepository extends JpaRepository<User, UUID> {
   Optional<User> findByEmailAndDeletedIsFalse(String email);
   
   Optional<User> findByUsername(String username);
-
-  Optional<User> findByUserIdAndActivatedIsFalse(UUID userId);
   
   Optional<User> findByRecoverPasswordTokenIs(UUID recoverPasswordToken);
 

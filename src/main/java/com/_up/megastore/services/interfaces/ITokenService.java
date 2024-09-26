@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface ITokenService {
     public Token saveToken(User user);
-    public UUID findUser(UUID activationToken);
+    public User findUserByActivationToken(UUID activationToken);
+    public Token findTokenByIdOrThrowException(UUID token);
 }

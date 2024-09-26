@@ -26,19 +26,17 @@ public class UserService implements IUserService {
 
   private final IEmailService emailService;
   private final IUserRepository userRepository;
-  private final ITokenRepository tokenRepository;
   private final PasswordEncoder passwordEncoder;
   private final ITokenService tokenService;
   @Value("${frontend.url}")
   private String frontendURL;
 
   public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder,
-      IEmailService emailService, ITokenRepository tokenRepository, ITokenService iTokenService) {
+      IEmailService emailService, ITokenService TokenService) {
     this.emailService = emailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
-    this.tokenRepository = tokenRepository;
-    this.tokenService = iTokenService;
+    this.tokenService = TokenService;
   }
 
   @Override
@@ -124,10 +122,11 @@ public class UserService implements IUserService {
   }
 
   private User findUserToActivateOrThrowException(UUID activationTokenUUID) {
-    UUID userUUID = tokenService.findUser(activationTokenUUID);
-    return userRepository.findByUserIdAndActivatedIsFalse(userUUID)
-            .orElseThrow(() -> new IllegalArgumentException("Token is invalid or user is already activate."));
-
+    User user = tokenService.findUserByActivationToken(activationTokenUUID);
+    if(user.isActivated()){
+      throw new IllegalArgumentException("User with UUID " + user.getUserId() + " is already activated.");
+    }
+    return user;
   }
 
 
@@ -141,8 +140,7 @@ public class UserService implements IUserService {
   }
 
   private Token findActivationTokenByTokenUUIDOrThrowException(UUID activationTokenUUID){
-    return tokenRepository.findById(activationTokenUUID)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token with UUID " + activationTokenUUID + " does not exist."));
+    return tokenService.findTokenByIdOrThrowException(activationTokenUUID);
   }
 
   @Override
