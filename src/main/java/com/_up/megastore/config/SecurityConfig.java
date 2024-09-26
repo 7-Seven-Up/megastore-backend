@@ -37,6 +37,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(authRequest -> authRequest
             .requestMatchers(WHITE_LISTED_URLS).permitAll()
             .requestMatchers(HttpMethod.GET, ALLOWED_TO_GET_BY_USERS_URLS).permitAll()
+            .requestMatchers(HttpMethod.OPTIONS).permitAll()
             .requestMatchers(ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .httpBasic(Customizer.withDefaults())

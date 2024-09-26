@@ -9,11 +9,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
-
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,6 +59,8 @@ public class User {
   @OneToMany(cascade = {CascadeType.ALL})
   @Builder.Default
   private List<Token> activationTokens = Collections.emptyList();
+
+  private UUID recoverPasswordToken = null;
 
   @Id
   private final UUID userId = UUID.randomUUID();
