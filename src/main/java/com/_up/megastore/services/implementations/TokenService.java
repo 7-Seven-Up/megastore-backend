@@ -29,8 +29,7 @@ public class TokenService implements ITokenService {
 
     @Override
     public User findUserByActivationToken(UUID activationToken){
-        Token token = iTokenRepository.findById(activationToken)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token with ID " + activationToken + " does not exist." ));
+        Token token = findTokenByIdOrThrowException(activationToken);
         return token.getUser();
     }
 

@@ -4,7 +4,6 @@ import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.Token;
 import com._up.megastore.data.model.User;
-import com._up.megastore.data.repositories.ITokenRepository;
 import com._up.megastore.data.repositories.IUserRepository;
 import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.ITokenService;
@@ -32,11 +31,11 @@ public class UserService implements IUserService {
   private String frontendURL;
 
   public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder,
-      IEmailService emailService, ITokenService TokenService) {
+      IEmailService emailService, ITokenService tokenService) {
     this.emailService = emailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
-    this.tokenService = TokenService;
+    this.tokenService = tokenService;
   }
 
   @Override
@@ -123,12 +122,14 @@ public class UserService implements IUserService {
 
   private User findUserToActivateOrThrowException(UUID activationTokenUUID) {
     User user = tokenService.findUserByActivationToken(activationTokenUUID);
+    ifUserIsActivatedThrowException(user);
+    return user;
+  }
+  private void ifUserIsActivatedThrowException(User user){
     if(user.isActivated()){
       throw new IllegalArgumentException("User with UUID " + user.getUserId() + " is already activated.");
     }
-    return user;
   }
-
 
   private UUID generateActivationToken(User user){
     return tokenService.saveToken(user).getTokenId();
