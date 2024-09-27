@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Size;
 public record CreateSizeRequest(
 
         @NotNull(message = "Size name must not be null")
-        @Size(max = 20, message = "Size name must be less than 20 characters")
+        @Size(min = 3, max = 20, message = "Size name must be between 3 and 20 characters")
         @SizeName
         String name,
 
         @NotNull(message = "Size description must not be null")
-        @Size(max = 50, message = "Size description must be less than 50 characters")
+        @Size(min = 5, max = 50, message = "Size description must be between 5 and 50 characters")
         String description
 ) {}
