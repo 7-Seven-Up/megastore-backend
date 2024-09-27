@@ -2,11 +2,14 @@ package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
+import com._up.megastore.data.model.Token;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IUserRepository;
 import com._up.megastore.services.interfaces.IEmailService;
+import com._up.megastore.services.interfaces.ITokenService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.NoSuchElementException;
+
 
 @Service
 public class UserService implements IUserService {
@@ -23,15 +26,16 @@ public class UserService implements IUserService {
   private final IEmailService emailService;
   private final IUserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-
+  private final ITokenService tokenService;
   @Value("${frontend.url}")
   private String frontendURL;
 
   public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder,
-      IEmailService emailService) {
+      IEmailService emailService, ITokenService tokenService) {
     this.emailService = emailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
+    this.tokenService = tokenService;
   }
 
   @Override
@@ -39,34 +43,38 @@ public class UserService implements IUserService {
     ifEmailAlreadyExistsThrowException(createUserRequest.email());
     ifUsernameAlreadyExistsThrowException(createUserRequest.username());
     User newUser = createUser(createUserRequest);
-    sendActivationEmail(newUser);
     userRepository.save(newUser);
+    UUID activationTokenUUID = generateActivationToken(newUser);
+    sendActivationEmail(newUser,activationTokenUUID);
   }
 
   @Override
   public User findUserByUsernameOrThrowException(String username) {
     return userRepository.findByUsername(username)
-            .orElseThrow(() -> new NoSuchElementException("User with username "+username+" does not exist."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with username " + username + " does not exist."));
   }
 
   @Override
   public void activateUser(UUID userId, UUID activationToken) {
-    User user = findUserToActivateOrThrowException(userId, activationToken);
+    User user = findUserToActivateOrThrowException(activationToken);
+    if(isTokenExpired(activationToken)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token has expired");
+    }
     user.setActivated(true);
     userRepository.save(user);
     sendWelcomeEmail(user);
   }
 
-  User createUser(SignUpRequest createUserRequest) {
+  private User createUser(SignUpRequest createUserRequest) {
     User user = UserMapper.toUser(createUserRequest);
     String passwordEncoded = passwordEncoder.encode(createUserRequest.password());
     user.setPassword(passwordEncoded);
     return user;
   }
 
-  private void sendActivationEmail(User user) {
+  private void sendActivationEmail(User user, UUID activationToken) {
     String activationUrl = frontendURL + "/auth/activate?userId="
-        + user.getUserId() + "&activationToken=" + user.getActivationToken();
+        + user.getUserId() + "&activationToken=" + activationToken;
 
     String emailBody = "<table style='width:100%; height:100%;'>"
         + "<tr>"
@@ -112,12 +120,28 @@ public class UserService implements IUserService {
     }
   }
 
-  private User findUserToActivateOrThrowException(UUID userId,
-      UUID activationToken) {
-    return userRepository.findByUserIdAndActivationTokenAndActivatedIsFalse(userId,
-            activationToken)
-        .orElseThrow(
-            () -> new IllegalArgumentException("Token is invalid or user is already activated"));
+  private User findUserToActivateOrThrowException(UUID activationTokenUUID) {
+    User user = tokenService.findUserByActivationToken(activationTokenUUID);
+    ifUserIsActivatedThrowException(user);
+    return user;
+  }
+  private void ifUserIsActivatedThrowException(User user){
+    if(user.isActivated()){
+      throw new IllegalArgumentException("User with UUID " + user.getUserId() + " is already activated.");
+    }
+  }
+
+  private UUID generateActivationToken(User user){
+    return tokenService.saveToken(user).getTokenId();
+  }
+
+  private Boolean isTokenExpired(UUID activationTokenUUID){
+    Token activationToken = findActivationTokenByTokenUUIDOrThrowException(activationTokenUUID);
+      return activationToken.getTokenExpirationDate().isBefore(LocalDateTime.now());
+  }
+
+  private Token findActivationTokenByTokenUUIDOrThrowException(UUID activationTokenUUID){
+    return tokenService.findTokenByIdOrThrowException(activationTokenUUID);
   }
 
   @Override
