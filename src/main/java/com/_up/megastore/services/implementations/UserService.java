@@ -1,6 +1,7 @@
 package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
+import com._up.megastore.controllers.requests.SendEmailRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.Token;
 import com._up.megastore.data.model.User;
@@ -127,7 +128,7 @@ public class UserService implements IUserService {
   }
   private void ifUserIsActivatedThrowException(User user){
     if(user.isActivated()){
-      throw new IllegalArgumentException("User with UUID " + user.getUserId() + " is already activated.");
+      throw new IllegalArgumentException("User is already activated.");
     }
   }
 
@@ -223,6 +224,14 @@ public class UserService implements IUserService {
   private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
     if (!password.equals(confirmPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+  }
+
+  @Override
+  public void resendActivationEmail(SendEmailRequest sendEmailRequest) {
+    User user = findUserByEmailOrThrowException(sendEmailRequest.email());
+    ifUserIsActivatedThrowException(user);
+    Token token = tokenService.saveToken(user);
+    sendActivationEmail(user, token.getTokenId());
   }
 
 }
