@@ -230,6 +230,7 @@ public class UserService implements IUserService {
   public void resendActivationEmail(SendEmailRequest sendEmailRequest) {
     User user = findUserByEmailOrThrowException(sendEmailRequest.email());
     ifUserIsActivatedThrowException(user);
+    tokenService.expireUserTokens(user);
     Token token = tokenService.saveToken(user);
     sendActivationEmail(user, token.getTokenId());
   }

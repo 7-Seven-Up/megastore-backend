@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -38,5 +37,10 @@ public class TokenService implements ITokenService {
     public Token findTokenByIdOrThrowException(UUID token){
         return iTokenRepository.findById(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token with UUID " + token + " does not exist."));
+    }
+
+    @Override
+    public void expireUserTokens(User user) {
+        iTokenRepository.expireUserTokens(user);
     }
 }
