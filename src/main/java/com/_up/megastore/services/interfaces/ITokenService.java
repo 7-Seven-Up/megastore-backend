@@ -10,5 +10,5 @@ public interface ITokenService {
     public User findUserByActivationToken(UUID activationToken);
     public Token findTokenByIdOrThrowException(UUID token);
 
-    void expireUserTokens(User user);
+    Token findActiveTokenByUser(User user);
 }

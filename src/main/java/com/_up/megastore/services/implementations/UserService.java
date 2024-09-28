@@ -10,14 +10,14 @@ import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.ITokenService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.UserMapper;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 
@@ -230,8 +230,7 @@ public class UserService implements IUserService {
   public void resendActivationEmail(SendEmailRequest sendEmailRequest) {
     User user = findUserByEmailOrThrowException(sendEmailRequest.email());
     ifUserIsActivatedThrowException(user);
-    tokenService.expireUserTokens(user);
-    Token token = tokenService.saveToken(user);
+    Token token = tokenService.findActiveTokenByUser(user);
     sendActivationEmail(user, token.getTokenId());
   }
 

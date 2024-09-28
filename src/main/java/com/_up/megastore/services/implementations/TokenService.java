@@ -40,7 +40,8 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public void expireUserTokens(User user) {
-        iTokenRepository.expireUserTokens(user);
+    public Token findActiveTokenByUser(User user) {
+        return iTokenRepository.findActiveTokenByUser(user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User activation token has expired"));
     }
 }
