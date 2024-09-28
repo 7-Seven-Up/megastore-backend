@@ -38,4 +38,10 @@ public class TokenService implements ITokenService {
         return iTokenRepository.findById(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token with UUID " + token + " does not exist."));
     }
+
+    @Override
+    public Token findActiveTokenByUser(User user) {
+        return iTokenRepository.findActiveTokenByUser(user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User activation token has expired"));
+    }
 }

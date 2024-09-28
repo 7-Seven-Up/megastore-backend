@@ -56,7 +56,7 @@ public class User {
 
   private boolean activated = false;
 
-  @OneToMany(cascade = {CascadeType.ALL})
+  @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
   @Builder.Default
   private List<Token> activationTokens = Collections.emptyList();
 
