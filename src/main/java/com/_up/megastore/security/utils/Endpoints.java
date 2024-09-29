@@ -7,7 +7,8 @@ public class Endpoints {
             "/error",
             "/api/v1/users/*/activate",
             "/api/v1/users/recover-password/**",
-            "/api/v1/users/resend-activation-email"
+            "/api/v1/users/resend-activation-email",
+            "/api/v1/users/send-new-activation-token"
     };
 
     public static String[] ALLOWED_TO_GET_BY_USERS_URLS = {

@@ -4,10 +4,11 @@ import com._up.megastore.controllers.interfaces.IUserController;
 import com._up.megastore.controllers.requests.ActivateUserRequest;
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SendEmailRequest;
+import com._up.megastore.controllers.requests.SendNewActivationTokenRequest;
 import com._up.megastore.services.implementations.UserService;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController implements IUserController {
@@ -36,5 +37,10 @@ public class UserController implements IUserController {
   @Override
   public void resendActivationEmail(SendEmailRequest sendEmailRequest) {
     userService.resendActivationEmail(sendEmailRequest);
+  }
+
+  @Override
+  public void sendNewActivationToken(SendNewActivationTokenRequest sendNewActivationTokenRequest) {
+    userService.sendNewActivationToken(sendNewActivationTokenRequest);
   }
 }
