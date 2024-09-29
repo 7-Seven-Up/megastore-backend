@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class SizeService implements ISizeService {
     @Override
     @Transactional
     public SizeResponse saveSize(CreateSizeRequest createSizeRequest) {
+        throwExceptionIfSizeNameAlreadyExists(createSizeRequest.name());
         Size size = SizeMapper.toSize(createSizeRequest);
         return SizeMapper.toSizeResponse( sizeRepository.save(size) );
     }
@@ -41,8 +43,10 @@ public class SizeService implements ISizeService {
 
     @Override
     @Transactional
-    public SizeResponse updateSize(UUID sizeId,UpdateSizeRequest updateSizeRequest){
+    public SizeResponse updateSize(UUID sizeId,UpdateSizeRequest updateSizeRequest) {
         Size size = findSizeByIdOrThrowException(sizeId);
+        throwExceptionIfReplacedSizeNameAlreadyExists(size, updateSizeRequest.name());
+
         size.setName(updateSizeRequest.name());
         size.setDescription(updateSizeRequest.description());
 
@@ -81,7 +85,7 @@ public class SizeService implements ISizeService {
 
     private void validateSizeForRestoration(Size size){
         throwExceptionIfSizeIsNotDeleted(size);
-        throwExceptionIfSizeNameAlreadyExists(size);
+        throwExceptionIfSizeNameAlreadyExists(size.getName());
     }
 
     public void throwExceptionIfSizeIsNotDeleted(Size size) {
@@ -97,9 +101,15 @@ public class SizeService implements ISizeService {
         }
     }
 
-    private void throwExceptionIfSizeNameAlreadyExists(Size size){
-        if (sizeRepository.existsByNameAndDeletedIsFalse(size.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with name "+ size.getName() +" already exists and is not deleted.");
+    private void throwExceptionIfSizeNameAlreadyExists(String sizeName) {
+        if (sizeRepository.existsByNameAndDeletedIsFalse(sizeName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with name "+ sizeName +" already exists.");
+        }
+    }
+
+    private void throwExceptionIfReplacedSizeNameAlreadyExists(Size size, String updatedSizeName) {
+        if (!size.getName().equalsIgnoreCase(updatedSizeName)) {
+            throwExceptionIfSizeNameAlreadyExists(updatedSizeName);
         }
     }
 }
