@@ -2,6 +2,7 @@ package com._up.megastore.services.implementations;
 
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SendEmailRequest;
+import com._up.megastore.controllers.requests.SendNewActivationTokenRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
 import com._up.megastore.data.model.Token;
 import com._up.megastore.data.model.User;
@@ -18,8 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-
 
 @Service
 public class UserService implements IUserService {
@@ -232,6 +231,20 @@ public class UserService implements IUserService {
     ifUserIsActivatedThrowException(user);
     Token token = tokenService.findActiveTokenByUser(user);
     sendActivationEmail(user, token.getTokenId());
+  }
+
+  @Override
+  public void sendNewActivationToken(SendNewActivationTokenRequest sendNewActivationTokenRequest) {
+    throwExceptionIfTokenIsNotExpired(sendNewActivationTokenRequest.activationToken());
+    User user = tokenService.findUserByActivationToken(sendNewActivationTokenRequest.activationToken());
+    Token token = tokenService.saveToken(user);
+    sendActivationEmail(user, token.getTokenId());
+  }
+
+  private void throwExceptionIfTokenIsNotExpired(UUID activationTokenId) {
+    if (!isTokenExpired(activationTokenId)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is not expired");
+    }
   }
 
 }
