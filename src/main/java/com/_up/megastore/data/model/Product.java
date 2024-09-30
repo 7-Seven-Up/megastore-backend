@@ -34,7 +34,7 @@ public class Product {
     @ManyToOne @NonNull
     private Category category;
 
-    @OneToMany @NonNull
+    @ManyToMany @NonNull
     private List<ProductImage> images;
 
     @ManyToOne
