@@ -63,9 +63,18 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(UUID productId){
         Product product = findProductByIdOrThrowException(productId);
+
+        throwExceptionIfProductHasVariants(product);
         ifProductIsNotDeletedThrowException(product);
+
         product.setDeleted(true);
         productRepository.save(product);
+    }
+
+    private void throwExceptionIfProductHasVariants(Product product) {
+        if (!product.getVariants().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName() + " has variants and it can't be deleted.");
+        }
     }
 
     private void ifProductIsNotDeletedThrowException(Product product){
