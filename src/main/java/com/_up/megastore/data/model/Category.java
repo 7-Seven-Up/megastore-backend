@@ -17,7 +17,6 @@ public class Category {
     @NonNull
     private String name;
 
-    @NonNull
     private String description;
 
     @ManyToOne

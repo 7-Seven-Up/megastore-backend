@@ -16,7 +16,6 @@ public class Size {
     @NonNull
     private String name;
 
-    @NonNull
     private String description;
 
     private boolean deleted = false;
