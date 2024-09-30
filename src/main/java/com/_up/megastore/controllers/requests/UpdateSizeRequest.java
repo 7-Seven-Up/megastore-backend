@@ -1,6 +1,5 @@
 package com._up.megastore.controllers.requests;
 
-import com._up.megastore.data.pipes.SizeName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

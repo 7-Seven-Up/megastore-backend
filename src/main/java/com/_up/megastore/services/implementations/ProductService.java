@@ -63,9 +63,18 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(UUID productId){
         Product product = findProductByIdOrThrowException(productId);
+
+        throwExceptionIfProductHasVariants(product);
         ifProductIsNotDeletedThrowException(product);
+
         product.setDeleted(true);
         productRepository.save(product);
+    }
+
+    private void throwExceptionIfProductHasVariants(Product product) {
+        if (productRepository.existsByVariantOfAndDeletedFalse(product)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName() + " has variants and it can't be deleted.");
+        }
     }
 
     private void ifProductIsNotDeletedThrowException(Product product){
@@ -83,8 +92,10 @@ public class ProductService implements IProductService {
     public ProductResponse updateProduct(UUID productId, UpdateProductRequest updateProductRequest, MultipartFile[] multipartFiles) {
         Product product = this.findProductByIdOrThrowException(productId);
         Category category = categoryService.findCategoryByIdOrThrowException(updateProductRequest.categoryId());
+
         ifVariantOfExistsUpdateProductVariantOf(updateProductRequest.variantOfId(), product);
         ifImagesExistsUpdateProductImagesURLs(multipartFiles, product);
+
         product.setName(updateProductRequest.name());
         product.setDescription(updateProductRequest.description());
         product.setPrice(updateProductRequest.price());
@@ -96,7 +107,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductResponse restoreProduct(UUID productId) {
         Product product = findProductByIdOrThrowException(productId);
-        validateProductForRestoration(product);
+        throwExceptionIfProductIsNotDeleted(product);
         product.setDeleted(false);
         return ProductMapper.toProductResponse( productRepository.save(product) );
     }
@@ -127,20 +138,9 @@ public class ProductService implements IProductService {
         }
     }
 
-    private void validateProductForRestoration(Product product) {
-        throwExceptionIfProductIsNotDeleted(product);
-        throwExceptionIfProductWithNameAlreadyExists(product);
-    }
-
     private void throwExceptionIfProductIsNotDeleted(Product product) {
         if (!product.isDeleted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + product.getProductId() + " is not deleted.");
-        }
-    }
-
-    private void throwExceptionIfProductWithNameAlreadyExists(Product product) {
-        if (productRepository.existsByNameIgnoreCaseAndDeletedIsFalse(product.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName()+ " already exists and is not deleted.");
         }
     }
 

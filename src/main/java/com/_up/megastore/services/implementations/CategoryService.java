@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional
     public CategoryResponse saveCategory(CreateCategoryRequest createCategoryRequest) {
+        throwExceptionIfCategoryNameAlreadyExists(createCategoryRequest.name());
         Category superCategory = getSuperCategory(createCategoryRequest.superCategoryId());
         Category category = CategoryMapper.toCategory(createCategoryRequest, superCategory);
         return CategoryMapper.toCategoryResponse( categoryRepository.save(category) );
@@ -88,13 +90,21 @@ public class CategoryService implements ICategoryService {
 
     @Override
     @Transactional
-    public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest){
+    public CategoryResponse updateCategory(UUID categoryId, UpdateCategoryRequest updateCategoryRequest) {
         Category category = findCategoryByIdOrThrowException(categoryId);
+        throwExceptionIfReplacedCategoryNameAlreadyExists(category, updateCategoryRequest.name());
+
         category.setName(updateCategoryRequest.name());
         category.setDescription(updateCategoryRequest.description());
         UUID superCategoryId = updateCategoryRequest.superCategoryId();
         ifSuperCategoryExistUpdateCategorySuperCategory(superCategoryId,category);
         return CategoryMapper.toCategoryResponse(categoryRepository.save(category));
+    }
+
+    private void throwExceptionIfReplacedCategoryNameAlreadyExists(Category category, String updatedCategoryName) {
+        if (!category.getName().equalsIgnoreCase(updatedCategoryName)) {
+            throwExceptionIfCategoryNameAlreadyExists(updatedCategoryName);
+        }
     }
 
     public void ifSuperCategoryExistUpdateCategorySuperCategory(UUID superCategoryId, Category category) {
@@ -108,7 +118,7 @@ public class CategoryService implements ICategoryService {
 
     private void validateCategoryForRestoration(Category category) {
         throwExceptionIfCategoryIsNotDeleted(category);
-        throwExceptionIfCategoryWithNameAlreadyExists(category);
+        throwExceptionIfCategoryNameAlreadyExists(category.getName());
     }
 
     private void throwExceptionIfCategoryIsNotDeleted(Category category){
@@ -117,9 +127,9 @@ public class CategoryService implements ICategoryService {
         }
     }
 
-    private void throwExceptionIfCategoryWithNameAlreadyExists(Category category) {
-        if (categoryRepository.existsByNameAndDeletedIsFalse(category.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with name "+ category.getName() +" already exists and is not deleted.");
+    private void throwExceptionIfCategoryNameAlreadyExists(String categoryName) {
+        if (categoryRepository.existsByNameAndDeletedIsFalse(categoryName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with name "+ categoryName +" already exists.");
         }
     }
 
