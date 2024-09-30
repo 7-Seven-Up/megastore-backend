@@ -13,7 +13,7 @@ public record CreateCategoryRequest(
         String name,
 
         @NotBlank(message = "Category description must not be blank")
-        @Size(min = 5, max = 50, message = "Category description must be between 5 and 50 characters")
+        @Size(max = 50, message = "Category description must be less than 50 characters")
         String description,
 
         UUID superCategoryId
