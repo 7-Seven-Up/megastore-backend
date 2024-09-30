@@ -1,5 +1,8 @@
 package com._up.megastore.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -38,4 +41,12 @@ public class AuthConfig {
     return authConfig.getAuthenticationManager();
   }
 
+  @Bean
+  public ObjectMapper objectMapper() {
+    var mapper = new ObjectMapper();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
+    mapper.registerModule(new JavaTimeModule());
+    return mapper;
+  }
 }
