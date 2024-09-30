@@ -11,4 +11,5 @@ public interface IProductRepository extends JpaRepository<Product, UUID> {
     boolean existsByProductIdAndDeletedTrue(UUID productId);
     Page<Product> findProductsByDeletedIsFalseAndNameContainingIgnoreCase(String name, Pageable pageable);
     boolean existsByNameIgnoreCaseAndDeletedIsFalse(String name);
+    boolean existsByVariantOfAndDeletedFalse(Product variantOf);
 }

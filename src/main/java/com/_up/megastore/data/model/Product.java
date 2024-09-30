@@ -43,7 +43,7 @@ public class Product {
 
     private boolean deleted = false;
 
-    @OneToMany(mappedBy = "productId", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "variantOf", cascade = {CascadeType.ALL})
     private List<Product> variants = Collections.emptyList();
 
     @OneToMany(mappedBy = "product")
