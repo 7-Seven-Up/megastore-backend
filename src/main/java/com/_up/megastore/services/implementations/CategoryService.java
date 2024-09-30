@@ -70,7 +70,7 @@ public class CategoryService implements ICategoryService {
 
     public void ifCategorySubcategoriesExistThrowException(UUID categoryId){
         if(!findCategoryByIdOrThrowException(categoryId).getSubCategories().isEmpty()){
-            throw new DataIntegrityViolationException("Category with id "+ categoryId + " has subcategories and cannot be deleted.");
+            throw new DataIntegrityViolationException("Category has subcategories and cannot be deleted.");
         }
     }
 
