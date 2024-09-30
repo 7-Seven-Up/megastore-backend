@@ -10,8 +10,7 @@ public record CreateProductRequest(
         @Size(min = 3, max = 30, message = "Product name must be between 3 and 30 characters")
         String name,
 
-        @NotBlank(message = "Product description must not be blank")
-        @Size(min = 5, max = 80, message = "Product description must be between 5 and 80 characters")
+        @Size(max = 80, message = "Product description must be less than 80 characters")
         String description,
 
         @NotNull(message = "Product price must not be null")

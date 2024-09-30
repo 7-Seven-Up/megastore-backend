@@ -10,7 +10,6 @@ public record CreateCategoryRequest(
         @Size(min = 3, max = 20, message = "Category name must be between 3 and 20 characters")
         String name,
 
-        @NotBlank(message = "Category description must not be blank")
         @Size(max = 50, message = "Category description must be less than 50 characters")
         String description,
 
