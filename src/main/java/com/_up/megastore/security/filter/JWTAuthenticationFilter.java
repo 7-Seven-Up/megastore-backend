@@ -1,20 +1,14 @@
 package com._up.megastore.security.filter;
 
-import com._up.megastore.exception.ExceptionPayload;
+import com._up.megastore.exception.custom_exceptions.JWTAuthenticationException;
 import com._up.megastore.security.services.JWTService;
 import com._up.megastore.security.utils.Endpoints;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ClaimJwtException;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,26 +20,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com._up.megastore.security.utils.Constants.BEARER;
+import static com._up.megastore.security.utils.Constants.JWT_EXCEPTION_DEFAULT_MESSAGE;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JWTService jwtService;
-    private final ObjectMapper objectMapper;
 
-    public JWTAuthenticationFilter(UserDetailsService userDetailsService, JWTService jwtService, ObjectMapper objectMapper) {
+    public JWTAuthenticationFilter(UserDetailsService userDetailsService, JWTService jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
-        this.objectMapper = objectMapper;
     }
-
-    @Value("${frontend.url}")
-    private String frontendUrl;
 
     @Override
     protected void doFilterInternal(
@@ -66,8 +55,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsernameFromToken(token);
         } catch (JwtException e) {
-            handleJWTExceptionResponse(response, e);
-            return;
+            throw new JWTAuthenticationException(JWT_EXCEPTION_DEFAULT_MESSAGE, e);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -93,15 +81,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         return isWhiteListed || isAllowedForGet;
     }
 
-    private void handleJWTExceptionResponse(HttpServletResponse response, JwtException e) throws IOException {
-        response.setContentType("application/json");
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-        var exceptionPayload = buildExceptionPayload(e);
-        response.getWriter().write(objectMapper.writeValueAsString(exceptionPayload));
-    }
-
     private String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER)
@@ -113,24 +92,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
-    }
-
-    private static String getExceptionMessage(JwtException jwtException) {
-        return switch (jwtException) {
-            case ExpiredJwtException ignored -> "Session expired. Please log in again";
-            case SignatureException ignored -> "Invalid token. Please contact an administrator";
-            case ClaimJwtException ignored -> "JWT claims are invalid or malformed. Please contact an administrator";
-            default -> jwtException.getMessage();
-        };
-    }
-
-    private ExceptionPayload buildExceptionPayload(JwtException jwtException) {
-        return new ExceptionPayload(
-                getExceptionMessage(jwtException),
-                HttpStatus.UNAUTHORIZED.value(),
-                LocalDateTime.now(),
-                jwtException.getStackTrace()
-        );
     }
 
 }
