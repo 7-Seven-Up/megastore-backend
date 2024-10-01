@@ -1,6 +1,7 @@
 package com._up.megastore.config;
 
 import com._up.megastore.data.enums.Role;
+import com._up.megastore.security.entrypoint.GlobalAuthenticationEntryPoint;
 import com._up.megastore.security.filter.JWTAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -24,13 +24,17 @@ public class SecurityConfig {
 
   private final AuthenticationProvider authenticationProvider;
   private final JWTAuthenticationFilter jwtAuthenticationFilter;
-  private final AuthenticationEntryPoint authenticationEntryPoint;
+  private final GlobalAuthenticationEntryPoint globalAuthenticationEntryPoint;
 
-    public SecurityConfig(AuthenticationProvider authenticationProvider, JWTAuthenticationFilter jwtAuthenticationFilter, AuthenticationEntryPoint authenticationEntryPoint) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
+  public SecurityConfig(
+          AuthenticationProvider authenticationProvider,
+          JWTAuthenticationFilter jwtAuthenticationFilter,
+          GlobalAuthenticationEntryPoint globalAuthenticationEntryPoint
+  ) {
+      this.authenticationProvider = authenticationProvider;
+      this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+      this.globalAuthenticationEntryPoint = globalAuthenticationEntryPoint;
+  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -42,8 +46,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
             .requestMatchers(ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .httpBasic(httpSecurityHttpBasicConfigurer ->
-                httpSecurityHttpBasicConfigurer.authenticationEntryPoint(authenticationEntryPoint))
+        .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
+                .authenticationEntryPoint(globalAuthenticationEntryPoint))
         .authenticationProvider(authenticationProvider)
         .addFilterAfter(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
 
