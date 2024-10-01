@@ -1,5 +1,6 @@
 package com._up.megastore.security.filter;
 
+import com._up.megastore.exception.custom_exceptions.JWTAuthenticationException;
 import com._up.megastore.security.services.JWTService;
 import com._up.megastore.security.utils.Endpoints;
 import io.jsonwebtoken.JwtException;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static com._up.megastore.security.utils.Constants.BEARER;
+import static com._up.megastore.security.utils.Constants.JWT_EXCEPTION_DEFAULT_MESSAGE;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -53,8 +55,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsernameFromToken(token);
         } catch (JwtException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-            return;
+            throw new JWTAuthenticationException(JWT_EXCEPTION_DEFAULT_MESSAGE, e);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

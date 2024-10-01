@@ -1,12 +1,12 @@
 package com._up.megastore.config;
 
 import com._up.megastore.data.enums.Role;
+import com._up.megastore.security.entrypoint.GlobalAuthenticationEntryPoint;
 import com._up.megastore.security.filter.JWTAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,11 +24,17 @@ public class SecurityConfig {
 
   private final AuthenticationProvider authenticationProvider;
   private final JWTAuthenticationFilter jwtAuthenticationFilter;
+  private final GlobalAuthenticationEntryPoint globalAuthenticationEntryPoint;
 
-    public SecurityConfig(AuthenticationProvider authenticationProvider, JWTAuthenticationFilter jwtAuthenticationFilter) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+  public SecurityConfig(
+          AuthenticationProvider authenticationProvider,
+          JWTAuthenticationFilter jwtAuthenticationFilter,
+          GlobalAuthenticationEntryPoint globalAuthenticationEntryPoint
+  ) {
+      this.authenticationProvider = authenticationProvider;
+      this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+      this.globalAuthenticationEntryPoint = globalAuthenticationEntryPoint;
+  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -40,7 +46,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
             .requestMatchers(ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .httpBasic(Customizer.withDefaults())
+        .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
+                .authenticationEntryPoint(globalAuthenticationEntryPoint))
         .authenticationProvider(authenticationProvider)
         .addFilterAfter(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
 
