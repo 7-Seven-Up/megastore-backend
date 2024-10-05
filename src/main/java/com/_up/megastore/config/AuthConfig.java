@@ -46,6 +46,7 @@ public class AuthConfig {
     var mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
+    mapper.configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false);
     mapper.registerModule(new JavaTimeModule());
     return mapper;
   }
