@@ -1,14 +1,19 @@
 package com._up.megastore.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
-import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
+import static com._up.megastore.exception.ExceptionMessages.INVALID_FORMAT_EXCEPTION_MESSAGE;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -78,6 +83,29 @@ public class ExceptionControllerAdvice {
                 LocalDateTime.now(),
                 ex.getStackTrace()
         );
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ExceptionPayload handleHttpMessageNoReadableException(HttpMessageNotReadableException ex) {
+      return switch (ex.getCause()) {
+          case InvalidFormatException e -> handleInvalidFormatException(e);
+          default -> new ExceptionPayload(
+                  ex.getMessage(),
+                  HttpStatus.BAD_REQUEST.value(),
+                  LocalDateTime.now(),
+                  ex.getStackTrace()
+          );
+      };
+    }
+
+    private ExceptionPayload handleInvalidFormatException(InvalidFormatException ex) {
+      return new ExceptionPayload(
+              INVALID_FORMAT_EXCEPTION_MESSAGE,
+              HttpStatus.BAD_REQUEST.value(),
+              LocalDateTime.now(),
+              ex.getStackTrace()
+      );
     }
 
 }
