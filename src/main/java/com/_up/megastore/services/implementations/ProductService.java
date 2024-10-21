@@ -129,7 +129,7 @@ public class ProductService implements IProductService {
     @Override
     public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
+        return productRepository.findProductsByDeletedIsFalseAndVariantOfIsNullAndNameContainingIgnoreCase(name, pageable)
                 .map(ProductMapper::toProductResponse);
     }
 
