@@ -25,7 +25,16 @@ public class BaseIntegrationTest {
     }
 
     protected void assertContains(String response, String propertyName, String value) {
-        String valueToCheck = "\"" + propertyName + "\"" + ":" + "\"" + value + "\"";
+        String valueToCheck = buildValueToCheck(propertyName, value);
         Assertions.assertTrue(response.contains(valueToCheck));
+    }
+
+    protected void assertNotContains(String response, String propertyName, String value) {
+        String valueToCheck = buildValueToCheck(propertyName, value);
+        Assertions.assertFalse(response.contains(valueToCheck));
+    }
+
+    private String buildValueToCheck(String propertyName, String value) {
+        return "\"" + propertyName + "\"" + ":" + "\"" + value + "\"";
     }
 }
