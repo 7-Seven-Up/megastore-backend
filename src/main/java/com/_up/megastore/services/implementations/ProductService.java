@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -118,9 +119,17 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductResponse> getProductVariants(UUID productId) {
+        Product product = findProductByIdOrThrowException(productId);
+        return productRepository.findProductByVariantOfAndDeletedFalse(product).stream()
+                .map(ProductMapper::toProductResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
+        return productRepository.findProductsByDeletedIsFalseAndVariantOfIsNullAndNameContainingIgnoreCase(name, pageable)
                 .map(ProductMapper::toProductResponse);
     }
 
