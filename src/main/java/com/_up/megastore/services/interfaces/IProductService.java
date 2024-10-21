@@ -7,6 +7,7 @@ import com._up.megastore.data.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IProductService {
@@ -22,6 +23,9 @@ public interface IProductService {
     ProductResponse restoreProduct(UUID productId);
 
     ProductResponse getProduct(UUID productId);
+
+    List<ProductResponse> getProductVariants(UUID productId);
+
     Page<ProductResponse> getProducts(int page, int pageSize, String name);
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,6 +44,11 @@ public class ProductController implements IProductController {
     @Override
     public ProductResponse getProduct(UUID productId) {
         return productService.getProduct(productId);
+    }
+
+    @Override
+    public List<ProductResponse> getProductVariants(UUID productId) {
+        return productService.getProductVariants(productId);
     }
 
     @Override
