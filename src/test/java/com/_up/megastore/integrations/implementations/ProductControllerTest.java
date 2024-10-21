@@ -23,5 +23,25 @@ class ProductControllerTest extends BaseIntegrationTest {
 
         assertContains(response, "name", "Variant name");
         assertContains(response, "description", "Variant description");
+
+        assertNotContains(response, "name", "Product name");
+        assertNotContains(response, "description", "Product description");
+    }
+
+    @Test
+    void getProducts() throws Exception {
+        String response = mockMvc.perform(
+                        get("/api/v1/products")
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "name", "Product name");
+        assertContains(response, "description", "Product description");
+
+        assertNotContains(response, "name", "Variant name");
+        assertNotContains(response, "description", "Variant description");
     }
 }
