@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_ADMINISTRATORS_URLS;
 import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_GET_BY_USERS_URLS;
+import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_POST_BY_USERS_URLS;
 import static com._up.megastore.security.utils.Endpoints.WHITE_LISTED_URLS;
 
 @Configuration
@@ -42,8 +43,9 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authRequest -> authRequest
             .requestMatchers(WHITE_LISTED_URLS).permitAll()
-            .requestMatchers(HttpMethod.GET, ALLOWED_TO_GET_BY_USERS_URLS).permitAll()
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
+            .requestMatchers(HttpMethod.GET, ALLOWED_TO_GET_BY_USERS_URLS).permitAll()
+            .requestMatchers(HttpMethod.POST, ALLOWED_TO_POST_BY_USERS_URLS).hasRole(Role.USER.name())
             .requestMatchers(ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
