@@ -17,6 +17,9 @@ public class OrderDetail {
     @NonNull
     private Integer quantity;
 
+    @NonNull
+    private Double priceToDate;
+
     @ManyToOne @NonNull
     private Product product;
 
