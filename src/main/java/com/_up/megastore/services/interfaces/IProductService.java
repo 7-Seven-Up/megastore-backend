@@ -28,4 +28,6 @@ public interface IProductService {
 
     Page<ProductResponse> getProducts(int page, int pageSize, String name);
 
+    void discountProductStock(Integer quantity, Product product);
+
 }
