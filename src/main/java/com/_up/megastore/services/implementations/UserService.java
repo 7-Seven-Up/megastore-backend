@@ -55,6 +55,12 @@ public class UserService implements IUserService {
   }
 
   @Override
+  public User findUserByIdOrThrowException(UUID userId) {
+    return userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with id " + userId + " does not exist."));
+  }
+
+  @Override
   public void activateUser(UUID userId, UUID activationToken) {
     User user = findUserToActivateOrThrowException(activationToken);
     if(isTokenExpired(activationToken)){

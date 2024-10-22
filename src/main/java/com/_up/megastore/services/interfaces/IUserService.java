@@ -13,6 +13,8 @@ public interface IUserService {
 
   User findUserByUsernameOrThrowException(String username);
 
+  User findUserByIdOrThrowException(UUID userId);
+
   void activateUser(UUID userId, UUID activationToken);
 
   void sendEmailToRecoverPassword(String email);
