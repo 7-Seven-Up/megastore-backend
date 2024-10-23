@@ -8,6 +8,7 @@ public record OrderResponse(
         UUID orderId,
         Integer number,
         LocalDate date,
+        String clientName,
         String state,
         Double total,
         List<OrderDetailResponse> orderDetails

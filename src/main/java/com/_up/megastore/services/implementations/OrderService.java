@@ -36,12 +36,17 @@ public class OrderService implements IOrderService {
     @Transactional
     public OrderResponse saveOrder(CreateOrderRequest createOrderRequest) {
         User user = userService.findUserByIdOrThrowException(createOrderRequest.userId());
-        Order order = orderRepository.save(OrderMapper.toOrder(user));
+        Integer number = getNextOrderNumber();
+        Order order = orderRepository.save( OrderMapper.toOrder(user, number) );
 
         List<OrderDetail> orderDetails = orderDetailService.saveOrderDetails(createOrderRequest.orderDetailRequestList(), order);
         Double total = getOrderTotal(orderDetails);
 
         return OrderMapper.toOrderResponse(order, total, orderDetails);
+    }
+
+    private synchronized Integer getNextOrderNumber() {
+        return orderRepository.getLastOrderNumber() + 1;
     }
 
     private Double getOrderTotal(List<OrderDetail> orderDetails) {

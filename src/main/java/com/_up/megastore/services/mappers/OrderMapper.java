@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 
 public class OrderMapper {
 
-    public static Order toOrder(User user) {
+    public static Order toOrder(User user, Integer number) {
         return Order.builder()
                 .user(user)
+                .number(number)
                 .build();
     }
 
@@ -25,6 +26,7 @@ public class OrderMapper {
                 order.getOrderId(),
                 order.getNumber(),
                 order.getDate(),
+                order.getUser().getFullName(),
                 order.getState().name(),
                 total,
                 buildOrderDetailsResponse(orderDetails)
