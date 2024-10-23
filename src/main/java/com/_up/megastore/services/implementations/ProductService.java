@@ -133,6 +133,19 @@ public class ProductService implements IProductService {
                 .map(ProductMapper::toProductResponse);
     }
 
+    @Override
+    public void discountProductStock(Integer quantity, Product product) {
+        throwExceptionIfOrderDetailQuantityIsBiggerThanProductStock(quantity, product);
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
+    }
+
+    private void throwExceptionIfOrderDetailQuantityIsBiggerThanProductStock(Integer quantity, Product product) {
+        if (quantity > product.getStock()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product " + product.getName() + " stock is not enough to cover the order.");
+        }
+    }
+
     public void ifVariantOfExistsUpdateProductVariantOf(UUID variantOfId, Product product){
         if(variantOfId != null && !variantOfId.equals(product.getVariantOf().getProductId())){
             Product variantOf = this.getVariantOf(variantOfId);
