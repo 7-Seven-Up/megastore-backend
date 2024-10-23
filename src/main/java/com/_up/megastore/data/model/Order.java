@@ -29,6 +29,7 @@ public class Order {
     @ManyToOne @NonNull
     private User user;
 
+    @NonNull
     private Integer number;
 
     @Enumerated(EnumType.STRING)
