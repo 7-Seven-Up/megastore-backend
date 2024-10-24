@@ -6,6 +6,8 @@ import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.services.interfaces.IOrderService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 public class OrderController implements IOrderController {
 
@@ -18,6 +20,11 @@ public class OrderController implements IOrderController {
     @Override
     public OrderResponse saveOrder(CreateOrderRequest createOrderRequest) {
         return orderService.saveOrder(createOrderRequest);
+    }
+
+    @Override
+    public OrderResponse finishOrder(UUID orderId) {
+        return orderService.finishOrder(orderId);
     }
 
 }

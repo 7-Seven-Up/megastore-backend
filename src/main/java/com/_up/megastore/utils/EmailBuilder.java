@@ -1,5 +1,6 @@
 package com._up.megastore.utils;
 
+import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -111,6 +112,21 @@ public class EmailBuilder {
                 + "</td>"
                 + "</tr>"
                 + "</table>";
+    }
+
+    public String buildFinishOrderEmail(Order order) {
+        String orderDetailUrl = frontendURL + "/orders/" + order.getOrderId();
+
+        return "<table style='width:100%; height:100%;'>"
+                + "<tr><td style='width:100%; height:100%; text-align:center; vertical-align:middle;'>"
+                + "<div style='display:inline-block;'>"
+                + "<h1>Order Finished</h1>"
+                + "<h3>Hey " + order.getUser().getFullName() + "!</h3>"
+                + "<h4>Your order of the day " + order.getDate() + " has been finished.</h4>"
+                + "<p>If you want to see the details, please go to the link below:</p>"
+                + "<a href=\"" + orderDetailUrl + "\">Order detail</a>"
+                + "<p>Regards, megastore support team.</p>"
+                + "</div></td></tr></table>";
     }
 
 }

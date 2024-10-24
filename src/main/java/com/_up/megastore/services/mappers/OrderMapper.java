@@ -20,8 +20,7 @@ public class OrderMapper {
 
     public static OrderResponse toOrderResponse(
             Order order,
-            Double total,
-            List<OrderDetail> orderDetails) {
+            Double total) {
         return new OrderResponse(
                 order.getOrderId(),
                 order.getNumber(),
@@ -29,7 +28,7 @@ public class OrderMapper {
                 order.getUser().getFullName(),
                 order.getState().name(),
                 total,
-                buildOrderDetailsResponse(orderDetails)
+                buildOrderDetailsResponse(order.getOrderDetails())
         );
     }
 
