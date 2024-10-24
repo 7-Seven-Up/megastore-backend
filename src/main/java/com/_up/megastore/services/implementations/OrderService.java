@@ -6,10 +6,12 @@ import com._up.megastore.data.enums.State;
 import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IOrderRepository;
+import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.IOrderDetailService;
 import com._up.megastore.services.interfaces.IOrderService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.OrderMapper;
+import com._up.megastore.utils.EmailBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,15 +24,19 @@ public class OrderService implements IOrderService {
 
     private final IUserService userService;
     private final IOrderDetailService orderDetailService;
+    private final IEmailService emailService;
+    private final EmailBuilder emailBuilder;
     private final IOrderRepository orderRepository;
 
     public OrderService(
             IUserService userService,
-            IOrderDetailService orderDetailService,
+            IOrderDetailService orderDetailService, IEmailService emailService, EmailBuilder emailBuilder,
             IOrderRepository orderRepository
     ) {
         this.userService = userService;
         this.orderDetailService = orderDetailService;
+        this.emailService = emailService;
+        this.emailBuilder = emailBuilder;
         this.orderRepository = orderRepository;
     }
 
@@ -59,6 +65,9 @@ public class OrderService implements IOrderService {
         Order order = findOrderByIdOrThrowException(id);
         throwExceptionIfStateIsNotInProgress(order);
         order.setState(State.FINISHED);
+
+        String emailBody = emailBuilder.buildFinishOrderEmail(order);
+        emailService.sendEmail(order.getUser().getEmail(), "Order Finished", emailBody);
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
