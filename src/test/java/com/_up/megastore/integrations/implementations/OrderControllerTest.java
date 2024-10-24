@@ -14,11 +14,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql("/scripts/orders/save_order.sql")
 class OrderControllerTest extends BaseIntegrationTest {
 
     @Test
-    void saveProduct() throws Exception {
+    @Sql("/scripts/orders/save_order.sql")
+    void saveOrder() throws Exception {
         CreateOrderRequest request = new CreateOrderRequest(
                 UUID.fromString("58fae25b-ea38-4e7b-ab2d-9f555a67836b"), List.of(
                 new OrderDetailRequest(
@@ -29,14 +29,14 @@ class OrderControllerTest extends BaseIntegrationTest {
                         UUID.fromString("22ede130-726f-49ac-9564-d783fc22a6fa"),
                         3
                 )
-            )
+        )
         );
 
         String response = mockMvc.perform(
-                post("/api/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request))
-        ).andDo(print())
+                        post("/api/v1/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(request))
+                ).andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
@@ -47,14 +47,15 @@ class OrderControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    void saveProductWithExceedingQuantity() throws Exception {
+    @Sql("/scripts/orders/save_order.sql")
+    void saveOrderWithExceedingQuantity() throws Exception {
         CreateOrderRequest request = new CreateOrderRequest(
                 UUID.fromString("58fae25b-ea38-4e7b-ab2d-9f555a67836b"), List.of(
                 new OrderDetailRequest(
                         UUID.fromString("183f205a-3430-4e11-8bca-57672a0ce3ff"),
                         15
                 )
-            )
+        )
         );
 
         mockMvc.perform(
@@ -62,6 +63,32 @@ class OrderControllerTest extends BaseIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request))
         ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Sql("/scripts/orders/finish_order.sql")
+    void finishOrder() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e7/finish")
+                ).andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "state", "FINISHED");
+    }
+
+    @Test
+    @Sql("/scripts/orders/finish_order.sql")
+    void finishOrderWithIncompatibleState() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab41/finish")
+                ).andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "message", "Order with id e4990fed-48f6-40ab-b7a8-de242a57ab41 is not in progress.");
     }
 
 }
