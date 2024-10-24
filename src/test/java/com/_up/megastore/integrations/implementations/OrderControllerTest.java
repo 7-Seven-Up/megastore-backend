@@ -3,18 +3,27 @@ package com._up.megastore.integrations.implementations;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.requests.OrderDetailRequest;
 import com._up.megastore.integrations.base.BaseIntegrationTest;
+import com._up.megastore.services.implementations.EmailService;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class OrderControllerTest extends BaseIntegrationTest {
+
+    @MockBean
+    private EmailService emailService;
 
     @Test
     @Sql("/scripts/orders/save_order.sql")
@@ -68,6 +77,8 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/finish_order.sql")
     void finishOrder() throws Exception {
+        doNothing().when(emailService).sendEmail(anyString(), anyString(), anyString());
+
         String response = mockMvc.perform(
                         post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e7/finish")
                 ).andExpect(status().isCreated())
@@ -76,11 +87,15 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getContentAsString();
 
         assertContains(response, "state", "FINISHED");
+
+        verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
     }
 
     @Test
     @Sql("/scripts/orders/finish_order.sql")
     void finishOrderWithIncompatibleState() throws Exception {
+        doNothing().when(emailService).sendEmail(anyString(), anyString(), anyString());
+
         String response = mockMvc.perform(
                         post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab41/finish")
                 ).andExpect(status().isBadRequest())
