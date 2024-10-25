@@ -18,7 +18,7 @@ public class OrderDetail {
     private Integer quantity;
 
     @NonNull
-    private Double priceToDate;
+    private Double subtotal;
 
     @ManyToOne @NonNull
     private Product product;

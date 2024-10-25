@@ -30,7 +30,9 @@ public class OrderService implements IOrderService {
 
     public OrderService(
             IUserService userService,
-            IOrderDetailService orderDetailService, IEmailService emailService, EmailBuilder emailBuilder,
+            IOrderDetailService orderDetailService,
+            IEmailService emailService,
+            EmailBuilder emailBuilder,
             IOrderRepository orderRepository
     ) {
         this.userService = userService;
@@ -49,7 +51,7 @@ public class OrderService implements IOrderService {
 
         order.setOrderDetails(orderDetailService.saveOrderDetails(createOrderRequest.orderDetailRequestList(), order));
 
-        Double total = getOrderTotal(order);
+        Double total = orderRepository.getOrderTotal(order);
 
         return OrderMapper.toOrderResponse(order, total);
     }
@@ -57,7 +59,7 @@ public class OrderService implements IOrderService {
     @Override
     public Order findOrderByIdOrThrowException(UUID orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order with id " + orderId + " does not exist."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order with the id requested does not exist."));
     }
 
     @Override
@@ -71,7 +73,7 @@ public class OrderService implements IOrderService {
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
-                getOrderTotal(order)
+                orderRepository.getOrderTotal(order)
         );
     }
 
@@ -79,15 +81,9 @@ public class OrderService implements IOrderService {
         return orderRepository.getLastOrderNumber() + 1;
     }
 
-    private Double getOrderTotal(Order order) {
-        return order.getOrderDetails().stream()
-                .mapToDouble(orderDetail -> orderDetail.getPriceToDate() * orderDetail.getQuantity())
-                .sum();
-    }
-
     private void throwExceptionIfStateIsNotInProgress(Order order) {
         if (order.getState() != State.IN_PROGRESS) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order with id " + order.getOrderId() + " is not in progress.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not in progress.");
         }
     }
 }

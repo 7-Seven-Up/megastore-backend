@@ -17,7 +17,7 @@ public class OrderDetailMapper {
                 .product(product)
                 .quantity(orderDetailRequest.quantity())
                 .order(order)
-                .priceToDate(product.getPrice())
+                .subtotal(product.getPrice() * orderDetailRequest.quantity())
                 .build();
     }
 
