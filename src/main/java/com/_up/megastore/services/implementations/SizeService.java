@@ -8,15 +8,14 @@ import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
 import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class SizeService implements ISizeService {
@@ -64,6 +63,13 @@ public class SizeService implements ISizeService {
         Pageable pageable = PageRequest.of(page, pageSize);
         return sizeRepository.findSizeByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable)
                 .map(SizeMapper::toSizeResponse);
+    }
+
+    @Override
+    public Page<SizeResponse> readDeletedSizes(int page, int pageSize, String name) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return sizeRepository.findSizeByDeletedIsTrueAndNameContainingIgnoreCase(name, pageable)
+            .map(SizeMapper::toSizeResponse);
     }
 
     @Override
