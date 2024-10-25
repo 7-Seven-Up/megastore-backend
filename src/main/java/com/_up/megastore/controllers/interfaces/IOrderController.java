@@ -19,7 +19,7 @@ public interface IOrderController {
     OrderResponse saveOrder(@RequestBody CreateOrderRequest createOrderRequest);
 
     @PostMapping("/{orderId}/finish")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     OrderResponse finishOrder(@PathVariable UUID orderId);
 
 }
