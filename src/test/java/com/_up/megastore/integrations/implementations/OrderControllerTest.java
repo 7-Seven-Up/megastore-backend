@@ -18,6 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class OrderControllerTest extends BaseIntegrationTest {
@@ -47,6 +48,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                                 .content(toJson(request))
                 ).andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.total").value(80000.0))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
