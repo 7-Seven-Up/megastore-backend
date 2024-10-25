@@ -37,6 +37,7 @@ public class OrderDetailService implements IOrderDetailService {
     private OrderDetail saveOrderDetail(Order order, OrderDetailRequest orderDetailRequest) {
         Product product = productService.findProductByIdOrThrowException(orderDetailRequest.productId());
         productService.discountProductStock(orderDetailRequest.quantity(), product);
-        return orderDetailRepository.save( OrderDetailMapper.toOrderDetail(order, product, orderDetailRequest));
+        Double subtotal = product.getPrice() * orderDetailRequest.quantity();
+        return orderDetailRepository.save( OrderDetailMapper.toOrderDetail(order, product, subtotal, orderDetailRequest));
     }
 }
