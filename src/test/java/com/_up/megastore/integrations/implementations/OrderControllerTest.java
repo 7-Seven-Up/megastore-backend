@@ -81,7 +81,7 @@ class OrderControllerTest extends BaseIntegrationTest {
 
         String response = mockMvc.perform(
                         post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e7/finish")
-                ).andExpect(status().isCreated())
+                ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -103,7 +103,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", "Order with id e4990fed-48f6-40ab-b7a8-de242a57ab41 is not in progress.");
+        assertContains(response, "message", "Order is not in progress.");
     }
 
 }
