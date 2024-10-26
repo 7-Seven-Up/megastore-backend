@@ -50,10 +50,12 @@ public class OrderService implements IOrderService {
         Order order = orderRepository.save(OrderMapper.toOrder(user, number));
 
         order.setOrderDetails(orderDetailService.saveOrderDetails(createOrderRequest.orderDetailRequestList(), order));
+        sendOrderEmail(order, "Order Created");
 
-        Double total = orderRepository.getOrderTotal(order);
-
-        return OrderMapper.toOrderResponse(order, total);
+        return OrderMapper.toOrderResponse(
+                order,
+                orderRepository.getOrderTotal(order)
+        );
     }
 
     @Override
@@ -68,8 +70,7 @@ public class OrderService implements IOrderService {
         throwExceptionIfStateIsNotInProgress(order);
         order.setState(State.FINISHED);
 
-        String emailBody = emailBuilder.buildFinishOrderEmail(order);
-        emailService.sendEmail(order.getUser().getEmail(), "Order Finished", emailBody);
+        sendOrderEmail(order, "Order Finished");
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
@@ -83,8 +84,7 @@ public class OrderService implements IOrderService {
         throwExceptionIfStateIsNotFinished(order);
         order.setState(State.IN_DELIVERY);
 
-        String emailBody = emailBuilder.buildMarkOrderInDeliveryEmail(order);
-        emailService.sendEmail(order.getUser().getEmail(), "Order In Delivery", emailBody);
+        sendOrderEmail(order, "Order In Delivery");
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
@@ -98,8 +98,7 @@ public class OrderService implements IOrderService {
         throwExceptionIfStateIsNotInDelivery(order);
         order.setState(State.DELIVERED);
 
-        String emailBody = emailBuilder.buildMarkOrderInDeliveryEmail(order);
-        emailService.sendEmail(order.getUser().getEmail(), "Order Delivered", emailBody);
+        sendOrderEmail(order, "Order Delivered");
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
@@ -109,6 +108,11 @@ public class OrderService implements IOrderService {
 
     private synchronized Integer getNextOrderNumber() {
         return orderRepository.getLastOrderNumber() + 1;
+    }
+
+    private void sendOrderEmail(Order order, String subject) {
+        String emailBody = emailBuilder.buildOrderEmail(order, subject);
+        emailService.sendEmail(order.getUser().getEmail(), subject, emailBody);
     }
 
     private void throwExceptionIfStateIsNotInProgress(Order order) {
