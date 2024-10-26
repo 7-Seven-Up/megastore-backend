@@ -77,6 +77,21 @@ public class OrderService implements IOrderService {
         );
     }
 
+    @Override
+    public OrderResponse markOrderInDelivery(UUID orderId) {
+        Order order = findOrderByIdOrThrowException(orderId);
+        throwExceptionIfStateIsNotFinished(order);
+        order.setState(State.IN_DELIVERY);
+
+        String emailBody = emailBuilder.buildMarkOrderInDeliveryEmail(order);
+        emailService.sendEmail(order.getUser().getEmail(), "Order In Delivery", emailBody);
+
+        return OrderMapper.toOrderResponse(
+                orderRepository.save(order),
+                orderRepository.getOrderTotal(order)
+        );
+    }
+
     private synchronized Integer getNextOrderNumber() {
         return orderRepository.getLastOrderNumber() + 1;
     }
@@ -84,6 +99,12 @@ public class OrderService implements IOrderService {
     private void throwExceptionIfStateIsNotInProgress(Order order) {
         if (order.getState() != State.IN_PROGRESS) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not in progress.");
+        }
+    }
+
+    private void throwExceptionIfStateIsNotFinished(Order order) {
+        if (order.getState() != State.FINISHED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not finished.");
         }
     }
 }

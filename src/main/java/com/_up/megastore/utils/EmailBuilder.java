@@ -129,4 +129,18 @@ public class EmailBuilder {
                 + "</div></td></tr></table>";
     }
 
+    public String buildMarkOrderInDeliveryEmail(Order order) {
+        String orderDetailUrl = frontendURL + "/orders/" + order.getOrderId();
+
+        return "<table style='width:100%; height:100%;'>"
+                + "<tr><td style='width:100%; height:100%; text-align:center; vertical-align:middle;'>"
+                + "<div style='display:inline-block;'>"
+                + "<h1>Order Finished</h1>"
+                + "<h3>Hey " + order.getUser().getFullName() + "!</h3>"
+                + "<h4>Your order of the day " + order.getDate() + " is in delivery.</h4>"
+                + "<p>If you want to see the details, please go to the link below:</p>"
+                + "<a href=\"" + orderDetailUrl + "\">Order detail</a>"
+                + "<p>Regards, megastore support team.</p>"
+                + "</div></td></tr></table>";
+    }
 }

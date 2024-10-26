@@ -22,4 +22,8 @@ public interface IOrderController {
     @ResponseStatus(HttpStatus.OK)
     OrderResponse finishOrder(@PathVariable UUID orderId);
 
+    @PostMapping("/{orderId}/mark-in-delivery")
+    @ResponseStatus(HttpStatus.OK)
+    OrderResponse markOrderInDelivery(@PathVariable UUID orderId);
+
 }
