@@ -15,4 +15,6 @@ public interface IOrderService {
     OrderResponse finishOrder(UUID orderId);
 
     OrderResponse markOrderInDelivery(UUID orderId);
+
+    OrderResponse deliverOrder(UUID orderId);
 }

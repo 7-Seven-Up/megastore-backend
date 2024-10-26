@@ -32,4 +32,8 @@ public class OrderController implements IOrderController {
         return orderService.markOrderInDelivery(orderId);
     }
 
+    @Override
+    public OrderResponse deliverOrder(UUID orderId) {
+        return orderService.deliverOrder(orderId);
+    }
 }

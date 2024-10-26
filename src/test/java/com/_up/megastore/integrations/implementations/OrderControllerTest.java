@@ -131,4 +131,32 @@ class OrderControllerTest extends BaseIntegrationTest {
         assertContains(response, "message", "Order is not finished.");
     }
 
+    @Test
+    @Sql("/scripts/orders/deliver_order.sql")
+    void deliverOrder() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e2/deliver")
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "state", "DELIVERED");
+
+        verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    @Sql("/scripts/orders/deliver_order.sql")
+    void deliverOrderWithIncompatibleState() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab40/deliver")
+                ).andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "message", "Order is not in delivery.");
+    }
+
 }
