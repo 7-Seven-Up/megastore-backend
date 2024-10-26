@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -79,8 +78,6 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/finish_order.sql")
     void finishOrder() throws Exception {
-        doNothing().when(emailService).sendEmail(anyString(), anyString(), anyString());
-
         String response = mockMvc.perform(
                         post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e7/finish")
                 ).andExpect(status().isOk())
@@ -96,8 +93,6 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/finish_order.sql")
     void finishOrderWithIncompatibleState() throws Exception {
-        doNothing().when(emailService).sendEmail(anyString(), anyString(), anyString());
-
         String response = mockMvc.perform(
                         post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab41/finish")
                 ).andExpect(status().isBadRequest())
@@ -106,6 +101,34 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getContentAsString();
 
         assertContains(response, "message", "Order is not in progress.");
+    }
+
+    @Test
+    @Sql("/scripts/orders/mark_order_in_delivery.sql")
+    void markOrderInDelivery() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e2/mark-in-delivery")
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "state", "IN_DELIVERY");
+
+        verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    @Sql("/scripts/orders/mark_order_in_delivery.sql")
+    void markOrderInDeliveryWithIncompatibleState() throws Exception {
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab40/mark-in-delivery")
+                ).andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "message", "Order is not finished.");
     }
 
 }
