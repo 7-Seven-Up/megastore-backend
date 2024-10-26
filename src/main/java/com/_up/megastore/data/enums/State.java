@@ -5,5 +5,5 @@ public enum State {
     FINISHED,
     IN_DELIVERY,
     DELIVERED,
-    CANCELED
+    CANCELLED
 }
