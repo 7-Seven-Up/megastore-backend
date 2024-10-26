@@ -11,13 +11,14 @@ public class OrderDetailMapper {
     public static OrderDetail toOrderDetail(
             Order order,
             Product product,
+            Double subtotal,
             OrderDetailRequest orderDetailRequest
     ) {
         return OrderDetail.builder()
                 .product(product)
                 .quantity(orderDetailRequest.quantity())
                 .order(order)
-                .priceToDate(product.getPrice())
+                .subtotal(subtotal)
                 .build();
     }
 
