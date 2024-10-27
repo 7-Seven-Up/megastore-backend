@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -68,19 +69,31 @@ class OrderServiceTest {
         @Test
         void finishOrder_orderIsInProgress() {
             order.setState(State.IN_PROGRESS);
-            assertDoesNotThrow(() -> orderService.finishOrder(orderId));
+
+            assertDoesNotThrow(() -> {
+                final var orderResponse = orderService.finishOrder(orderId);
+                assertEquals(orderResponse.state(), State.FINISHED.name());
+            });
         }
 
         @Test
         void markOrderInDelivery_orderIsFinished() {
             order.setState(State.FINISHED);
-            assertDoesNotThrow(() -> orderService.markOrderInDelivery(orderId));
+
+            assertDoesNotThrow(() -> {
+                final var orderResponse = orderService.markOrderInDelivery(orderId);
+                assertEquals(orderResponse.state(), State.IN_DELIVERY.name());
+            });
         }
 
         @Test
         void deliverOrder_orderIsInDelivery() {
             order.setState(State.IN_DELIVERY);
-            assertDoesNotThrow(() -> orderService.deliverOrder(orderId));
+
+            assertDoesNotThrow(() -> {
+                final var orderResponse = orderService.deliverOrder(orderId);
+                assertEquals(orderResponse.state(), State.DELIVERED.name());
+            });
         }
     }
 
