@@ -67,7 +67,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderResponse finishOrder(UUID id) {
         Order order = findOrderByIdOrThrowException(id);
-        throwExceptionIfStateIsNotInProgress(order);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.FINISHED);
         order.setState(State.FINISHED);
 
         sendOrderEmail(order, "Order Finished");
@@ -81,7 +81,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderResponse markOrderInDelivery(UUID orderId) {
         Order order = findOrderByIdOrThrowException(orderId);
-        throwExceptionIfStateIsNotFinished(order);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.IN_DELIVERY);
         order.setState(State.IN_DELIVERY);
 
         sendOrderEmail(order, "Order In Delivery");
@@ -95,7 +95,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderResponse deliverOrder(UUID orderId) {
         Order order = findOrderByIdOrThrowException(orderId);
-        throwExceptionIfStateIsNotInDelivery(order);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.DELIVERED);
         order.setState(State.DELIVERED);
 
         sendOrderEmail(order, "Order Delivered");
@@ -115,21 +115,9 @@ public class OrderService implements IOrderService {
         emailService.sendEmail(order.getUser().getEmail(), subject, emailBody);
     }
 
-    private void throwExceptionIfStateIsNotInProgress(Order order) {
-        if (order.getState() != State.IN_PROGRESS) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not in progress.");
-        }
-    }
-
-    private void throwExceptionIfStateIsNotFinished(Order order) {
-        if (order.getState() != State.FINISHED) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not finished.");
-        }
-    }
-
-    private void throwExceptionIfStateIsNotInDelivery(Order order) {
-        if (order.getState() != State.IN_DELIVERY) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not in delivery.");
+    public void throwExceptionIfCurrentStateIsIncompatible(Order order, State newState) {
+        if (!newState.previousStates.contains(order.getState())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, newState.exceptionMessage);
         }
     }
 }

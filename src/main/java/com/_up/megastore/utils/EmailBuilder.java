@@ -1,12 +1,10 @@
 package com._up.megastore.utils;
 
-import com._up.megastore.data.enums.State;
 import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -14,13 +12,6 @@ public class EmailBuilder {
 
     @Value("${frontend.url}")
     private String frontendURL;
-
-    private final Map<State, String> STATE_MESSAGES = Map.of(
-            State.IN_PROGRESS, " has been created.",
-            State.FINISHED, " has been finished.",
-            State.IN_DELIVERY, " is now in delivery.",
-            State.DELIVERED, " has been delivered."
-    );
 
     public String buildActivationEmailBody(User user, UUID activationToken) {
         String activationUrl = frontendURL + "/auth/activate?userId="
@@ -131,7 +122,7 @@ public class EmailBuilder {
                 + "<div style='display:inline-block;'>"
                 + "<h1>" + subject + "</h1>"
                 + "<h3>Hey " + order.getUser().getFullName() + "!</h3>"
-                + "<h4>Your order of the day " + order.getDate() + STATE_MESSAGES.get(order.getState()) + "</h4>"
+                + "<h4>Your order of the day " + order.getDate() + order.getState().stateMessage + "</h4>"
                 + "<p>If you want to see the details, please go to the link below:</p>"
                 + "<a href=\"" + orderDetailUrl + "\">Order detail</a>"
                 + "<p>Regards, megastore support team.</p>"
