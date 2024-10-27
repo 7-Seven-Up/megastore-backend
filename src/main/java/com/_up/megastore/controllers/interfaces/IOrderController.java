@@ -30,4 +30,8 @@ public interface IOrderController {
     @ResponseStatus(HttpStatus.OK)
     OrderResponse deliverOrder(@PathVariable UUID orderId);
 
+    @PostMapping("/{orderId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    OrderResponse cancelOrder(@PathVariable UUID orderId);
+
 }

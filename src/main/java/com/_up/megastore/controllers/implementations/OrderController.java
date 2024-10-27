@@ -36,4 +36,9 @@ public class OrderController implements IOrderController {
     public OrderResponse deliverOrder(UUID orderId) {
         return orderService.deliverOrder(orderId);
     }
+
+    @Override
+    public OrderResponse cancelOrder(UUID orderId) {
+        return orderService.cancelOrder(orderId);
+    }
 }
