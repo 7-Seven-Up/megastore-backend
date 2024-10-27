@@ -95,6 +95,26 @@ class OrderServiceTest {
                 assertEquals(orderResponse.state(), State.DELIVERED.name());
             });
         }
+
+        @Test
+        void cancelOrder_orderIsInProgress() {
+            order.setState(State.IN_PROGRESS);
+
+            assertDoesNotThrow(() -> {
+                final var orderResponse = orderService.cancelOrder(orderId);
+                assertEquals(orderResponse.state(), State.CANCELLED.name());
+            });
+        }
+
+        @Test
+        void cancelOrder_orderIsFinished() {
+            order.setState(State.FINISHED);
+
+            assertDoesNotThrow(() -> {
+                final var orderResponse = orderService.cancelOrder(orderId);
+                assertEquals(orderResponse.state(), State.CANCELLED.name());
+            });
+        }
     }
 
     @Nested
@@ -170,6 +190,24 @@ class OrderServiceTest {
         void deliverOrder_orderIsCancelled() {
             order.setState(State.CANCELLED);
             assertThrows(ResponseStatusException.class, () -> orderService.deliverOrder(orderId));
+        }
+
+        @Test
+        void cancelOrder_orderIsInDelivery() {
+            order.setState(State.IN_DELIVERY);
+            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
+        }
+
+        @Test
+        void cancelOrder_orderIsDelivered() {
+            order.setState(State.DELIVERED);
+            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
+        }
+
+        @Test
+        void cancelOrder_orderIsCancelled() {
+            order.setState(State.CANCELLED);
+            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
         }
     }
 }
