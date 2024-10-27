@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 @Configuration
 public class AuthConfig {
@@ -49,5 +51,10 @@ public class AuthConfig {
     mapper.configure(DeserializationFeature.ACCEPT_FLOAT_AS_INT, false);
     mapper.registerModule(new JavaTimeModule());
     return mapper;
+  }
+
+  @Bean
+  public PathMatcher pathMatcher() {
+    return new AntPathMatcher();
   }
 }

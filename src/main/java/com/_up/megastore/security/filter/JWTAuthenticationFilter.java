@@ -2,38 +2,44 @@ package com._up.megastore.security.filter;
 
 import com._up.megastore.exception.custom_exceptions.JWTAuthenticationException;
 import com._up.megastore.security.services.JWTService;
-import com._up.megastore.security.utils.Endpoints;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static com._up.megastore.security.utils.Constants.BEARER;
 import static com._up.megastore.security.utils.Constants.JWT_EXCEPTION_DEFAULT_MESSAGE;
+import static com._up.megastore.security.utils.Endpoints.ANY_USER_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.AUTH_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.ERROR_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.PUBLIC_INFORMATION_ENDPOINTS;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JWTService jwtService;
+    private final PathMatcher pathMatcher;
 
-    public JWTAuthenticationFilter(UserDetailsService userDetailsService, JWTService jwtService) {
+    public JWTAuthenticationFilter(UserDetailsService userDetailsService, JWTService jwtService, PathMatcher pathMatcher) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.pathMatcher = pathMatcher;
     }
 
     @Override
@@ -70,15 +76,23 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        AntPathMatcher pathMatcher = new AntPathMatcher();
+        boolean isOptionsMethod = request.getMethod().equals(HttpMethod.OPTIONS.name());
+        boolean isAuthEndpoint = pathMatcher.match(AUTH_ENDPOINTS, request.getRequestURI());
+        boolean isErrorEndpoint = pathMatcher.match(ERROR_ENDPOINTS, request.getRequestURI());
 
-        return Arrays.stream(Endpoints.WHITE_LISTED_URLS)
-                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+        boolean isAnyUserEndpoint = pathMatcher.match(ANY_USER_ENDPOINTS, request.getRequestURI())
+                && request.getMethod().equals(HttpMethod.POST.name());
+
+        boolean isPublicInformationEndpoint = Stream.of(PUBLIC_INFORMATION_ENDPOINTS)
+                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()))
+                && request.getMethod().equals(HttpMethod.GET.name());
+
+        return isOptionsMethod || isAuthEndpoint || isErrorEndpoint || isAnyUserEndpoint || isPublicInformationEndpoint;
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER)
+        return StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER)
                 ? authorizationHeader.substring(BEARER.length())
                 : null;
     }

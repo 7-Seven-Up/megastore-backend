@@ -14,10 +14,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_ADMINISTRATORS_URLS;
-import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_GET_BY_USERS_URLS;
-import static com._up.megastore.security.utils.Endpoints.ALLOWED_TO_POST_BY_USERS_URLS;
-import static com._up.megastore.security.utils.Endpoints.WHITE_LISTED_URLS;
+import static com._up.megastore.security.utils.Endpoints.ADMIN_ORDER_MODIFICATON_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.ANY_USER_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.AUTH_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.DELETED_ENTITIES_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.DELETE_INFORMATION_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.ERROR_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.GET_ALL_ORDERS;
+import static com._up.megastore.security.utils.Endpoints.GET_ONE_ORDER;
+import static com._up.megastore.security.utils.Endpoints.PUBLIC_INFORMATION_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.SAVE_INFORMATION_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.UPDATE_INFORMATION_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.USER_ORDER_MODIFICATION_ENDPOINTS;
 
 @Configuration
 @EnableWebSecurity
@@ -42,11 +50,19 @@ public class SecurityConfig {
     httpSecurity
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(authRequest -> authRequest
-            .requestMatchers(WHITE_LISTED_URLS).permitAll()
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
-            .requestMatchers(HttpMethod.GET, ALLOWED_TO_GET_BY_USERS_URLS).permitAll()
-            .requestMatchers(HttpMethod.POST, ALLOWED_TO_POST_BY_USERS_URLS).hasRole(Role.USER.name())
-            .requestMatchers(ALLOWED_TO_ADMINISTRATORS_URLS).hasRole(Role.ADMIN.name()))
+            .requestMatchers(AUTH_ENDPOINTS, ERROR_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.POST, ANY_USER_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.GET, DELETED_ENTITIES_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.GET, PUBLIC_INFORMATION_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.POST, SAVE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.PUT, UPDATE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.DELETE, DELETE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.POST, USER_ORDER_MODIFICATION_ENDPOINTS).hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+            .requestMatchers(HttpMethod.POST, ADMIN_ORDER_MODIFICATON_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.GET, GET_ALL_ORDERS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.GET, GET_ONE_ORDER).hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+            .anyRequest().denyAll())
         .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
                 .authenticationEntryPoint(globalAuthenticationEntryPoint))
