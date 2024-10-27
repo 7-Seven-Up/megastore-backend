@@ -50,10 +50,12 @@ public class OrderService implements IOrderService {
         Order order = orderRepository.save(OrderMapper.toOrder(user, number));
 
         order.setOrderDetails(orderDetailService.saveOrderDetails(createOrderRequest.orderDetailRequestList(), order));
+        sendOrderEmail(order, "Order Created");
 
-        Double total = orderRepository.getOrderTotal(order);
-
-        return OrderMapper.toOrderResponse(order, total);
+        return OrderMapper.toOrderResponse(
+                order,
+                orderRepository.getOrderTotal(order)
+        );
     }
 
     @Override
@@ -65,11 +67,38 @@ public class OrderService implements IOrderService {
     @Override
     public OrderResponse finishOrder(UUID id) {
         Order order = findOrderByIdOrThrowException(id);
-        throwExceptionIfStateIsNotInProgress(order);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.FINISHED);
         order.setState(State.FINISHED);
 
-        String emailBody = emailBuilder.buildFinishOrderEmail(order);
-        emailService.sendEmail(order.getUser().getEmail(), "Order Finished", emailBody);
+        sendOrderEmail(order, "Order Finished");
+
+        return OrderMapper.toOrderResponse(
+                orderRepository.save(order),
+                orderRepository.getOrderTotal(order)
+        );
+    }
+
+    @Override
+    public OrderResponse markOrderInDelivery(UUID orderId) {
+        Order order = findOrderByIdOrThrowException(orderId);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.IN_DELIVERY);
+        order.setState(State.IN_DELIVERY);
+
+        sendOrderEmail(order, "Order In Delivery");
+
+        return OrderMapper.toOrderResponse(
+                orderRepository.save(order),
+                orderRepository.getOrderTotal(order)
+        );
+    }
+
+    @Override
+    public OrderResponse deliverOrder(UUID orderId) {
+        Order order = findOrderByIdOrThrowException(orderId);
+        throwExceptionIfCurrentStateIsIncompatible(order, State.DELIVERED);
+        order.setState(State.DELIVERED);
+
+        sendOrderEmail(order, "Order Delivered");
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
@@ -81,9 +110,14 @@ public class OrderService implements IOrderService {
         return orderRepository.getLastOrderNumber() + 1;
     }
 
-    private void throwExceptionIfStateIsNotInProgress(Order order) {
-        if (order.getState() != State.IN_PROGRESS) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not in progress.");
+    private void sendOrderEmail(Order order, String subject) {
+        String emailBody = emailBuilder.buildOrderEmail(order, subject);
+        emailService.sendEmail(order.getUser().getEmail(), subject, emailBody);
+    }
+
+    public void throwExceptionIfCurrentStateIsIncompatible(Order order, State newState) {
+        if (!newState.previousStates.contains(order.getState())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, newState.exceptionMessage);
         }
     }
 }

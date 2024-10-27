@@ -13,4 +13,8 @@ public interface IOrderService {
     Order findOrderByIdOrThrowException(UUID orderId);
 
     OrderResponse finishOrder(UUID orderId);
+
+    OrderResponse markOrderInDelivery(UUID orderId);
+
+    OrderResponse deliverOrder(UUID orderId);
 }

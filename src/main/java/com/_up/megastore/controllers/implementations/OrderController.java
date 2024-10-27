@@ -27,4 +27,13 @@ public class OrderController implements IOrderController {
         return orderService.finishOrder(orderId);
     }
 
+    @Override
+    public OrderResponse markOrderInDelivery(UUID orderId) {
+        return orderService.markOrderInDelivery(orderId);
+    }
+
+    @Override
+    public OrderResponse deliverOrder(UUID orderId) {
+        return orderService.deliverOrder(orderId);
+    }
 }
