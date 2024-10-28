@@ -1,6 +1,7 @@
 package com._up.megastore.controllers.implementations;
 
 import com._up.megastore.controllers.interfaces.IOrderController;
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.services.interfaces.IOrderService;
@@ -38,7 +39,7 @@ public class OrderController implements IOrderController {
     }
 
     @Override
-    public OrderResponse cancelOrder(UUID orderId) {
-        return orderService.cancelOrder(orderId);
+    public OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest) {
+        return orderService.cancelOrder(orderId, cancelOrderRequest);
     }
 }

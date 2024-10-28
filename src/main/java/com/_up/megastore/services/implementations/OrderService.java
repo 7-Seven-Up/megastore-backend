@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.enums.State;
@@ -80,14 +81,21 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderResponse cancelOrder(UUID orderId) {
-        return changeOrderState(orderId, State.CANCELLED);
+    public OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest) {
+        return changeOrderState(orderId, State.CANCELLED, cancelOrderRequest.reason());
     }
 
     private OrderResponse changeOrderState(UUID orderId, State newState) {
+        return changeOrderState(orderId, newState, null);
+    }
+
+    private OrderResponse changeOrderState(UUID orderId, State newState, String reasonToCancel) {
         Order order = findOrderByIdOrThrowException(orderId);
         throwExceptionIfCurrentStateIsIncompatible(order, newState);
         order.setState(newState);
+
+        if (newState == State.CANCELLED)
+            order.setReasonToCancel(reasonToCancel);
 
         sendOrderEmail(order, newState.subject);
 

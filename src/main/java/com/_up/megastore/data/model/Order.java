@@ -42,6 +42,8 @@ public class Order {
     @Builder.Default
     private LocalDate date = LocalDate.now();
 
+    private String reasonToCancel = null;
+
     private boolean deleted = false;
 
     @Id

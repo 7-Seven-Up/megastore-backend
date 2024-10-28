@@ -1,5 +1,6 @@
 package com._up.megastore.services.interfaces;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.model.Order;
@@ -18,5 +19,5 @@ public interface IOrderService {
 
     OrderResponse deliverOrder(UUID orderId);
 
-    OrderResponse cancelOrder(UUID orderId);
+    OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest);
 }
