@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.data.enums.State;
 import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
@@ -97,20 +98,22 @@ class OrderServiceTest {
 
         @Test
         void cancelOrder_orderIsInProgress() {
+            final var cancelOrderRequest = new CancelOrderRequest("Bad products");
             order.setState(State.IN_PROGRESS);
 
             assertDoesNotThrow(() -> {
-                final var orderResponse = orderService.cancelOrder(orderId);
+                final var orderResponse = orderService.cancelOrder(orderId, cancelOrderRequest);
                 assertEquals(orderResponse.state(), State.CANCELLED.name());
             });
         }
 
         @Test
         void cancelOrder_orderIsFinished() {
+            final var cancelOrderRequest = new CancelOrderRequest("Bad products");
             order.setState(State.FINISHED);
 
             assertDoesNotThrow(() -> {
-                final var orderResponse = orderService.cancelOrder(orderId);
+                final var orderResponse = orderService.cancelOrder(orderId, cancelOrderRequest);
                 assertEquals(orderResponse.state(), State.CANCELLED.name());
             });
         }
@@ -193,20 +196,26 @@ class OrderServiceTest {
 
         @Test
         void cancelOrder_orderIsInDelivery() {
+            final var cancelOrderRequest = new CancelOrderRequest("Bad products");
             order.setState(State.IN_DELIVERY);
-            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
+            assertThrows(ResponseStatusException.class, () ->
+                    orderService.cancelOrder(orderId, cancelOrderRequest));
         }
 
         @Test
         void cancelOrder_orderIsDelivered() {
+            final var cancelOrderRequest = new CancelOrderRequest("Bad products");
             order.setState(State.DELIVERED);
-            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
+            assertThrows(ResponseStatusException.class, () ->
+                    orderService.cancelOrder(orderId, cancelOrderRequest));
         }
 
         @Test
         void cancelOrder_orderIsCancelled() {
+            final var cancelOrderRequest = new CancelOrderRequest("Bad products");
             order.setState(State.CANCELLED);
-            assertThrows(ResponseStatusException.class, () -> orderService.cancelOrder(orderId));
+            assertThrows(ResponseStatusException.class, () ->
+                    orderService.cancelOrder(orderId, cancelOrderRequest));
         }
     }
 }

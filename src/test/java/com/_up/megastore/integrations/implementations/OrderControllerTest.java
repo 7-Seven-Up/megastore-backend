@@ -1,5 +1,6 @@
 package com._up.megastore.integrations.implementations;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.requests.OrderDetailRequest;
 import com._up.megastore.data.enums.State;
@@ -163,8 +164,12 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/cancel_order.sql")
     void cancelOrderWithOrderInProgress() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
         String response = mockMvc.perform(
                         post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e2/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -176,8 +181,12 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/cancel_order.sql")
     void cancelOrderWithOrderFinished() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
         String response = mockMvc.perform(
                         post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab40/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -189,8 +198,12 @@ class OrderControllerTest extends BaseIntegrationTest {
     @Test
     @Sql("/scripts/orders/cancel_order.sql")
     void cancelOrdeWithIncompatibleState() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
         String response = mockMvc.perform(
                         post("/api/v1/orders/1b8f7aef-7154-4f82-b48f-988556d74cad/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
                 ).andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse()
