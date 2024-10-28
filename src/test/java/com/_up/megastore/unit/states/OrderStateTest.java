@@ -1,10 +1,12 @@
-package com._up.megastore.services.implementations;
+package com._up.megastore.unit.states;
 
 import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.data.enums.State;
 import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IOrderRepository;
+import com._up.megastore.services.implementations.EmailService;
+import com._up.megastore.services.implementations.OrderService;
 import com._up.megastore.utils.EmailBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -29,7 +31,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+public class OrderStateTest {
 
     @Mock
     private IOrderRepository orderRepository;

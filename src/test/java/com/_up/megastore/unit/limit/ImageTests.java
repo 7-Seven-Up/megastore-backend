@@ -1,7 +1,8 @@
-package com._up.megastore.services.implementations;
+package com._up.megastore.unit.limit;
 
 import com._up.megastore.data.model.ProductImage;
 import com._up.megastore.data.repositories.IProductImageRepository;
+import com._up.megastore.services.implementations.ProductImageService;
 import com._up.megastore.services.interfaces.IFileUploadService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ProductImageServiceTest {
+public class ImageTests {
 
     @Mock
     private IProductImageRepository productImageRepository;
@@ -34,11 +35,11 @@ class ProductImageServiceTest {
     private ProductImageService productImageService;
 
     private final MultipartFile mockedImage = mock(MultipartFile.class);
-    private final MultipartFile[] mockedImagesArray = { mockedImage };
+    private final MultipartFile[] mockedImagesArray = {mockedImage};
     private final ProductImage productImage = new ProductImage();
 
     @Nested
-    class ImageSizeUnitTests {
+    class ImageSizeTests {
 
         @Test
         void saveProductImage_sizeIsLessThan1MB() {
@@ -58,7 +59,7 @@ class ProductImageServiceTest {
     }
 
     @Nested
-    class ImageFilenameUnitTests {
+    class ImageFilenameTests {
 
         @BeforeEach
         void setUp() {
@@ -91,5 +92,4 @@ class ProductImageServiceTest {
             assertThrows(ResponseStatusException.class, () -> productImageService.saveProductImages(mockedImagesArray));
         }
     }
-
 }
