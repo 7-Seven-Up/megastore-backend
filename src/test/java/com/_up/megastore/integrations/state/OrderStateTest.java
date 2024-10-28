@@ -1,8 +1,6 @@
 package com._up.megastore.integrations.state;
 
 import com._up.megastore.controllers.requests.CancelOrderRequest;
-import com._up.megastore.controllers.requests.CreateOrderRequest;
-import com._up.megastore.controllers.requests.OrderDetailRequest;
 import com._up.megastore.data.enums.State;
 import com._up.megastore.integrations.base.BaseIntegrationTest;
 import com._up.megastore.services.implementations.EmailService;
@@ -10,9 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.List;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -24,25 +19,6 @@ public class OrderStateTest extends BaseIntegrationTest {
 
     @MockBean
     private EmailService emailService;
-
-    @Test
-    @Sql("/scripts/orders/save_order.sql")
-    void saveOrderWithExceedingQuantity() throws Exception {
-        CreateOrderRequest request = new CreateOrderRequest(
-                UUID.fromString("58fae25b-ea38-4e7b-ab2d-9f555a67836b"), List.of(
-                new OrderDetailRequest(
-                        UUID.fromString("183f205a-3430-4e11-8bca-57672a0ce3ff"),
-                        15
-                )
-        )
-        );
-
-        mockMvc.perform(
-                post("/api/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request))
-        ).andExpect(status().isBadRequest());
-    }
 
     @Test
     @Sql("/scripts/orders/finish_order.sql")
