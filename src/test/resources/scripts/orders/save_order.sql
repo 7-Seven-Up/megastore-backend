@@ -20,5 +20,5 @@ VALUES ('183f205a-3430-4e11-8bca-57672a0ce3ff', 'url 1'),
        ('183f205a-3430-4e11-8bca-57672a0ce3ff', 'url 2'),
        ('22ede130-726f-49ac-9564-d783fc22a6fa', 'url 3');
 
-INSERT INTO users (user_id, username, password, full_name, activated, deleted)
-VALUES ('58fae25b-ea38-4e7b-ab2d-9f555a67836b', 'user test', 'password', 'Client Name', true, false);
+INSERT INTO users (user_id, username, password, email, full_name, activated, deleted)
+VALUES ('58fae25b-ea38-4e7b-ab2d-9f555a67836b', 'user test', 'password', 'email@gmail.com', 'Client Name', true, false);
