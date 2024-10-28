@@ -1,5 +1,6 @@
 package com._up.megastore.services.implementations;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.enums.State;
@@ -65,40 +66,38 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderResponse finishOrder(UUID id) {
-        Order order = findOrderByIdOrThrowException(id);
-        throwExceptionIfCurrentStateIsIncompatible(order, State.FINISHED);
-        order.setState(State.FINISHED);
-
-        sendOrderEmail(order, "Order Finished");
-
-        return OrderMapper.toOrderResponse(
-                orderRepository.save(order),
-                orderRepository.getOrderTotal(order)
-        );
+    public OrderResponse finishOrder(UUID orderId) {
+        return changeOrderState(orderId, State.FINISHED);
     }
 
     @Override
     public OrderResponse markOrderInDelivery(UUID orderId) {
-        Order order = findOrderByIdOrThrowException(orderId);
-        throwExceptionIfCurrentStateIsIncompatible(order, State.IN_DELIVERY);
-        order.setState(State.IN_DELIVERY);
-
-        sendOrderEmail(order, "Order In Delivery");
-
-        return OrderMapper.toOrderResponse(
-                orderRepository.save(order),
-                orderRepository.getOrderTotal(order)
-        );
+        return changeOrderState(orderId, State.IN_DELIVERY);
     }
 
     @Override
     public OrderResponse deliverOrder(UUID orderId) {
-        Order order = findOrderByIdOrThrowException(orderId);
-        throwExceptionIfCurrentStateIsIncompatible(order, State.DELIVERED);
-        order.setState(State.DELIVERED);
+        return changeOrderState(orderId, State.DELIVERED);
+    }
 
-        sendOrderEmail(order, "Order Delivered");
+    @Override
+    public OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest) {
+        return changeOrderState(orderId, State.CANCELLED, cancelOrderRequest.reason());
+    }
+
+    private OrderResponse changeOrderState(UUID orderId, State newState) {
+        return changeOrderState(orderId, newState, null);
+    }
+
+    private OrderResponse changeOrderState(UUID orderId, State newState, String reasonToCancel) {
+        Order order = findOrderByIdOrThrowException(orderId);
+        throwExceptionIfCurrentStateIsIncompatible(order, newState);
+        order.setState(newState);
+
+        if (newState == State.CANCELLED)
+            order.setReasonToCancel(reasonToCancel);
+
+        sendOrderEmail(order, newState.subject);
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),

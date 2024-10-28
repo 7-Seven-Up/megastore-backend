@@ -10,6 +10,7 @@ public record OrderResponse(
         LocalDate date,
         String clientName,
         String state,
+        String reasonToCancel,
         Double total,
         List<OrderDetailResponse> orderDetails
 ) {}

@@ -1,7 +1,9 @@
 package com._up.megastore.controllers.interfaces;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +18,7 @@ public interface IOrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    OrderResponse saveOrder(@RequestBody CreateOrderRequest createOrderRequest);
+    OrderResponse saveOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest);
 
     @PostMapping("/{orderId}/finish")
     @ResponseStatus(HttpStatus.OK)
@@ -30,4 +32,10 @@ public interface IOrderController {
     @ResponseStatus(HttpStatus.OK)
     OrderResponse deliverOrder(@PathVariable UUID orderId);
 
+    @PostMapping("/{orderId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    OrderResponse cancelOrder(
+            @PathVariable UUID orderId,
+            @RequestBody @Valid CancelOrderRequest cancelOrderRequest
+    );
 }

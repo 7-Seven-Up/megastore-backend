@@ -27,6 +27,7 @@ public class OrderMapper {
                 order.getDate(),
                 order.getUser().getFullName(),
                 order.getState().name(),
+                order.getReasonToCancel(),
                 total,
                 buildOrderDetailsResponse(order.getOrderDetails())
         );

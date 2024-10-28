@@ -1,7 +1,9 @@
 package com._up.megastore.integrations.implementations;
 
+import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.requests.OrderDetailRequest;
+import com._up.megastore.data.enums.State;
 import com._up.megastore.integrations.base.BaseIntegrationTest;
 import com._up.megastore.services.implementations.EmailService;
 import org.junit.jupiter.api.Test;
@@ -85,7 +87,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "state", "FINISHED");
+        assertContains(response, "state", State.FINISHED.name());
 
         verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
     }
@@ -100,7 +102,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", "Order is not in progress.");
+        assertContains(response, "message", State.FINISHED.exceptionMessage);
     }
 
     @Test
@@ -113,7 +115,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "state", "IN_DELIVERY");
+        assertContains(response, "state", State.IN_DELIVERY.name());
 
         verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
     }
@@ -128,7 +130,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", "Order is not finished.");
+        assertContains(response, "message", State.IN_DELIVERY.exceptionMessage);
     }
 
     @Test
@@ -141,7 +143,7 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "state", "DELIVERED");
+        assertContains(response, "state", State.DELIVERED.name());
 
         verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
     }
@@ -156,7 +158,58 @@ class OrderControllerTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", "Order is not in delivery.");
+        assertContains(response, "message", State.DELIVERED.exceptionMessage);
+    }
+
+    @Test
+    @Sql("/scripts/orders/cancel_order.sql")
+    void cancelOrderWithOrderInProgress() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/95803676-823b-4454-9844-904d617f42e2/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "state", State.CANCELLED.name());
+    }
+
+    @Test
+    @Sql("/scripts/orders/cancel_order.sql")
+    void cancelOrderWithOrderFinished() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/e4990fed-48f6-40ab-b7a8-de242a57ab40/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "state", State.CANCELLED.name());
+    }
+
+    @Test
+    @Sql("/scripts/orders/cancel_order.sql")
+    void cancelOrdeWithIncompatibleState() throws Exception {
+        final var cancelOrderRequest = new CancelOrderRequest("Bad products");
+
+        String response = mockMvc.perform(
+                        post("/api/v1/orders/1b8f7aef-7154-4f82-b48f-988556d74cad/cancel")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(toJson(cancelOrderRequest))
+                ).andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertContains(response, "message", State.CANCELLED.exceptionMessage);
     }
 
 }
