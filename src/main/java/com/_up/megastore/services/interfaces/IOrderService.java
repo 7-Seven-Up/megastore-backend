@@ -5,6 +5,8 @@ import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.model.Order;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public interface IOrderService {
@@ -20,4 +22,6 @@ public interface IOrderService {
     OrderResponse deliverOrder(UUID orderId);
 
     OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest);
+
+    List<OrderResponse> getOrders(int page, int pageSize, Date startPeriodDate, Date endPeriodDate, UUID userId, String state);
 }

@@ -1,18 +1,8 @@
 package com._up.megastore.data.model;
 
 import com._up.megastore.data.enums.State;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -26,7 +16,8 @@ import java.util.UUID;
 @Data
 public class Order {
 
-    @ManyToOne @NonNull
+    @ManyToOne
+    @NonNull
     private User user;
 
     @NonNull
@@ -49,4 +40,5 @@ public class Order {
     @Id
     private final UUID orderId = UUID.randomUUID();
 
+    // TODO : implement a dates for each state (auditory)
 }

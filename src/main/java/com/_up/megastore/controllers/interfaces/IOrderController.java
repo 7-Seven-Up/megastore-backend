@@ -4,13 +4,12 @@ import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/orders")
@@ -38,4 +37,18 @@ public interface IOrderController {
             @PathVariable UUID orderId,
             @RequestBody @Valid CancelOrderRequest cancelOrderRequest
     );
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    List<OrderResponse> getOrders(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            Date startPeriodDate,
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            Date endPeriodDate,
+            @RequestParam(required = false) UUID userId,
+            @RequestParam(required = false) String state);
 }

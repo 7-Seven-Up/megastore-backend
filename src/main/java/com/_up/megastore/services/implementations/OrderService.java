@@ -13,11 +13,18 @@ import com._up.megastore.services.interfaces.IOrderService;
 import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.OrderMapper;
 import com._up.megastore.utils.EmailBuilder;
+import com._up.megastore.utils.OrderSpecifications;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -118,5 +125,16 @@ public class OrderService implements IOrderService {
         if (!newState.previousStates.contains(order.getState())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, newState.exceptionMessage);
         }
+    }
+
+    @Override
+    public List<OrderResponse> getOrders(int page, int pageSize,Date startPeriodDate, Date endPeriodDate, UUID userId, String state) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+         return orderRepository.findAll(
+                Specification.where(OrderSpecifications.withStartPeriodDate(startPeriodDate))
+                        .and(OrderSpecifications.withEndPeriodDate(endPeriodDate))
+                        .and(OrderSpecifications.withUserId(userId))
+                        .and(OrderSpecifications.withState(state)),  pageable
+        ).map(order -> OrderMapper.toOrderResponse(order, orderRepository.getOrderTotal(order))).toList();
     }
 }

@@ -7,6 +7,8 @@ import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.services.interfaces.IOrderService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,5 +43,10 @@ public class OrderController implements IOrderController {
     @Override
     public OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest) {
         return orderService.cancelOrder(orderId, cancelOrderRequest);
+    }
+
+    @Override
+    public List<OrderResponse> getOrders(int page, int pageSize, Date startPeriodDate, Date endPeriodDate, UUID userId, String state) {
+        return orderService.getOrders(page, pageSize, startPeriodDate, endPeriodDate, userId, state);
     }
 }
