@@ -1,4 +1,4 @@
-package com._up.megastore.integrations.implementations;
+package com._up.megastore.integrations.limit;
 
 import com._up.megastore.controllers.requests.CreateCategoryRequest;
 import com._up.megastore.controllers.requests.UpdateCategoryRequest;
@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql("/scripts/categories/update_categories.sql")
-class CategoryControllerTest extends BaseIntegrationTest {
+@Sql("/scripts/categories/save_and_update_categories.sql")
+public class SaveAndUpdateCategoryTest extends BaseIntegrationTest {
 
     @Test
     void saveCategory_blankName() throws Exception {

@@ -27,16 +27,19 @@ public class ProductImageService implements IProductImageService {
 
     @Override
     public List<ProductImage> saveProductImages(MultipartFile[] multipartFiles) {
-        validateDuplicateImageNames(multipartFiles);
         return Arrays.stream(multipartFiles)
-                .map(this::saveProductImage)
+                .map(image -> {
+                    throwExceptionIfImageSizeIsExceeding(image);
+                    throwExceptionIfImageNameAlreadyExists(getImageFilename(image));
+                    return saveProductImage(image);
+                })
                 .collect(Collectors.toList());
     }
 
     private ProductImage saveProductImage(MultipartFile multipartFile) {
         String name = getImageFilename(multipartFile);
         String imageURL = fileUploadService.uploadImage(multipartFile);
-        return productImageRepository.save( new ProductImage(name, imageURL) );
+        return productImageRepository.save(new ProductImage(name, imageURL));
     }
 
     private String getImageFilename(MultipartFile multipartFile) {
@@ -45,14 +48,15 @@ public class ProductImageService implements IProductImageService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file must have a name."));
     }
 
-    private void validateDuplicateImageNames(MultipartFile[] multipartFiles) {
-        Arrays.stream(multipartFiles)
-                .forEach(image -> ifImageNameAlreadyExistsThrowException( getImageFilename(image) ));
+    private void throwExceptionIfImageSizeIsExceeding(MultipartFile multipartFile) {
+        if (multipartFile.getSize() > 1_000_000) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file size exceeds 1 MB");
+        }
     }
 
-    private void ifImageNameAlreadyExistsThrowException(String name) {
+    private void throwExceptionIfImageNameAlreadyExists(String name) {
         if (productImageRepository.existsByName(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product image with name "+name+" already exists.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product image with name " + name + " already exists.");
         }
     }
 

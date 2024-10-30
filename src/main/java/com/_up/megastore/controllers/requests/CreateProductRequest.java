@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record CreateProductRequest(
 
-        @NotBlank(message = "Product name must not be blank")
+        @NotNull(message = "Product name must not be null")
         @Size(min = 3, max = 30, message = "Product name must be between 3 and 30 characters")
         String name,
 
