@@ -60,7 +60,7 @@ public class ActivateUserTest {
         mockedDateTime = mockStatic(LocalDateTime.class);
         mockedDateTime.when(LocalDateTime::now).thenReturn(expectedDate);
 
-        when(tokenService.findUserByActivationToken(any(UUID.class))).thenReturn(user);
+        when(tokenService.findUserByToken(any(UUID.class))).thenReturn(user);
         when(tokenService.findTokenByIdOrThrowException(any(UUID.class))).thenReturn(token);
 
         when(user.isActivated()).thenReturn(false);

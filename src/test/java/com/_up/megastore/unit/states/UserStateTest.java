@@ -47,7 +47,7 @@ public class UserStateTest {
 
     @BeforeEach
     void setUp() {
-        when(tokenService.findUserByActivationToken(any(UUID.class))).thenReturn(user);
+        when(tokenService.findUserByToken(any(UUID.class))).thenReturn(user);
     }
 
     @Test

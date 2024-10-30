@@ -28,13 +28,12 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public User findUserByActivationToken(UUID activationToken){
-        Token token = findTokenByIdOrThrowException(activationToken);
-        return token.getUser();
+    public User findUserByToken(UUID tokenId) {
+        return findTokenByIdOrThrowException(tokenId).getUser();
     }
 
     @Override
-    public Token findTokenByIdOrThrowException(UUID token){
+    public Token findTokenByIdOrThrowException(UUID token) {
         return iTokenRepository.findById(token)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token with UUID " + token + " does not exist."));
     }
