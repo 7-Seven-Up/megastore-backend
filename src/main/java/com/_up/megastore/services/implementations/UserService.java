@@ -62,12 +62,12 @@ public class UserService implements IUserService {
 
   @Override
   public void activateUser(UUID userId, UUID activationToken) {
+    throwExceptionIfTokenIsExpired(activationToken);
+
     User user = findUserToActivateOrThrowException(activationToken);
-    if(isTokenExpired(activationToken)){
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token has expired");
-    }
     user.setActivated(true);
     userRepository.save(user);
+
     sendWelcomeEmail(user);
   }
 
@@ -141,6 +141,7 @@ public class UserService implements IUserService {
   @Override
   public void recoverPassword(RecoverPasswordRequest request) {
     throwExceptionIfPasswordsAreNotEquals(request.password(), request.confirmPassword());
+    throwExceptionIfTokenIsExpired(request.recoverPasswordToken());
     User user = tokenService.findUserByToken(request.recoverPasswordToken());
     user.setPassword(passwordEncoder.encode(request.password()));
 
@@ -150,6 +151,12 @@ public class UserService implements IUserService {
   private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
     if (!password.equals(confirmPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+  }
+
+  private void throwExceptionIfTokenIsExpired(UUID tokenId) {
+    if (isTokenExpired(tokenId)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token has expired");
+    }
   }
 
   @Override
