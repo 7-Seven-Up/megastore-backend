@@ -8,7 +8,6 @@ import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
 import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,8 +68,8 @@ public class CategoryService implements ICategoryService {
     }
 
     public void ifCategorySubcategoriesExistThrowException(UUID categoryId){
-        if(!findCategoryByIdOrThrowException(categoryId).getSubCategories().isEmpty()){
-            throw new DataIntegrityViolationException("Category has subcategories and cannot be deleted.");
+        if (!findCategoryByIdOrThrowException(categoryId).getSubCategories().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category has subcategories and cannot be deleted.");
         }
     }
 
