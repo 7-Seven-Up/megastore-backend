@@ -30,6 +30,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
     private List<OrderDetail> orderDetails = Collections.emptyList();
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderStateHistory> orderStateHistories = Collections.emptyList();
+
     @Builder.Default
     private LocalDate date = LocalDate.now();
 
@@ -39,6 +42,4 @@ public class Order {
 
     @Id
     private final UUID orderId = UUID.randomUUID();
-
-    // TODO : implement a dates for each state (auditory)
 }
