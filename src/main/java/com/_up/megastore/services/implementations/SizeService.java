@@ -8,14 +8,14 @@ import com._up.megastore.data.repositories.ISizeRepository;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.SizeMapper;
 import jakarta.transaction.Transactional;
-import java.util.NoSuchElementException;
-import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @Service
 public class SizeService implements ISizeService {
@@ -37,7 +37,7 @@ public class SizeService implements ISizeService {
     @Override
     public Size findSizeByIdOrThrowException(UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .orElseThrow( () -> new NoSuchElementException("Size with id " + sizeId + " does not exist.") );
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " does not exist.") );
     }
 
     @Override
@@ -102,7 +102,7 @@ public class SizeService implements ISizeService {
 
     public void throwExceptionIfSizeIsDeleted(Size size){
         if(size.isDeleted()){
-            throw new IllegalStateException("Size with id " + size.getSizeId() + " is already deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is already deleted.");
 
         }
     }

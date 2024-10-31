@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -39,7 +38,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Category findCategoryByIdOrThrowException(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category with id " + categoryId + " does not exist."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " does not exist."));
     }
 
     private Category getSuperCategory(UUID superCategoryId) {
@@ -75,7 +74,7 @@ public class CategoryService implements ICategoryService {
 
     public void ifCategoryIsNotDeletedThrowException(Category category){
         if(category.isDeleted()){
-           throw new IllegalStateException("Category with id " + category.getCategoryId() + " is already deleted.");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + category.getCategoryId() + " is already deleted.");
         }
     }
   
