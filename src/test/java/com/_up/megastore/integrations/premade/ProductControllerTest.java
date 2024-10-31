@@ -1,4 +1,4 @@
-package com._up.megastore.integrations.custom;
+package com._up.megastore.integrations.premade;
 
 import com._up.megastore.integrations.base.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
