@@ -34,8 +34,8 @@ public class EmailBuilder {
                 + "</table>";
     }
 
-    public String buildRecoverPasswordEmail(User user) {
-        String recoverPasswordURL = frontendURL + "/auth/recover-password?token=" + user.getRecoverPasswordToken();
+    public String buildRecoverPasswordEmail(String username, UUID recoverPasswordToken) {
+        String recoverPasswordURL = frontendURL + "/auth/recover-password?token=" + recoverPasswordToken;
 
         return "<!DOCTYPE html>\n"
                 + "<html>\n"
@@ -69,7 +69,7 @@ public class EmailBuilder {
                 + "            <h1>Password Recovery</h1>\n"
                 + "        </div>\n"
                 + "        <div class=\"content\">\n"
-                + "            <p>Hello " + user.getUsername() + ",</p>\n"
+                + "            <p>Hello " + username + ",</p>\n"
                 + "            <p>We received a request to reset your password. Click the button below to create a new password:</p>\n"
                 + "            <p style=\"display: flex; flex: content; justify-content: center;\"><a href=\" " + recoverPasswordURL + "\" class=\"button\">Reset Password</a></p>\n"
                 + "            <p>If you did not request this change, please ignore this email.</p>\n"

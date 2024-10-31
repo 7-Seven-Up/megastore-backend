@@ -62,12 +62,12 @@ public class UserService implements IUserService {
 
   @Override
   public void activateUser(UUID userId, UUID activationToken) {
+    throwExceptionIfTokenIsExpired(activationToken);
+
     User user = findUserToActivateOrThrowException(activationToken);
-    if(isTokenExpired(activationToken)){
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token has expired");
-    }
     user.setActivated(true);
     userRepository.save(user);
+
     sendWelcomeEmail(user);
   }
 
@@ -101,7 +101,7 @@ public class UserService implements IUserService {
   }
 
   private User findUserToActivateOrThrowException(UUID activationTokenUUID) {
-    User user = tokenService.findUserByActivationToken(activationTokenUUID);
+    User user = tokenService.findUserByToken(activationTokenUUID);
     ifUserIsActivatedThrowException(user);
     return user;
   }
@@ -127,12 +127,9 @@ public class UserService implements IUserService {
   @Override
   public void sendEmailToRecoverPassword(String email) {
     User user = findUserByEmailOrThrowException(email);
+    Token recoverPasswordToken = tokenService.saveToken(user);
+    String emailContent = emailBuilder.buildRecoverPasswordEmail(user.getUsername(), recoverPasswordToken.getTokenId());
 
-    user.setRecoverPasswordToken(UUID.randomUUID());
-
-    userRepository.save(user);
-
-    String emailContent = emailBuilder.buildRecoverPasswordEmail(user);
     emailService.sendEmail(email, "Recover Password", emailContent);
   }
 
@@ -143,21 +140,23 @@ public class UserService implements IUserService {
 
   @Override
   public void recoverPassword(RecoverPasswordRequest request) {
-    User user = findUserByTokenOrThrowException(request.recoverPasswordToken());
     throwExceptionIfPasswordsAreNotEquals(request.password(), request.confirmPassword());
+    throwExceptionIfTokenIsExpired(request.recoverPasswordToken());
+    User user = tokenService.findUserByToken(request.recoverPasswordToken());
     user.setPassword(passwordEncoder.encode(request.password()));
-    userRepository.save(user);
-  }
 
-  private User findUserByTokenOrThrowException(UUID token) {
-    return userRepository.findByRecoverPasswordTokenIs(token)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The token" + token + " does not assigned to any user."));
+    userRepository.save(user);
   }
 
   private void throwExceptionIfPasswordsAreNotEquals(String password, String confirmPassword) {
     if (!password.equals(confirmPassword))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+  }
+
+  private void throwExceptionIfTokenIsExpired(UUID tokenId) {
+    if (isTokenExpired(tokenId)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Token has expired");
+    }
   }
 
   @Override
@@ -171,7 +170,7 @@ public class UserService implements IUserService {
   @Override
   public void sendNewActivationToken(SendNewActivationTokenRequest sendNewActivationTokenRequest) {
     throwExceptionIfTokenIsNotExpired(sendNewActivationTokenRequest.activationToken());
-    User user = tokenService.findUserByActivationToken(sendNewActivationTokenRequest.activationToken());
+    User user = tokenService.findUserByToken(sendNewActivationTokenRequest.activationToken());
     Token token = tokenService.saveToken(user);
     sendNewActivationEmail(user, token.getTokenId());
   }

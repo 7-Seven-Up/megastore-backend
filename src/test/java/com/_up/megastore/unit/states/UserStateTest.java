@@ -47,18 +47,18 @@ public class UserStateTest {
 
     @BeforeEach
     void setUp() {
-        when(tokenService.findUserByActivationToken(any(UUID.class))).thenReturn(user);
+        when(tokenService.findUserByToken(any(UUID.class))).thenReturn(user);
+        when(tokenService.findTokenByIdOrThrowException(any(UUID.class))).thenReturn(token);
+        when(token.getTokenExpirationDate()).thenReturn(LocalDateTime.now().plusMinutes(10));
     }
 
     @Test
     void activateUser_userIsNotActivated() {
-        when(tokenService.findTokenByIdOrThrowException(any(UUID.class))).thenReturn(token);
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(emailBuilder.buildWelcomeEmail(any(User.class))).thenReturn("Email content");
         doNothing().when(emailService).sendEmail(any(), any(), any());
 
         when(user.isActivated()).thenReturn(false);
-        when(token.getTokenExpirationDate()).thenReturn(LocalDateTime.now().plusMinutes(10));
 
         assertDoesNotThrow(() -> userService.activateUser(UUID.randomUUID(), UUID.randomUUID()));
     }
