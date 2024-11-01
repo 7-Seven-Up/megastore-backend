@@ -7,17 +7,12 @@ import com._up.megastore.data.enums.State;
 import com._up.megastore.data.model.Order;
 import com._up.megastore.data.model.User;
 import com._up.megastore.data.repositories.IOrderRepository;
-import com._up.megastore.services.interfaces.IEmailService;
-import com._up.megastore.services.interfaces.IOrderDetailService;
-import com._up.megastore.services.interfaces.IOrderService;
-import com._up.megastore.services.interfaces.IUserService;
+import com._up.megastore.services.interfaces.*;
 import com._up.megastore.services.mappers.OrderMapper;
 import com._up.megastore.utils.EmailBuilder;
 import com._up.megastore.utils.OrderSpecifications;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,19 +30,22 @@ public class OrderService implements IOrderService {
     private final IEmailService emailService;
     private final EmailBuilder emailBuilder;
     private final IOrderRepository orderRepository;
+    private final IOrderStateHistoryService orderStateHistoryService;
 
     public OrderService(
             IUserService userService,
             IOrderDetailService orderDetailService,
             IEmailService emailService,
             EmailBuilder emailBuilder,
-            IOrderRepository orderRepository
+            IOrderRepository orderRepository,
+            IOrderStateHistoryService orderStateHistoryService
     ) {
         this.userService = userService;
         this.orderDetailService = orderDetailService;
         this.emailService = emailService;
         this.emailBuilder = emailBuilder;
         this.orderRepository = orderRepository;
+        this.orderStateHistoryService = orderStateHistoryService;
     }
 
     @Override
@@ -59,6 +57,8 @@ public class OrderService implements IOrderService {
 
         order.setOrderDetails(orderDetailService.saveOrderDetails(createOrderRequest.orderDetailRequestList(), order));
         sendOrderEmail(order, "Order Created");
+
+        addOrderStateHistory(order, State.IN_PROGRESS);
 
         return OrderMapper.toOrderResponse(
                 order,
@@ -106,10 +106,17 @@ public class OrderService implements IOrderService {
 
         sendOrderEmail(order, newState.subject);
 
+        addOrderStateHistory(order, newState);
+
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
                 orderRepository.getOrderTotal(order)
         );
+    }
+
+    private void addOrderStateHistory(Order order, State state) {
+        User user = userService.findUserByIdOrThrowException(order.getUser().getUserId());
+        orderStateHistoryService.addOrderStateHistory(order, state, user);
     }
 
     private synchronized Integer getNextOrderNumber() {
@@ -128,13 +135,20 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderResponse> getOrders(int page, int pageSize,Date startPeriodDate, Date endPeriodDate, UUID userId, String state) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-         return orderRepository.findAll(
-                Specification.where(OrderSpecifications.withStartPeriodDate(startPeriodDate))
-                        .and(OrderSpecifications.withEndPeriodDate(endPeriodDate))
-                        .and(OrderSpecifications.withUserId(userId))
-                        .and(OrderSpecifications.withState(state)),  pageable
-        ).map(order -> OrderMapper.toOrderResponse(order, orderRepository.getOrderTotal(order))).toList();
+    public List<OrderResponse> getOrders(int page, int pageSize, Date startPeriodDate, Date endPeriodDate, UUID userId, String state) {
+        return orderRepository.findAll(Specification.where(OrderSpecifications.withStartPeriodDate(startPeriodDate))
+                .and(OrderSpecifications.withEndPeriodDate(endPeriodDate))
+                .and(OrderSpecifications.withUserId(userId))
+                .and(OrderSpecifications.withState(state)), PageRequest.of(page - 1, pageSize)
+        ).stream().map(order -> OrderMapper.toOrderResponse(order, orderRepository.getOrderTotal(order))).toList();
+    }
+
+    @Override
+    public OrderResponse getOrder(UUID orderId) {
+        Order order = findOrderByIdOrThrowException(orderId);
+        return OrderMapper.toOrderResponse(
+                order,
+                orderRepository.getOrderTotal(order)
+        );
     }
 }

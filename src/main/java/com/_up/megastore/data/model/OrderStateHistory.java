@@ -1,9 +1,7 @@
 package com._up.megastore.data.model;
 
 import com._up.megastore.data.enums.State;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +25,7 @@ public class OrderStateHistory {
     @Builder.Default
     private LocalDate date = LocalDate.now();
 
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private State state = null;
 

@@ -49,4 +49,9 @@ public class OrderController implements IOrderController {
     public List<OrderResponse> getOrders(int page, int pageSize, Date startPeriodDate, Date endPeriodDate, UUID userId, String state) {
         return orderService.getOrders(page, pageSize, startPeriodDate, endPeriodDate, userId, state);
     }
+
+    @Override
+    public OrderResponse getOrder(UUID orderId) {
+        return orderService.getOrder(orderId);
+    }
 }

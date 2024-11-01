@@ -51,4 +51,8 @@ public interface IOrderController {
             Date endPeriodDate,
             @RequestParam(required = false) UUID userId,
             @RequestParam(required = false) String state);
+
+    @GetMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    OrderResponse getOrder(@PathVariable UUID orderId);
 }

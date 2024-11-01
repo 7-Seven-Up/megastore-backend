@@ -24,4 +24,6 @@ public interface IOrderService {
     OrderResponse cancelOrder(UUID orderId, CancelOrderRequest cancelOrderRequest);
 
     List<OrderResponse> getOrders(int page, int pageSize, Date startPeriodDate, Date endPeriodDate, UUID userId, String state);
+
+    OrderResponse getOrder(UUID orderId);
 }
