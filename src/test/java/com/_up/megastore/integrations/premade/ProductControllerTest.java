@@ -1,4 +1,4 @@
-package com._up.megastore.integrations.custom;
+package com._up.megastore.integrations.premade;
 
 import com._up.megastore.integrations.base.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql("/scripts/products/get_variants.sql")
+@Sql("/scripts/products/get_and_delete_variants.sql")
 class ProductControllerTest extends BaseIntegrationTest {
 
     @Test

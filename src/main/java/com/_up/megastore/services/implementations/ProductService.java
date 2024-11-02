@@ -74,7 +74,7 @@ public class ProductService implements IProductService {
 
     private void throwExceptionIfProductHasVariants(Product product) {
         if (productRepository.existsByVariantOfAndDeletedFalse(product)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with name " + product.getName() + " has variants and it can't be deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product has variants and it can't be deleted.");
         }
     }
 

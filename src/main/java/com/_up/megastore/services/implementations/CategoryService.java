@@ -8,7 +8,6 @@ import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
 import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -40,7 +38,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Category findCategoryByIdOrThrowException(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NoSuchElementException("Category with id " + categoryId + " does not exist."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " does not exist."));
     }
 
     private Category getSuperCategory(UUID superCategoryId) {
@@ -69,14 +67,14 @@ public class CategoryService implements ICategoryService {
     }
 
     public void ifCategorySubcategoriesExistThrowException(UUID categoryId){
-        if(!findCategoryByIdOrThrowException(categoryId).getSubCategories().isEmpty()){
-            throw new DataIntegrityViolationException("Category has subcategories and cannot be deleted.");
+        if (!findCategoryByIdOrThrowException(categoryId).getSubCategories().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category has subcategories and cannot be deleted.");
         }
     }
 
     public void ifCategoryIsNotDeletedThrowException(Category category){
         if(category.isDeleted()){
-           throw new IllegalStateException("Category with id " + category.getCategoryId() + " is already deleted.");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + category.getCategoryId() + " is already deleted.");
         }
     }
   
