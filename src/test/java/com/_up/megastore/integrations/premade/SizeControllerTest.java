@@ -33,7 +33,7 @@ public class SizeControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Sql("/scripts/sizes/create_sizes.sql")
+    @Sql("/scripts/sizes/update_and_delete_sizes.sql")
     void getDeletedSizes() throws Exception {
         String response = mockMvc.perform(
                 get("/api/v1/sizes/deleted")
