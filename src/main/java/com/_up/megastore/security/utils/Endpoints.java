@@ -17,6 +17,7 @@ public class Endpoints {
     public static String[] PUBLIC_INFORMATION_ENDPOINTS = {
             "/api/v1/products",
             "/api/v1/products/*",
+            "/api/v1/products/*/variants",
             "/api/v1/categories",
             "/api/v1/categories/*",
             "/api/v1/sizes",
