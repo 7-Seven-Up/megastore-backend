@@ -6,14 +6,14 @@ import com._up.megastore.data.model.Category;
 import com._up.megastore.data.model.Product;
 import com._up.megastore.data.model.ProductImage;
 import com._up.megastore.data.model.Size;
-
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ProductMapper {
 
     public static ProductResponse toProductResponse(Product product) {
-        String variantName = getVariantName(product.getVariantOf());
+        UUID variantOfId = getVariantOfId(product.getVariantOf());
         List<String> imagesURLS = getImagesURLs(product);
 
         return new ProductResponse(
@@ -25,7 +25,7 @@ public class ProductMapper {
                 product.getStock(),
                 product.getColor(),
                 product.getSize().getName(),
-                variantName
+            variantOfId
         );
     }
 
@@ -43,8 +43,8 @@ public class ProductMapper {
                 .build();
     }
 
-    private static String getVariantName(Product variant) {
-        return variant != null ? variant.getName() : null;
+    private static UUID getVariantOfId(Product variant) {
+        return variant != null ? variant.getProductId() : null;
     }
 
     private static List<String> getImagesURLs(Product product) {
