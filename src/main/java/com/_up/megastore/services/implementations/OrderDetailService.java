@@ -11,7 +11,6 @@ import com._up.megastore.services.mappers.OrderDetailMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderDetailService implements IOrderDetailService {
@@ -31,7 +30,7 @@ public class OrderDetailService implements IOrderDetailService {
     public List<OrderDetail> saveOrderDetails(List<OrderDetailRequest> orderDetailsRequests, Order order) {
         return orderDetailsRequests.stream()
                 .map(request -> saveOrderDetail(order, request))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private OrderDetail saveOrderDetail(Order order, OrderDetailRequest orderDetailRequest) {

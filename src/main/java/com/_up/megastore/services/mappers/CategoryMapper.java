@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public class CategoryMapper {
 
+    private CategoryMapper() {}
+
     public static CategoryResponse toCategoryResponse(Category category) {
         String superCategoryName = getSuperCategoryName(category.getSuperCategory());
         UUID superCategoryId = getSuperCategoryId(category.getSuperCategory());

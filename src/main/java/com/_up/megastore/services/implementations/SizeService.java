@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
+import static com._up.megastore.data.Constants.SIZE_WITH_ID;
+
 @Service
 public class SizeService implements ISizeService {
 
@@ -37,7 +39,7 @@ public class SizeService implements ISizeService {
     @Override
     public Size findSizeByIdOrThrowException(UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " does not exist.") );
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, SIZE_WITH_ID + sizeId + " does not exist.") );
     }
 
     @Override
@@ -96,13 +98,13 @@ public class SizeService implements ISizeService {
 
     public void throwExceptionIfSizeIsNotDeleted(Size size) {
         if(!size.isDeleted()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is not deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SIZE_WITH_ID + size.getSizeId() + " is not deleted.");
         }
     }
 
     public void throwExceptionIfSizeIsDeleted(Size size){
         if(size.isDeleted()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Size with id " + size.getSizeId() + " is already deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SIZE_WITH_ID + size.getSizeId() + " is already deleted.");
 
         }
     }

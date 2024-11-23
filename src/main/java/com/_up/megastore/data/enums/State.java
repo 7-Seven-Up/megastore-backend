@@ -40,10 +40,10 @@ public enum State {
             "Order Cancelled"
     );
 
-    public final List<State> previousStates;
-    public final String stateMessage;
-    public final String exceptionMessage;
-    public final String subject;
+    private final List<State> previousStates;
+    private final String stateMessage;
+    private final String exceptionMessage;
+    private final String subject;
 
     State(
             List<State> previousStates,

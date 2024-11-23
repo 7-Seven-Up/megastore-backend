@@ -6,6 +6,8 @@ import com._up.megastore.data.model.Size;
 
 public class SizeMapper {
 
+    private SizeMapper() {}
+
     public static SizeResponse toSizeResponse(Size size) {
         return new SizeResponse(size.getSizeId(), size.getName(), size.getDescription());
     }

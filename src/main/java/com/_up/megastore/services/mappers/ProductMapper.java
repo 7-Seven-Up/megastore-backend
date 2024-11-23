@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 public class ProductMapper {
 
+    private ProductMapper() {}
+
     public static ProductResponse toProductResponse(Product product) {
         UUID variantOfId = getVariantOfId(product.getVariantOf());
         List<String> imagesURLS = getImagesURLs(product);
@@ -50,7 +52,7 @@ public class ProductMapper {
     private static List<String> getImagesURLs(Product product) {
         return product.getImages().stream()
                 .map(ProductImage::getUrl)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

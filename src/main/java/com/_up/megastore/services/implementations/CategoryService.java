@@ -3,6 +3,7 @@ package com._up.megastore.services.implementations;
 import com._up.megastore.controllers.requests.CreateCategoryRequest;
 import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
+import com._up.megastore.data.Constants;
 import com._up.megastore.data.model.Category;
 import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
@@ -38,7 +39,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Category findCategoryByIdOrThrowException(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " does not exist."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constants.CATEGORY_WITH_ID + categoryId + " does not exist."));
     }
 
     private Category getSuperCategory(UUID superCategoryId) {
@@ -74,7 +75,7 @@ public class CategoryService implements ICategoryService {
 
     public void ifCategoryIsNotDeletedThrowException(Category category){
         if(category.isDeleted()){
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + category.getCategoryId() + " is already deleted.");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constants.CATEGORY_WITH_ID + category.getCategoryId() + " is already deleted.");
         }
     }
   
@@ -121,7 +122,7 @@ public class CategoryService implements ICategoryService {
 
     private void throwExceptionIfCategoryIsNotDeleted(Category category){
         if(!category.isDeleted()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category with id " + category.getCategoryId() + " is not deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constants.CATEGORY_WITH_ID + category.getCategoryId() + " is not deleted.");
         }
     }
 

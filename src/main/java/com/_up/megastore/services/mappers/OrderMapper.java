@@ -7,9 +7,10 @@ import com._up.megastore.data.model.OrderDetail;
 import com._up.megastore.data.model.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderMapper {
+
+    private OrderMapper() {}
 
     public static Order toOrder(User user, Integer number) {
         return Order.builder()
@@ -36,6 +37,6 @@ public class OrderMapper {
     private static List<OrderDetailResponse> buildOrderDetailsResponse(List<OrderDetail> orderDetails) {
         return orderDetails.stream()
                 .map(OrderDetailMapper::toOrderDetailResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

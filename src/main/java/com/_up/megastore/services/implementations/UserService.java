@@ -115,7 +115,7 @@ public class UserService implements IUserService {
     return tokenService.saveToken(user).getTokenId();
   }
 
-  private Boolean isTokenExpired(UUID activationTokenUUID){
+  private boolean isTokenExpired(UUID activationTokenUUID){
     Token activationToken = findActivationTokenByTokenUUIDOrThrowException(activationTokenUUID);
       return activationToken.getTokenExpirationDate().isBefore(LocalDateTime.now());
   }

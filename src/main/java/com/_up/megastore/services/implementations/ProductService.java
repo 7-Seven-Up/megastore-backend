@@ -27,6 +27,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com._up.megastore.data.Constants.PRODUCT_WITH_ID;
+
 @Service
 public class ProductService implements IProductService {
 
@@ -58,7 +60,7 @@ public class ProductService implements IProductService {
     @Override
     public Product findProductByIdOrThrowException(UUID productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("Product with id " + productId + " does not exist."));
+                .orElseThrow(() -> new NoSuchElementException(PRODUCT_WITH_ID + productId + " does not exist."));
     }
 
     @Override
@@ -80,7 +82,7 @@ public class ProductService implements IProductService {
 
     private void ifProductIsNotDeletedThrowException(Product product){
         if (product.isDeleted()){
-            throw new IllegalStateException("Product with id " + product.getProductId() + " is already deleted.");
+            throw new IllegalStateException(PRODUCT_WITH_ID + product.getProductId() + " is already deleted.");
         }
     }
 
@@ -123,7 +125,7 @@ public class ProductService implements IProductService {
         Product product = findProductByIdOrThrowException(productId);
         return productRepository.findProductByVariantOfAndDeletedFalse(product).stream()
                 .map(ProductMapper::toProductResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -162,7 +164,7 @@ public class ProductService implements IProductService {
 
     private void throwExceptionIfProductIsNotDeleted(Product product) {
         if (!product.isDeleted()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with id " + product.getProductId() + " is not deleted.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_WITH_ID + product.getProductId() + " is not deleted.");
         }
     }
 

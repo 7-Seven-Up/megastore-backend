@@ -5,6 +5,8 @@ import com._up.megastore.data.model.User;
 
 public class UserMapper {
 
+    private UserMapper() {}
+
   public static User toUser(SignUpRequest createUserRequest) {
     return User.builder()
         .email(createUserRequest.email())
