@@ -1,8 +1,11 @@
 package com._up.megastore.data.enums;
 
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public enum State {
 
     IN_PROGRESS(

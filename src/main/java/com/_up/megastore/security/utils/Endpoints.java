@@ -13,13 +13,13 @@ public class Endpoints {
     public static final String GET_ALL_ORDERS = "/api/v1/orders";
     public static final String GET_ONE_ORDER = "/api/v1/orders/*";
 
-    protected static final String[] DELETED_ENTITIES_ENDPOINTS = {
+    public static final String[] DELETED_ENTITIES_ENDPOINTS = {
             "/api/v1/products/*/deleted",
             "/api/v1/sizes/*/deleted",
             "/api/v1/categories/*/deleted",
     };
 
-    protected static final String[] PUBLIC_INFORMATION_ENDPOINTS = {
+    public static final String[] PUBLIC_INFORMATION_ENDPOINTS = {
             "/api/v1/products",
             ANY_PRODUCTS_ENDPOINT,
             "/api/v1/products/*/variants",
@@ -29,7 +29,7 @@ public class Endpoints {
             ANY_SIZES_ENDPOINT,
     };
 
-    protected static final String[] SAVE_INFORMATION_ENDPOINTS = {
+    public static final String[] SAVE_INFORMATION_ENDPOINTS = {
             "/api/v1/products",
             "/api/v1/products/*/restore",
             "/api/v1/categories",
@@ -38,29 +38,27 @@ public class Endpoints {
             "/api/v1/sizes/*/restore",
     };
 
-    protected static final String[] UPDATE_INFORMATION_ENDPOINTS = {
+    public static final String[] UPDATE_INFORMATION_ENDPOINTS = {
             ANY_PRODUCTS_ENDPOINT,
             ANY_CATEGORIES_ENDPOINT,
             ANY_SIZES_ENDPOINT,
     };
 
-    protected static final String[] DELETE_INFORMATION_ENDPOINTS = {
+    public static final String[] DELETE_INFORMATION_ENDPOINTS = {
             ANY_PRODUCTS_ENDPOINT,
             ANY_CATEGORIES_ENDPOINT,
             ANY_SIZES_ENDPOINT,
     };
 
-    protected static final String[] USER_ORDER_MODIFICATION_ENDPOINTS = {
+    public static final String[] USER_ORDER_MODIFICATION_ENDPOINTS = {
             GET_ALL_ORDERS,
             "/api/v1/orders/*/cancel",
     };
 
-    protected static final String[] ADMIN_ORDER_MODIFICATON_ENDPOINTS = {
+    public static final String[] ADMIN_ORDER_MODIFICATON_ENDPOINTS = {
             "/api/v1/orders/*/finish",
             "/api/v1/orders/*/mark-in-delivery",
             "/api/v1/orders/*/delivered",
     };
-
-
-
+    
 }

@@ -25,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com._up.megastore.data.Constants.PRODUCT_WITH_ID;
 

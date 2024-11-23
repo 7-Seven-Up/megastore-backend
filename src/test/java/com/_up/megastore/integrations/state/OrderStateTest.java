@@ -45,7 +45,7 @@ public class OrderStateTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", State.FINISHED.exceptionMessage);
+        assertContains(response, "message", State.FINISHED.getExceptionMessage());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class OrderStateTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", State.IN_DELIVERY.exceptionMessage);
+        assertContains(response, "message", State.IN_DELIVERY.getExceptionMessage());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class OrderStateTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", State.DELIVERED.exceptionMessage);
+        assertContains(response, "message", State.DELIVERED.getExceptionMessage());
     }
 
     @Test
@@ -152,6 +152,6 @@ public class OrderStateTest extends BaseIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertContains(response, "message", State.CANCELLED.exceptionMessage);
+        assertContains(response, "message", State.CANCELLED.getExceptionMessage());
     }
 }
