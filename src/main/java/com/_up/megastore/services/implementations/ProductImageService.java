@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductImageService implements IProductImageService {
@@ -32,7 +33,7 @@ public class ProductImageService implements IProductImageService {
                     throwExceptionIfImageNameAlreadyExists(getImageFilename(image));
                     return saveProductImage(image);
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private ProductImage saveProductImage(MultipartFile multipartFile) {
