@@ -1,21 +1,21 @@
 package com._up.megastore.services.implementations;
 
-import com._up.megastore.data.reports.OrdersByStateResponse;
-import com._up.megastore.data.sp.GetOrdersByStateExecutor;
+import com._up.megastore.data.reports.OrdersByStateReportResponse;
+import com._up.megastore.data.stored_procedures.GetOrdersByStateExecutor;
 import com._up.megastore.services.interfaces.IReportService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ReportService implements IReportService {
 
     private final GetOrdersByStateExecutor getOrdersByStateExecutor;
 
     @Override
-    public OrdersByStateResponse getOrdersByStateAndDate(
+    public OrdersByStateReportResponse getOrdersByStateAndDate(
             LocalDate dateFrom,
             LocalDate dateTo
     ) {

@@ -1,7 +1,7 @@
 package com._up.megastore.controllers.implementations;
 
 import com._up.megastore.controllers.interfaces.IReportController;
-import com._up.megastore.data.reports.OrdersByStateResponse;
+import com._up.megastore.data.reports.OrdersByStateReportResponse;
 import com._up.megastore.services.interfaces.IReportService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +17,7 @@ public class ReportController implements IReportController {
     }
 
     @Override
-    public OrdersByStateResponse getOrdersByStateAndDate(
+    public OrdersByStateReportResponse getOrdersByStateAndDate(
             LocalDate dateFrom,
             LocalDate dateTo
     ) {

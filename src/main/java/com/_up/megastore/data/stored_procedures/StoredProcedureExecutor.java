@@ -1,16 +1,16 @@
-package com._up.megastore.data.sp;
+package com._up.megastore.data.stored_procedures;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
 import jakarta.persistence.StoredProcedureQuery;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StoredProcedureExecutor {
 
     private final EntityManager entityManager;

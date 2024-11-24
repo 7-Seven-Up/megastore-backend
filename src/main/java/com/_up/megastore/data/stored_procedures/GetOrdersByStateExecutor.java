@@ -1,7 +1,7 @@
-package com._up.megastore.data.sp;
+package com._up.megastore.data.stored_procedures;
 
-import com._up.megastore.data.reports.OrdersByStateResponse;
-import lombok.RequiredArgsConstructor;
+import com._up.megastore.data.reports.OrdersByStateReportResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -9,13 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GetOrdersByStateExecutor {
 
     private final StoredProcedureExecutor storedProcedureExecutor;
     private static final String SP_FIND_ORDERS_BY_STATE = "SP_FIND_ORDERS_BY_STATE";
 
-    public OrdersByStateResponse executeFindOrdersByState(LocalDate dateFrom, LocalDate dateTo) {
+    public OrdersByStateReportResponse executeFindOrdersByState(LocalDate dateFrom, LocalDate dateTo) {
         Map<String, Object> inputParams = buildInputParameters(dateFrom, dateTo);
         Map<String, Class<?>> outputParams = buildOutputParameters();
 
@@ -25,7 +25,7 @@ public class GetOrdersByStateExecutor {
                 outputParams
         );
 
-        return new OrdersByStateResponse(
+        return new OrdersByStateReportResponse(
                 (Integer) results.get("in_progress_out"),
                 (Integer) results.get("finished_out"),
                 (Integer) results.get("in_delivery_out"),
