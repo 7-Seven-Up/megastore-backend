@@ -122,7 +122,7 @@ public class EmailBuilder {
                 + "<div style='display:inline-block;'>"
                 + "<h1>" + subject + "</h1>"
                 + "<h3>Hey " + order.getUser().getFullName() + "!</h3>"
-                + "<h4>Your order of the day " + order.getDate() + order.getState().stateMessage + "</h4>"
+                + "<h4>Your order of the day " + order.getDate() + order.getState().getStateMessage() + "</h4>"
                 + "<p>If you want to see the details, please go to the link below:</p>"
                 + "<a href=\"" + orderDetailUrl + "\">Order detail</a>"
                 + "<p>Regards, megastore support team.</p>"

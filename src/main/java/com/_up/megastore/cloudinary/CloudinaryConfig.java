@@ -11,20 +11,20 @@ import java.util.Map;
 public class CloudinaryConfig {
 
     @Value("${cloudinary.cloud-name}")
-    private String CLOUD_NAME;
+    private String cloudName;
 
     @Value("${cloudinary.api-key}")
-    private String API_KEY;
+    private String apiKey;
 
     @Value("${cloudinary.api-secret}")
-    private String API_SECRET;
+    private String apiSecret;
 
     @Bean
     public Cloudinary cloudinary() {
         Map<String, String> cloudinaryProperties = Map.of(
-                "cloud_name", CLOUD_NAME,
-                "api_key", API_KEY,
-                "api_secret", API_SECRET
+                "cloud_name", cloudName,
+                "api_key", apiKey,
+                "api_secret", apiSecret
         );
 
         return new Cloudinary(cloudinaryProperties);

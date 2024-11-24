@@ -8,6 +8,8 @@ import com._up.megastore.data.model.Product;
 
 public class OrderDetailMapper {
 
+    private OrderDetailMapper() {}
+
     public static OrderDetail toOrderDetail(
             Order order,
             Product product,

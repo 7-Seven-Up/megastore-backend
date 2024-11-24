@@ -97,7 +97,7 @@ public class OrderService implements IOrderService {
         if (newState == State.CANCELLED)
             order.setReasonToCancel(reasonToCancel);
 
-        sendOrderEmail(order, newState.subject);
+        sendOrderEmail(order, newState.getSubject());
 
         return OrderMapper.toOrderResponse(
                 orderRepository.save(order),
@@ -115,8 +115,8 @@ public class OrderService implements IOrderService {
     }
 
     public void throwExceptionIfCurrentStateIsIncompatible(Order order, State newState) {
-        if (!newState.previousStates.contains(order.getState())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, newState.exceptionMessage);
+        if (!newState.getPreviousStates().contains(order.getState())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, newState.getExceptionMessage());
         }
     }
 }

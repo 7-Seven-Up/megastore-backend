@@ -8,9 +8,10 @@ import com._up.megastore.data.model.ProductImage;
 import com._up.megastore.data.model.Size;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ProductMapper {
+
+    private ProductMapper() {}
 
     public static ProductResponse toProductResponse(Product product) {
         UUID variantOfId = getVariantOfId(product.getVariantOf());
@@ -50,7 +51,7 @@ public class ProductMapper {
     private static List<String> getImagesURLs(Product product) {
         return product.getImages().stream()
                 .map(ProductImage::getUrl)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

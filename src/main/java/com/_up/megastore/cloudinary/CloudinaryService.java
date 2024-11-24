@@ -1,5 +1,6 @@
 package com._up.megastore.cloudinary;
 
+import com._up.megastore.exception.custom_exceptions.UploadFileException;
 import com._up.megastore.services.interfaces.IFileUploadService;
 import com.cloudinary.Cloudinary;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class CloudinaryService implements IFileUploadService {
                     .get("url")
                     .toString();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image.", e);
+            throw new UploadFileException("Failed to upload image: " + e.getMessage());
         }
     }
 
