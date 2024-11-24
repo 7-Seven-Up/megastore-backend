@@ -23,6 +23,7 @@ import static com._up.megastore.security.utils.Endpoints.ERROR_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.GET_ALL_ORDERS;
 import static com._up.megastore.security.utils.Endpoints.GET_ONE_ORDER;
 import static com._up.megastore.security.utils.Endpoints.PUBLIC_INFORMATION_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.REPORTS_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.SAVE_INFORMATION_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.UPDATE_INFORMATION_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.USER_ORDER_MODIFICATION_ENDPOINTS;
@@ -54,6 +55,7 @@ public class SecurityConfig {
             .requestMatchers(AUTH_ENDPOINTS, ERROR_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.POST, ANY_USER_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.GET, DELETED_ENTITIES_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.GET, REPORTS_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.GET, PUBLIC_INFORMATION_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.POST, SAVE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.PUT, UPDATE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())

@@ -12,6 +12,7 @@ public class Endpoints {
     public static final String ANY_SIZES_ENDPOINT = "/api/v1/sizes/*";
     public static final String GET_ALL_ORDERS = "/api/v1/orders";
     public static final String GET_ONE_ORDER = "/api/v1/orders/*";
+    public static final String REPORTS_ENDPOINTS = "/api/v1/reports/*";
 
     public static final String[] DELETED_ENTITIES_ENDPOINTS = {
             "/api/v1/products/*/deleted",
