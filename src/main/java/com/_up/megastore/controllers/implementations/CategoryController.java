@@ -5,9 +5,9 @@ import com._up.megastore.controllers.requests.CreateCategoryRequest;
 import com._up.megastore.controllers.requests.UpdateCategoryRequest;
 import com._up.megastore.controllers.responses.CategoryResponse;
 import com._up.megastore.services.interfaces.ICategoryService;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.UUID;
 
 @RestController
 public class CategoryController implements ICategoryController {
@@ -31,6 +31,11 @@ public class CategoryController implements ICategoryController {
     @Override
     public Page<CategoryResponse> readAllCategories(int page, int pageSize, String name){
         return categoryService.readAllCategories(page, pageSize, name);
+    }
+
+    @Override
+    public Page<CategoryResponse> readDeletedCategories(int page, int pageSize) {
+        return categoryService.readDeletedCategories(page, pageSize);
     }
 
     @Override

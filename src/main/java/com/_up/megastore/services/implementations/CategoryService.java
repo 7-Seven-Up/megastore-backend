@@ -9,14 +9,13 @@ import com._up.megastore.data.repositories.ICategoryRepository;
 import com._up.megastore.services.interfaces.ICategoryService;
 import com._up.megastore.services.mappers.CategoryMapper;
 import jakarta.transaction.Transactional;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -56,6 +55,13 @@ public class CategoryService implements ICategoryService {
     public Page<CategoryResponse> readAllCategories(int page, int pageSize, String name){
         Pageable pageable = PageRequest.of(page, pageSize);
         return categoryRepository.findCategoryByDeletedIsFalseAndNameContainingIgnoreCase(name,pageable).map(CategoryMapper::toCategoryResponse);
+    }
+
+    @Override
+    public Page<CategoryResponse> readDeletedCategories(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return categoryRepository.findCategoriesByDeletedIsTrue(pageable)
+            .map(CategoryMapper::toCategoryResponse);
     }
 
     @Override
