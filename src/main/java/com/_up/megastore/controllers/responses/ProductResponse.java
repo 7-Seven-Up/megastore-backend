@@ -12,5 +12,7 @@ public record ProductResponse(
         int stock,
         String color,
         String sizeName,
-        UUID variantOfId
+        UUID variantOfId,
+        String variantOfName,
+        Boolean hasVariants
 ) {}
