@@ -4,6 +4,8 @@ import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.UUID;
 
 @RequestMapping("/api/v1/products")
 public interface IProductController {
@@ -63,4 +62,9 @@ public interface IProductController {
     Page<ProductResponse> getProducts(@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "15") int pageSize,
                                       @RequestParam(defaultValue = "") String name);
+
+    @GetMapping("/deleted")
+    @ResponseStatus(HttpStatus.OK)
+    Page<ProductResponse> getDeletedProducts(@RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "15") int pageSize);
 }
