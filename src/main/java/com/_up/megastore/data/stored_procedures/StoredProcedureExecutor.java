@@ -6,6 +6,7 @@ import jakarta.persistence.StoredProcedureQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,21 @@ import java.util.stream.Collectors;
 public class StoredProcedureExecutor {
 
     private final EntityManager entityManager;
+
+    public List<Object[]> executeStoredProcedure(
+            String procedureName,
+            Map<String, Object> inputParams
+    ) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery(procedureName);
+
+        inputParams.forEach((name, value) -> {
+            query.registerStoredProcedureParameter(name, value.getClass(), ParameterMode.IN);
+            query.setParameter(name, value);
+        });
+
+        query.execute();
+        return query.getResultList();
+    }
 
     public Map<String, Object> executeStoredProcedure(
             String procedureName,

@@ -30,3 +30,21 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE IF NOT EXISTS SP_MORE_SOLD_PRODUCTS(
+    IN date_from_in DATE,
+    IN date_to_in DATE
+)
+BEGIN
+    SELECT p.name as NAME, SUM(od.quantity) AS QUANTITY, SUM(od.subtotal) AS TOTAL
+    FROM products p
+             INNER JOIN order_details od ON p.product_id = od.product_product_id
+             INNER JOIN orders o ON od.order_order_id = o.order_id
+    WHERE o.date BETWEEN date_from_in AND date_to_in
+    GROUP BY p.name
+    ORDER BY QUANTITY DESC;
+END $$
+
+DELIMITER ;
