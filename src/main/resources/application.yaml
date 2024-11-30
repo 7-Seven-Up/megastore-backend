@@ -5,10 +5,13 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
+  data:
+    mongodb:
+      uri: ${MONGO_URL:mongodb://localhost:27017/megastore_logs}
   datasource:
     url: jdbc:mysql://${DATASOURCE_URL:localhost:3306/megastore?createDatabaseIfNotExist=true}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:admin}
+    password: ${DB_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: ${SPRING_PROFILE:development}
