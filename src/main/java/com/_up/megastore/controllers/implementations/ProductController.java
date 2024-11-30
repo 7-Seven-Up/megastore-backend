@@ -5,12 +5,11 @@ import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
 import com._up.megastore.services.interfaces.IProductService;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class ProductController implements IProductController {
@@ -56,4 +55,8 @@ public class ProductController implements IProductController {
         return productService.getProducts(page, pageSize, name);
     }
 
+    @Override
+    public Page<ProductResponse> getDeletedProducts(int page, int pageSize) {
+        return productService.getDeletedProducts(page, pageSize);
+    }
 }

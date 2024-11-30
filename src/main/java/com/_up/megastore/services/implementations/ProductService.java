@@ -1,5 +1,7 @@
 package com._up.megastore.services.implementations;
 
+import static com._up.megastore.data.Constants.PRODUCT_WITH_ID;
+
 import com._up.megastore.controllers.requests.CreateProductRequest;
 import com._up.megastore.controllers.requests.UpdateProductRequest;
 import com._up.megastore.controllers.responses.ProductResponse;
@@ -14,6 +16,9 @@ import com._up.megastore.services.interfaces.IProductService;
 import com._up.megastore.services.interfaces.ISizeService;
 import com._up.megastore.services.mappers.ProductMapper;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
-
-import static com._up.megastore.data.Constants.PRODUCT_WITH_ID;
 
 @Service
 public class ProductService implements IProductService {
@@ -130,8 +129,15 @@ public class ProductService implements IProductService {
     @Override
     public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return productRepository.findProductsByDeletedIsFalseAndVariantOfIsNullAndNameContainingIgnoreCase(name, pageable)
+        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
                 .map(ProductMapper::toProductResponse);
+    }
+
+    @Override
+    public Page<ProductResponse> getDeletedProducts(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return productRepository.findProductsByDeletedIsTrue(pageable)
+            .map(ProductMapper::toProductResponse);
     }
 
     @Override
