@@ -15,9 +15,9 @@ public class Endpoints {
     public static final String REPORTS_ENDPOINTS = "/api/v1/reports/*";
 
     public static final String[] DELETED_ENTITIES_ENDPOINTS = {
-            "/api/v1/products/*/deleted",
-            "/api/v1/sizes/*/deleted",
-            "/api/v1/categories/*/deleted",
+            "/api/v1/products/deleted",
+            "/api/v1/sizes/deleted",
+            "/api/v1/categories/deleted",
     };
 
     public static final String[] PUBLIC_INFORMATION_ENDPOINTS = {

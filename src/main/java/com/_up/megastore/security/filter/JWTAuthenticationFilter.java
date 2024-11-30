@@ -26,6 +26,7 @@ import static com._up.megastore.security.utils.Constants.BEARER;
 import static com._up.megastore.security.utils.Constants.JWT_EXCEPTION_DEFAULT_MESSAGE;
 import static com._up.megastore.security.utils.Endpoints.ANY_USER_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.AUTH_ENDPOINTS;
+import static com._up.megastore.security.utils.Endpoints.DELETED_ENTITIES_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.ERROR_ENDPOINTS;
 import static com._up.megastore.security.utils.Endpoints.PUBLIC_INFORMATION_ENDPOINTS;
 
@@ -83,11 +84,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         boolean isAnyUserEndpoint = pathMatcher.match(ANY_USER_ENDPOINTS, request.getRequestURI())
                 && request.getMethod().equals(HttpMethod.POST.name());
 
+        boolean isDeletedEndpoint = Stream.of(DELETED_ENTITIES_ENDPOINTS)
+                .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()));
+
         boolean isPublicInformationEndpoint = Stream.of(PUBLIC_INFORMATION_ENDPOINTS)
                 .anyMatch(url -> pathMatcher.match(url, request.getRequestURI()))
                 && request.getMethod().equals(HttpMethod.GET.name());
 
-        return isOptionsMethod || isAuthEndpoint || isErrorEndpoint || isAnyUserEndpoint || isPublicInformationEndpoint;
+        return (isOptionsMethod || isAuthEndpoint || isErrorEndpoint || isAnyUserEndpoint || isPublicInformationEndpoint) && !isDeletedEndpoint;
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
