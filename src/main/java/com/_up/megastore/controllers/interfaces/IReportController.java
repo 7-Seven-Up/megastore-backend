@@ -21,7 +21,7 @@ public interface IReportController {
 
     @GetMapping("/most-sold-products")
     List<SoldProductResponse> getMostSoldProductsByDate(
-            @RequestParam LocalDate dateFrom,
-            @RequestParam LocalDate dateTo
+            @RequestParam(required = false, defaultValue = "#{T(java.time.LocalDate).of(2024, 10, 1)}") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dateFrom,
+            @RequestParam(required = false, defaultValue = "#{T(java.time.LocalDate).now()}") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dateTo
     );
 }
