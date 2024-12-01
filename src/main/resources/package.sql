@@ -11,12 +11,12 @@ CREATE PROCEDURE IF NOT EXISTS SP_FIND_ORDERS_BY_STATE(
     OUT total_out INTEGER
 )
 BEGIN
-    SELECT SUM(state = 'IN_PROGRESS'),
-           SUM(state = 'FINISHED'),
-           SUM(state = 'IN_DELIVERY'),
-           SUM(state = 'DELIVERED'),
-           SUM(state = 'CANCELLED'),
-           COUNT(*)
+    SELECT IFNULL(SUM(state = 'IN_PROGRESS'), 0),
+           IFNULL(SUM(state = 'FINISHED'), 0),
+           IFNULL(SUM(state = 'IN_DELIVERY'), 0),
+           IFNULL(SUM(state = 'DELIVERED'), 0),
+           IFNULL(SUM(state = 'CANCELLED'), 0),
+           IFNULL(COUNT(*), 0)
     INTO
         in_progress_out,
         finished_out,
