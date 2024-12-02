@@ -16,8 +16,7 @@ public class ProductMapper {
     public static ProductResponse toProductResponse(Product product) {
         UUID variantOfId = getVariantOfId(product.getVariantOf());
         String variantOfName = getVariantOfName(product.getVariantOf());
-        Boolean hasVariants = product.getVariants().stream()
-            .anyMatch(variant -> !variant.isDeleted());
+        Boolean hasVariants = getIfProductHasVariants(product);
         List<String> imagesURLS = getImagesURLs(product);
 
         return new ProductResponse(
@@ -33,6 +32,11 @@ public class ProductMapper {
                 variantOfName,
                 hasVariants
         );
+    }
+
+    private static boolean getIfProductHasVariants(Product product) {
+        return product.getVariants() != null ? product.getVariants().stream()
+                .anyMatch(variant -> !variant.isDeleted()) : false;
     }
 
     public static Product toProduct(CreateProductRequest createProductRequest, Size size, Category category, List<ProductImage> images, Product variantOf) {

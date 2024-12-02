@@ -9,8 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,8 +35,12 @@ public class LogInterceptor implements HandlerInterceptor {
                 .getAuthentication()
                 .getName();
 
+        if (!(request instanceof ContentCachingRequestWrapper)) {
+            request = new ContentCachingRequestWrapper(request);
+        }
+
         String requestBody = (HttpMethod.POST.name().equalsIgnoreCase(request.getMethod()))
-                ? request.getReader().lines().collect(Collectors.joining(System.lineSeparator()))
+                ? getRequestBody((ContentCachingRequestWrapper) request)
                 : "No body";
 
         logRepository.save(
@@ -50,4 +56,10 @@ public class LogInterceptor implements HandlerInterceptor {
 
         return true;
     }
+
+    private String getRequestBody(ContentCachingRequestWrapper request) {
+        byte[] buf = request.getContentAsByteArray();
+        return buf.length > 0 ? new String(buf, StandardCharsets.UTF_8) : null;
+    }
+
 }
