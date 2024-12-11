@@ -4,8 +4,10 @@ import com._up.megastore.controllers.requests.ActivateUserRequest;
 import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SendEmailRequest;
 import com._up.megastore.controllers.requests.SendNewActivationTokenRequest;
+import com._up.megastore.controllers.responses.OrderResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,4 +34,8 @@ public interface IUserController {
 
   @PostMapping("/send-new-activation-token")
   void sendNewActivationToken(@RequestBody SendNewActivationTokenRequest sendNewActivationTokenRequest);
+
+  @GetMapping("/{username}/orders")
+  @ResponseStatus(HttpStatus.OK)
+  OrderResponse[] getOrders(@PathVariable String username);
 }

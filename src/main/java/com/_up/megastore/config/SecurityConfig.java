@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,6 +31,7 @@ import static com._up.megastore.security.utils.Endpoints.USER_ORDER_MODIFICATION
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
   private final AuthenticationProvider authenticationProvider;
@@ -54,6 +56,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
             .requestMatchers(AUTH_ENDPOINTS, ERROR_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.POST, ANY_USER_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.GET, ANY_USER_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.GET, DELETED_ENTITIES_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.GET, REPORTS_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.GET, PUBLIC_INFORMATION_ENDPOINTS).permitAll()
