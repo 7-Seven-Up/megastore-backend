@@ -39,7 +39,7 @@ public class AuthService implements IAuthService {
     ifUserIsNotActivatedThrowException(user);
     String accessToken = jwtService.generateAccessToken(user);
 
-    return new AuthResponse(user.getUserId(), accessToken, user.getRole());
+    return new AuthResponse(user.getUserId(), user.getUsername(), accessToken, user.getRole());
   }
 
   private void ifUserIsNotActivatedThrowException(User user) {

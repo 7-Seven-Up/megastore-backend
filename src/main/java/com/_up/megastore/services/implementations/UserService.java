@@ -4,12 +4,15 @@ import com._up.megastore.controllers.requests.RecoverPasswordRequest;
 import com._up.megastore.controllers.requests.SendEmailRequest;
 import com._up.megastore.controllers.requests.SendNewActivationTokenRequest;
 import com._up.megastore.controllers.requests.SignUpRequest;
+import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.model.Token;
 import com._up.megastore.data.model.User;
+import com._up.megastore.data.repositories.IOrderRepository;
 import com._up.megastore.data.repositories.IUserRepository;
 import com._up.megastore.services.interfaces.IEmailService;
 import com._up.megastore.services.interfaces.ITokenService;
 import com._up.megastore.services.interfaces.IUserService;
+import com._up.megastore.services.mappers.OrderMapper;
 import com._up.megastore.services.mappers.UserMapper;
 import com._up.megastore.utils.EmailBuilder;
 import org.springframework.http.HttpStatus;
@@ -25,15 +28,17 @@ public class UserService implements IUserService {
 
   private final IEmailService emailService;
   private final IUserRepository userRepository;
+  private final IOrderRepository orderRepository;
   private final PasswordEncoder passwordEncoder;
   private final ITokenService tokenService;
   private final EmailBuilder emailBuilder;
 
-  public UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder,
+  public UserService(IUserRepository userRepository, IOrderRepository orderRepository, PasswordEncoder passwordEncoder,
                      IEmailService emailService, ITokenService tokenService, EmailBuilder emailBuilder) {
     this.emailService = emailService;
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
+    this.orderRepository = orderRepository;
     this.tokenService = tokenService;
     this.emailBuilder = emailBuilder;
   }
@@ -173,6 +178,14 @@ public class UserService implements IUserService {
     User user = tokenService.findUserByToken(sendNewActivationTokenRequest.activationToken());
     Token token = tokenService.saveToken(user);
     sendNewActivationEmail(user, token.getTokenId());
+  }
+
+  @Override
+  public OrderResponse[] getOrders(String username) {
+    User user = findUserByUsernameOrThrowException(username);
+    return user.getOrders().stream()
+            .map(order -> OrderMapper.toOrderResponse(order, orderRepository.getOrderTotal(order)))
+            .toArray(OrderResponse[]::new);
   }
 
   private void sendNewActivationEmail(User user, UUID activationToken) {

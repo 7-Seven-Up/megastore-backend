@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import static com._up.megastore.exception.ExceptionMessages.INVALID_FORMAT_EXCEPTION_MESSAGE;
+import static com._up.megastore.exception.ExceptionMessages.ACCESS_DENIED_EXCEPTION_MESSAGE;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -99,6 +101,17 @@ public class ExceptionControllerAdvice {
       };
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ExceptionPayload handleAccessDeniedException(AccessDeniedException ex) {
+      return new ExceptionPayload(
+              ACCESS_DENIED_EXCEPTION_MESSAGE,
+              HttpStatus.FORBIDDEN.value(),
+              LocalDateTime.now(),
+              ex.getStackTrace()
+      );
+    }
+
     private ExceptionPayload handleInvalidFormatException(InvalidFormatException ex) {
       return new ExceptionPayload(
               INVALID_FORMAT_EXCEPTION_MESSAGE,
@@ -107,5 +120,4 @@ public class ExceptionControllerAdvice {
               ex.getStackTrace()
       );
     }
-
 }
