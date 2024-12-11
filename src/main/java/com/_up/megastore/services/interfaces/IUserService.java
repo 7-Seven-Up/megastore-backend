@@ -26,6 +26,6 @@ public interface IUserService {
 
   void sendNewActivationToken(SendNewActivationTokenRequest sendNewActivationTokenRequest);
 
-  @PreAuthorize("#username == authentication.getName()")
+  @PreAuthorize("#username == authentication.getName() || hasRole('ROLE_ADMIN')")
   OrderResponse[] getOrders(String username);
 }
