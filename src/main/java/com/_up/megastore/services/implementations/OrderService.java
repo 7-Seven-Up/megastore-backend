@@ -14,6 +14,9 @@ import com._up.megastore.services.interfaces.IUserService;
 import com._up.megastore.services.mappers.OrderMapper;
 import com._up.megastore.utils.EmailBuilder;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,6 +60,13 @@ public class OrderService implements IOrderService {
                 order,
                 orderRepository.getOrderTotal(order)
         );
+    }
+
+    @Override
+    public Page<OrderResponse> getOrders(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return orderRepository.findAll(pageable)
+                .map(order -> OrderMapper.toOrderResponse(order, orderRepository.getOrderTotal(order)));
     }
 
     @Override
