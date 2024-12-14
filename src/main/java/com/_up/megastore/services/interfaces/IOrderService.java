@@ -6,10 +6,13 @@ import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.data.model.Order;
 
 import java.util.UUID;
+import org.springframework.data.domain.Page;
 
 public interface IOrderService {
 
     OrderResponse saveOrder(CreateOrderRequest createOrderRequest);
+
+    Page<OrderResponse> getOrders(int page, int pageSize);
 
     Order findOrderByIdOrThrowException(UUID orderId);
 

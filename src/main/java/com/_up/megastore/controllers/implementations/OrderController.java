@@ -5,6 +5,7 @@ import com._up.megastore.controllers.requests.CancelOrderRequest;
 import com._up.megastore.controllers.requests.CreateOrderRequest;
 import com._up.megastore.controllers.responses.OrderResponse;
 import com._up.megastore.services.interfaces.IOrderService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -21,6 +22,11 @@ public class OrderController implements IOrderController {
     @Override
     public OrderResponse saveOrder(CreateOrderRequest createOrderRequest) {
         return orderService.saveOrder(createOrderRequest);
+    }
+
+    @Override
+    public Page<OrderResponse> getOrders(int page, int pageSize) {
+        return orderService.getOrders(page, pageSize);
     }
 
     @Override
