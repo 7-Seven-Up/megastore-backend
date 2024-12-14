@@ -59,7 +59,7 @@ public class Endpoints {
     public static final String[] ADMIN_ORDER_MODIFICATON_ENDPOINTS = {
             "/api/v1/orders/*/finish",
             "/api/v1/orders/*/mark-in-delivery",
-            "/api/v1/orders/*/delivered",
+            "/api/v1/orders/*/deliver",
     };
     
 }
