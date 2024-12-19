@@ -25,7 +25,7 @@ public interface IProductService {
 
     List<ProductResponse> getProductVariants(UUID productId);
 
-    Page<ProductResponse> getProducts(int page, int pageSize, String name);
+    Page<ProductResponse> getProducts(int page, int pageSize, String name, String category);
 
     Page<ProductResponse> getDeletedProducts(int page, int pageSize);
 

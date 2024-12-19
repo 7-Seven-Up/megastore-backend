@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findProductsByDeletedIsFalseAndVariantOfIsNullAndNameContainingIgnoreCase(String name, Pageable pageable);
-    Page<Product> findProductsByDeletedIsFalseAndNameContainingIgnoreCase(String name,
-        Pageable pageable);
+    Page<Product> findProductsByDeletedIsFalseAndNameContainingIgnoreCaseAndCategory_NameContainingIgnoreCase(String name,
+        String category, Pageable pageable);
     boolean existsByVariantOfAndDeletedFalse(Product variantOf);
     List<Product> findProductByVariantOfAndDeletedFalse(Product variantOf);
     Page<Product> findProductsByDeletedIsTrue(Pageable pageable);
