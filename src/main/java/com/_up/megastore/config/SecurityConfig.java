@@ -62,6 +62,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, PUBLIC_INFORMATION_ENDPOINTS).permitAll()
             .requestMatchers(HttpMethod.POST, SAVE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.PUT, UPDATE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.PATCH, UPDATE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.DELETE, DELETE_INFORMATION_ENDPOINTS).hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.POST, USER_ORDER_MODIFICATION_ENDPOINTS).hasAnyRole(Role.USER.name(), Role.ADMIN.name())
             .requestMatchers(HttpMethod.POST, ADMIN_ORDER_MODIFICATON_ENDPOINTS).hasRole(Role.ADMIN.name())
