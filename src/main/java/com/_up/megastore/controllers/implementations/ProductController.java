@@ -51,8 +51,8 @@ public class ProductController implements IProductController {
     }
 
     @Override
-    public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
-        return productService.getProducts(page, pageSize, name);
+    public Page<ProductResponse> getProducts(int page, int pageSize, String name, String category) {
+        return productService.getProducts(page, pageSize, name, category);
     }
 
     @Override

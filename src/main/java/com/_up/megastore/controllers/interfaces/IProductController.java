@@ -61,7 +61,8 @@ public interface IProductController {
     @ResponseStatus(HttpStatus.OK)
     Page<ProductResponse> getProducts(@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "15") int pageSize,
-                                      @RequestParam(defaultValue = "") String name);
+                                      @RequestParam(defaultValue = "") String name,
+                                      @RequestParam(defaultValue = "") String category);
 
     @GetMapping("/deleted")
     @ResponseStatus(HttpStatus.OK)

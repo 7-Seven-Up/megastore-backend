@@ -127,9 +127,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<ProductResponse> getProducts(int page, int pageSize, String name) {
+    public Page<ProductResponse> getProducts(int page, int pageSize, String name, String category) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCase(name, pageable)
+        return productRepository.findProductsByDeletedIsFalseAndNameContainingIgnoreCaseAndCategory_NameContainingIgnoreCase(name, category, pageable)
                 .map(ProductMapper::toProductResponse);
     }
 
