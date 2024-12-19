@@ -28,6 +28,8 @@ public class ProductMapper {
                 product.getStock(),
                 product.getColor(),
                 product.getSize().getName(),
+                product.getCategory().getCategoryId(),
+                product.getCategory().getName(),
                 variantOfId,
                 variantOfName,
                 hasVariants
